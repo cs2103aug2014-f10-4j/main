@@ -25,32 +25,40 @@ class TaskManager {
         Collections.sort(mTasks); //keep mTasks sorted
     }
     
-    static ITask getTask(Integer taskId) {
-        return mTasks.get(normaliseId(taskId));
+    static ITask getTask(Integer taskNumberShownOnScreen) {
+        return mTasks.get(getTaskId(taskNumberShownOnScreen));
     }
     
-    static void deleteTask(Integer taskId) {
-        mTasks.remove(normaliseId(taskId));
+    static void deleteTask(Integer taskNumberShownOnScreen) {
+        mTasks.remove(getTaskId(taskNumberShownOnScreen));
+    }
+    
+    static void clearTasks() {
+    	mTasks.clear();
+    }
+    
+    static int getNumberOfTasks() {
+    	return mTasks.size();
     }
     
     /**
      * Converts a 1-based id to 0-based id as represented in the array.
-     * @param inputId 1-based index
+     * @param taskNumberShownOnScreen 1-based index
      * @return 0-based index
      */
-    static Integer normaliseId(Integer inputId) {
-        return inputId - 1;
+    static Integer getTaskId(Integer taskNumberShownOnScreen) {
+        return taskNumberShownOnScreen - 1;
     }
     
     //METHODS FOR UPDATING GUI
     static void displayTenTasks(int startIndex, IUserInterface ui) {
-        int i = normaliseId(startIndex);
+        int i = getTaskId(startIndex);
         List<ITask> tasks = mTasks.subList(i, i + 10);
         ui.displayTasks(tasks);
     }
     
     static void displayTaskDetail(int taskId, IUserInterface ui) {
-        ITask task = mTasks.get(normaliseId(taskId));
+        ITask task = mTasks.get(getTaskId(taskId));
         ui.displayTaskDetail(task);
     }
     
