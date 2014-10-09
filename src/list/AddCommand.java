@@ -9,7 +9,7 @@ import list.CommandBuilder.RepeatFrequency;
  * Other commands (Edit, Delete, etc.) should follow
  * this sample.
  * 
- * @author andhieka, michael
+ * @author Michael
  */
 public class AddCommand implements ICommand {
 	private String mTitle;
@@ -52,9 +52,18 @@ public class AddCommand implements ICommand {
 	@Override
 	public String execute() {
 		Task task = new Task();
-		task.setTitle(mTitle);
+		task.setTitle(mTitle)
+			.setStartTime(mStartTime)
+			.setEndTime(mEndTime)
+			.setRepeatFrequency(mRepeatFrequency)
+			.setPlace(mPlace)
+			.setCategory(mCategory)
+			.setNotes(mNotes);
 		
 		TaskManager.addTask(task);
+		
+		Controller.displayTasksInUI();
+		
 		return "Task added succesfully";
 	}
 
