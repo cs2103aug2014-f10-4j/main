@@ -1,9 +1,8 @@
 package list;
 
-import java.util.Scanner;
-
 import list.ICommand.InvalidTaskNumberException;
 import list.IParser.ParseException;
+import list.IUserInterface.DisplayFullException;
 
 public class Controller {
 		
@@ -13,41 +12,39 @@ public class Controller {
 	private static IParser mParser = new Parser();
 	
 	public static void main(String[] args) {
-		
-		
-		while (true) {
-			try {
-				Scanner sc = new Scanner(System.in);
-				String userInput = sc.nextLine();
-				
-				//String userInput = receiveUserInputFromUI(mUserInterface.getUserInput());
-				ICommand commandMadeByParser = mParser.parse(userInput);
-				commandMadeByParser.execute();
-				
-				TaskManager.printTasks();
-				
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
-			} catch (InvalidTaskNumberException e) {
-				System.out.println(MESSAGE_INVALID_TASK_NUMBER);
-			}
-		}
-		
-		
+		mUserInterface = new UserInterface();
 	}
 	
-	public static String receiveUserInputFromUI(String userInput) {
-		return userInput;
+	public static String processUserInput(String userInput) {
+	    ICommand commandMadeByParser;
+	    String reply;
+        try {
+            commandMadeByParser = mParser.parse(userInput);
+            reply = commandMadeByParser.execute();
+        } catch (ParseException e) {
+            reply = "Error parsing command.";
+        } catch (InvalidTaskNumberException e) {
+            reply = "Invalid task number!";
+        } catch (Exception e) {
+            reply = "Error!";
+        }
+		return reply;
 	}
 	
 	public static void updateListOfTasksInUI() {
 		int taskNumberToDisplay = 1;
 		
 		//Naming of boolean condition OK?
-		while (UICanDisplayMoreTask() && 
-			   TaskManager.isValid(taskNumberToDisplay)) {
-			ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);			
-			mUserInterface.displayMoreTask(taskToDisplay);
+		try {
+		    while (UICanDisplayMoreTask() && 
+		               TaskManager.isValid(taskNumberToDisplay)) {
+	            ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);         
+	            mUserInterface.displayNewTaskOrDate(taskToDisplay);
+	            taskNumberToDisplay++;
+		    }
+		} catch (DisplayFullException e) {
+		    e.printStackTrace();
+		    //do nothing
 		}
 		
 	}

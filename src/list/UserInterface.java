@@ -1,17 +1,27 @@
-// import java swings from the library
+package list;
+
+import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 
-public class UserInterface {
+public class UserInterface implements IUserInterface {
+    
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
-	private final static String charForConsole = ">> "
+	private static int mCursorPosition = 0;
+	
+	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
 	private final static int NUMBEROFLINESALLOWED = 10;
@@ -23,12 +33,12 @@ public class UserInterface {
 	private static int LABELHEIGHT = LISTHEIGHT / NUMBEROFLINESALLOWED;
 	private static Font fontForDate = new Font("Arial", Font.BOLD, 36);
 	private static Font fontForTask = new Font("Arial", Font.PLAIN, 36);
-	private static Date previousDate = new Date();
+	private static Date previousDate = new Date(0, 0, 0);
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
 
-	public UserInterface(FocusListener listenerForTextArea){
-
+	public UserInterface() {
+	    
 		// set the size of the frame
 		mainFrame.setSize(MAINFRAMEWIDTH, MAINFRAMEHEIGHT);
 
@@ -42,27 +52,29 @@ public class UserInterface {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// set the console part on the frame
-		setUpConsole(listenerForTextArea);
+		setUpConsole();
 
 		// make the window visible to the user
 		mainFrame.setVisible(true);
 	}
 
-	public boolean displayNewTaskOrDate(ITask task) {
+	@Override
+	public void displayNewTaskOrDate(ITask task) throws DisplayFullException {
 
 		// return if the lines are full
-		if (numberOfLines == NUMBEROFLINESALLOWED - 1) return isFull;
+		if (numberOfLines == NUMBEROFLINESALLOWED - 1) {
+		    throw new DisplayFullException();
+		}
 
 		// check whether the date is the same with the date of the previous task
-		// if it's not the same, diplay the new date
+		// if it's not the same, display the new date
 		// if it's the same, display the task
 		if (!checkDateIsAppeared(task)) {
 			displayNewDate(task);
 		} else {
 			displayNewTask(task);
 		}
-
-		return isFull;
+		
 	}
 
 	public void displayTaskDetail(ITask task) {
@@ -175,19 +187,23 @@ public class UserInterface {
 
 		// increment the number of the lines already displayed, and if it is maximum, isFull = true
 		numberOfLines++;
-		if (numberOfLines == NUMBEROFLINESALLOWED - 1) isFull = true;
+		if (numberOfLines == NUMBEROFLINESALLOWED - 1) {
+		    isFull = true;
+		}
 	}
 
-	public void setUpConsole(FocusListener listenerForTextArea) {
+	public void setUpConsole() {
 
 		// make the instance of the JPanel to set the JTextArea on that
 		JPanel panelOfTextArea = new JPanel();
 
-		// set the FocusListener to the JTextArea
-		console.addFocusListener(listenerForTextArea);
-
+		//use key bindings
+		EnterAction enterAction = new EnterAction();
+		console.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doEnterAction");
+		console.getActionMap().put("doEnterAction", enterAction);
+		
 		// append the letter that appears at the first place
-		console.append(">> ");
+		showInConsole(CONSOLE_ARROWS);
 
 		// set the size of the console
 		console.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
@@ -203,6 +219,43 @@ public class UserInterface {
 	}
 
 	public void displayMessageToUser(String message) {
-		console.append("\n" + ">> " + message);
+	    showInConsole(message);
+	    showInConsole("\n");
+	    showInConsole(CONSOLE_ARROWS);
 	}
+	
+	private void showInConsole(String text) {
+	    console.append(text);
+	    mCursorPosition = console.getText().length();
+	}
+	
+	class EnterAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            System.out.println("Enter pressed!");
+            String userInput = "";
+            try {
+                userInput = console.getText(mCursorPosition, console.getText().length() - mCursorPosition);    
+            } catch (BadLocationException e) {
+                e.printStackTrace(); //who cares?
+            }
+            
+            String reply = Controller.processUserInput(userInput);
+            showInConsole("\n");
+            displayMessageToUser(reply);
+        }
+	    
+	}
+
+    @Override
+    public void displayCategories(List<ICategory> categories) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean isFull() {
+        return isFull;
+    }
 }
