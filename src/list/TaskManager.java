@@ -50,16 +50,4 @@ class TaskManager {
         return taskNumberShownOnScreen - 1;
     }
     
-    //METHODS FOR UPDATING GUI
-    static void displayTenTasks(int startIndex, IUserInterface ui) {
-        int i = getTaskId(startIndex);
-        List<ITask> tasks = mTasks.subList(i, i + 10);
-        ui.displayTasks(tasks);
-    }
-    
-    static void displayTaskDetail(int taskId, IUserInterface ui) {
-        ITask task = mTasks.get(getTaskId(taskId));
-        ui.displayTaskDetail(task);
-    }
-    
 }

@@ -1,13 +1,11 @@
 package list;
 
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
 	private String mTitle;
-	private Calendar mStartTime;
-	private Calendar mEndTime;
+	private Date mStartTime;
+	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
 	private String mCategory;
@@ -15,8 +13,7 @@ public class Task implements ITask {
 	
 	@Override
 	public int compareTo(ITask o) {
-		// TODO Auto-generated method stub
-		return 0;
+	    return this.getEndTime().compareTo(o.getEndTime());
 	}
 
 	public String getTitle() {
@@ -28,20 +25,20 @@ public class Task implements ITask {
 		return this;
 	}
 
-	public Calendar getStartTime() {
+	public Date getStartTime() {
 		return mStartTime;
 	}
 
-	public Task setStartTime(Calendar mStartTime) {
+	public Task setStartTime(Date mStartTime) {
 		this.mStartTime = mStartTime;
 		return this;
 	}
 
-	public Calendar getEndTime() {
+	public Date getEndTime() {
 		return mEndTime;
 	}
 
-	public Task setEndTime(Calendar mEndTime) {
+	public Task setEndTime(Date mEndTime) {
 		this.mEndTime = mEndTime;
 		return this;
 	}

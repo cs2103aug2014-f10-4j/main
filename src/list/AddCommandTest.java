@@ -2,8 +2,6 @@ package list;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 
 import org.junit.Before;
@@ -28,7 +26,7 @@ public class AddCommandTest {
 		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
 		
 		AddCommand addCommand = new AddCommand("test",
-				Calendar.getInstance(), Calendar.getInstance(), RepeatFrequency.DAILY, "", "", "");
+				new Date(0,0,0), new Date(0,0,0), RepeatFrequency.DAILY, "", "", "");
 		
 		addCommand.execute();
 		
@@ -40,7 +38,7 @@ public class AddCommandTest {
 		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
 		
 		AddCommand addCommand = new AddCommand("test",
-				Calendar.getInstance(), Calendar.getInstance(), RepeatFrequency.DAILY, "", "", "");
+		        new Date(0,0,0), new Date(0,0,0), RepeatFrequency.DAILY, "", "", "");
 		
 		addCommand.execute();
 		
