@@ -1,5 +1,7 @@
 LIST is a Lovely, Intelligent and Simple To-do-list.
 
-And this is my copy of LIST. Don't mess with it.
+The project is currently capable of basic CRUD (Create, Read, Update, Delete) operations. Please wait for further updates.
 
-Andhieka Putra
+Cheers,
+
+LIST Developers
