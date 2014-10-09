@@ -1,5 +1,10 @@
 package list;
 
+/**
+ * 
+ * @author Michael
+ *
+ */
 public class DisplayCommand implements ICommand {
 	private Integer mTaskNumber;
 
@@ -9,8 +14,9 @@ public class DisplayCommand implements ICommand {
 	
 	@Override
 	public String execute() {
-		// TODO Auto-generated method stub
-		return null;
+		ITask selectedTask = TaskManager.getTask(mTaskNumber);
+		
+		return "Displaying ...";
 	}
 
 }
