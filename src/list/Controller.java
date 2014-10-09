@@ -6,6 +6,8 @@ import list.IUserInterface.DisplayFullException;
 
 public class Controller {
 		
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
+	
 	private static IUserInterface mUserInterface = null;
 	private static IParser mParser = new Parser();
 	

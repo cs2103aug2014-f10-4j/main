@@ -1,9 +1,6 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 import list.ICommand.InvalidTaskNumberException;
 
@@ -20,7 +17,7 @@ public class EditCommandTest {
 	
 	private final String TITLE = "test";
 	private final Date START_TIME = new Date(0,0,0);
-	private final Date END_TIME = new Date(0,0,0);
+	private final Date END_TIME = new Date(1,1,2014);
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
 	private final String CATEGORY = null;
@@ -32,7 +29,7 @@ public class EditCommandTest {
 		
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
-											   CATEGORY, NOTES);
+											   CATEGORY, NOTES);		
 		addCommand.execute();
 	}
 	
@@ -119,16 +116,25 @@ public class EditCommandTest {
 		assertEquals(NOTES, modifiedTask.getNotes());
 	}
 	
-//	@Test
-//	public void taskNumberIsNotProvided() {
-//		EditCommand editCommand = new EditCommand(null, 
-//												  null, 
-//												  null, 
-//												  null, 
-//												  null, 
-//												  null, 
-//												  null, 
-//												  null);
-//		editCommand.execute();
-//	}
+	@Test
+	public void shouldMaintainListOfTasksSortedAfterEditingTask() 
+			throws InvalidTaskNumberException {
+		AddCommand addCommand = new AddCommand("task 1", null, new Date(2,1,2014), 
+											   null, null, 
+										   	   null, null);
+		addCommand.execute();
+				
+		int taskNumber = 2;
+		EditCommand editCommand = new EditCommand(taskNumber, 
+												  null, 
+												  null, 
+												  new Date(2,1,2013), 
+												  null, 
+												  null, 
+												  null, 
+												  null);
+		editCommand.execute();
+				
+		assertEquals(true, TaskManager.isListOfTasksSorted());
+	}
 }
