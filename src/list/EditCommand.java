@@ -39,7 +39,7 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 			
-		if (!isValid(mTaskNumber)) {
+		if (!TaskManager.isValid(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
@@ -73,13 +73,9 @@ public class EditCommand implements ICommand {
 			taskToEdit.setNotes(mNotes);
 		}
 		
-		Controller.displayTasksInUI();
+		Controller.updateListOfTasksInUI();
 		
 		return "Task is successfully edited";
-	}
-
-	private boolean isValid(Integer taskNumber) {
-		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
 	}
 	
 	public Integer getTaskNumber() {

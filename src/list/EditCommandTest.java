@@ -19,8 +19,8 @@ import org.junit.Test;
 public class EditCommandTest {
 	
 	private final String TITLE = "test";
-	private final Calendar START_TIME = Calendar.getInstance();
-	private final Calendar END_TIME = Calendar.getInstance();
+	private final Date START_TIME = new Date(0,0,0);
+	private final Date END_TIME = new Date(0,0,0);
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
 	private final String CATEGORY = null;
@@ -96,8 +96,7 @@ public class EditCommandTest {
 	@Test
 	public void shouldOnlyEditTheStartTime() throws InvalidTaskNumberException {
 		int taskNumber = 1;
-		Calendar newStartTime = Calendar.getInstance();
-		newStartTime.set(2014, 1, 1);
+		Date newStartTime = new Date(1,1,2014);
 		
 		EditCommand editCommand = new EditCommand(taskNumber, 
 												  null, 

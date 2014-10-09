@@ -45,6 +45,10 @@ class TaskManager {
     	return mTasks.contains(task);
     }
     
+    static boolean isValid(Integer taskNumber) {
+		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
+	}
+    
     /**
      * Converts a 1-based id to 0-based id as represented in the array.
      * @param taskNumberShownOnScreen 1-based index

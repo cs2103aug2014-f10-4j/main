@@ -12,8 +12,8 @@ import org.junit.Test;
 public class DisplayCommandTest {
 	
 	private final String TITLE = "test";
-	private final Calendar START_TIME = Calendar.getInstance();
-	private final Calendar END_TIME = Calendar.getInstance();
+	private final Date START_TIME = new Date(0,0,0);
+	private final Date END_TIME = new Date(0,0,0);
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
 	private final String CATEGORY = null;

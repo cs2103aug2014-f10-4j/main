@@ -14,19 +14,17 @@ public class DeleteCommand implements ICommand {
 	
 	@Override
 	public String execute() throws InvalidTaskNumberException {
-		if (!isValid(mTaskNumber)) {
+		if (!TaskManager.isValid(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
 		TaskManager.deleteTask(mTaskNumber);
 		
-		Controller.displayTasksInUI();
+		Controller.updateListOfTasksInUI();
 		
 		return "Task is deleted successfully";
 	}
 	
-	private boolean isValid(Integer taskNumber) {
-		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
-	}
+	
 
 }
