@@ -9,7 +9,7 @@ import java.util.List;
  */
 interface IUserInterface {
     
-    void displayTasks(List<ITask> tasks);
+    void displayNewTaskOrDate(ITask task);
     
     void displayTaskDetail(ITask task);
     
