@@ -1,27 +1,39 @@
 package list;
 
+import java.util.Scanner;
+
 import list.ICommand.InvalidTaskNumberException;
 import list.IParser.ParseException;
 
 public class Controller {
 		
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
+	
 	private static IUserInterface mUserInterface = null;
 	private static IParser mParser = new Parser();
 	
 	public static void main(String[] args) {
 		
+		
 		while (true) {
 			try {
-				String userInput = receiveUserInputFromUI(mUserInterface.getUserInput());
+				Scanner sc = new Scanner(System.in);
+				String userInput = sc.nextLine();
+				
+				//String userInput = receiveUserInputFromUI(mUserInterface.getUserInput());
 				ICommand commandMadeByParser = mParser.parse(userInput);
 				commandMadeByParser.execute();
 				
+				TaskManager.printTasks();
+				
 			} catch (ParseException e) {
-				
+				System.out.println(e.getMessage());
 			} catch (InvalidTaskNumberException e) {
-				
+				System.out.println(MESSAGE_INVALID_TASK_NUMBER);
 			}
 		}
+		
+		
 	}
 	
 	public static String receiveUserInputFromUI(String userInput) {

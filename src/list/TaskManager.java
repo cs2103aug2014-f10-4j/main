@@ -22,7 +22,6 @@ class TaskManager {
     //METHODS FOR COMMANDS EXECUTION
     static void addTask(ITask task) {
         mTasks.add(task);
-        Collections.sort(mTasks); //keep mTasks sorted
     }
     
     static ITask getTask(Integer taskNumberShownOnScreen) {
@@ -37,6 +36,10 @@ class TaskManager {
     	mTasks.clear();
     }
     
+    public static void sortTasks() {
+    	Collections.sort(mTasks);
+	}
+    
     static int getNumberOfTasks() {
     	return mTasks.size();
     }
@@ -49,6 +52,20 @@ class TaskManager {
 		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
 	}
     
+    static boolean isListOfTasksSorted() {
+    	if (mTasks.size() <= 1) {
+    		return true;
+    	} else {
+    		for (int i = 0; i < mTasks.size() - 1; i++) {
+    			if (mTasks.get(i).compareTo(mTasks.get(i + 1)) > 0) {
+    				return false;
+    			}
+    		}
+    	}
+    	
+    	return true;
+	}
+    
     /**
      * Converts a 1-based id to 0-based id as represented in the array.
      * @param taskNumberShownOnScreen 1-based index
@@ -56,6 +73,12 @@ class TaskManager {
      */
     static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
+    }
+    
+    static void printTasks() {
+    	for (int i = 0; i < mTasks.size(); i++) {
+    		System.out.println(mTasks.get(i).getTitle());
+    	}
     }
     
 //    //METHODS FOR UPDATING GUI
