@@ -6,7 +6,7 @@ public class Date implements Comparable<Date> {
     private final int mYear;
     
     private final String[] MONTH_NAME = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    	"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     
     Date(int day, int month, int year) {

@@ -8,13 +8,15 @@ package list;
  * @author andhieka, michael
  *
  */
-interface ICommand {
+interface ICommand {	
+	class InvalidTaskNumberException extends Exception { };
 	
 	/**
 	 * Executes this command.
 	 * 
 	 * @return the response to be shown in the console.
+	 * @throws InvalidTaskNumberException 
 	 */
-	String execute();
+	String execute() throws InvalidTaskNumberException;
 	
 }
