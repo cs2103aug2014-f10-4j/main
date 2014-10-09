@@ -61,4 +61,26 @@ public class AddCommandTest {
 		assertEquals(CATEGORY, newlyAddedTask.getCategory());
 		assertEquals(NOTES, newlyAddedTask.getNotes());
 	}	
+	
+	@Test
+	public void shouldMaintainListOfTasksSortedAfterAddingTasks() {
+		Date firstDate = new Date(2, 1, 2014);
+		Date secondDate = new Date(1, 1, 2014);
+		Date thirdDate = new Date(3, 1, 2014);
+		
+		AddCommand firstAddCommand = new AddCommand("task 1", null, firstDate, 
+											   		null, null, 
+											   		null, null);
+		AddCommand secondAddCommand = new AddCommand("task 2", null, secondDate, 
+													 null, null, 
+											   		 null, null);
+		AddCommand thirdAddCommand = new AddCommand("task 3", null, thirdDate, 
+													null, null, 
+											   		null, null);
+		firstAddCommand.execute();
+		secondAddCommand.execute();
+		thirdAddCommand.execute();
+		
+		assertEquals(true, TaskManager.isListOfTasksSorted());
+	}
 }

@@ -1,10 +1,8 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
+import list.ICommand.InvalidTaskNumberException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +28,7 @@ public class DisplayCommandTest {
 	}
 	
 	@Test
-	public void shouldGetTheCorrectTask() {
+	public void shouldGetTheCorrectTask() throws InvalidTaskNumberException {
 		int taskNumber = 1;
 		DisplayCommand displayCommand = new DisplayCommand(taskNumber);
 		displayCommand.execute();

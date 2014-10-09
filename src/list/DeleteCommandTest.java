@@ -1,9 +1,6 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 import list.ICommand.InvalidTaskNumberException;
 
@@ -27,7 +24,7 @@ public class DeleteCommandTest {
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);
-		addCommand.execute();
+		addCommand.execute();		
 	}
 	
 	@Test(expected = InvalidTaskNumberException.class)

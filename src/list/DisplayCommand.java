@@ -13,10 +13,16 @@ public class DisplayCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() {
+	public String execute() throws InvalidTaskNumberException {
+		
+		if (!TaskManager.isValid(mTaskNumber)) {
+			throw new InvalidTaskNumberException();	
+		} 
+		
 		ITask selectedTask = TaskManager.getTask(mTaskNumber);
 		
-		Controller.updateUIWithTaskDetail(selectedTask);
+		
+		//Controller.updateUIWithTaskDetail(selectedTask);
 		
 		return "Displaying ...";
 	}
