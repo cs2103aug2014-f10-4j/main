@@ -1,4 +1,5 @@
-// import java swings from the library
+package list;
+
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -6,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 
 import java.awt.Container;
 import java.awt.Font;
@@ -17,7 +19,9 @@ public class UserInterface implements IUserInterface {
     
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
-	private final static String charForConsole = ">> ";
+	private static int mCursorPosition = 0;
+	
+	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
 	private final static int NUMBEROFLINESALLOWED = 10;
@@ -199,7 +203,7 @@ public class UserInterface implements IUserInterface {
 		console.getActionMap().put("doEnterAction", enterAction);
 		
 		// append the letter that appears at the first place
-		console.append(charForConsole);
+		showInConsole(CONSOLE_ARROWS);
 
 		// set the size of the console
 		console.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
@@ -215,19 +219,31 @@ public class UserInterface implements IUserInterface {
 	}
 
 	public void displayMessageToUser(String message) {
-		console.append("\n" + charForConsole + message);
+	    showInConsole(message);
+	    showInConsole("\n");
+	    showInConsole(CONSOLE_ARROWS);
 	}
 	
-	static class EnterAction extends AbstractAction {
+	private void showInConsole(String text) {
+	    console.append(text);
+	    mCursorPosition = console.getText().length();
+	}
+	
+	class EnterAction extends AbstractAction {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent event) {
             System.out.println("Enter pressed!");
-            String userInput;
+            String userInput = "";
+            try {
+                userInput = console.getText(mCursorPosition, console.getText().length() - mCursorPosition);    
+            } catch (BadLocationException e) {
+                e.printStackTrace(); //who cares?
+            }
             
-            Controller.processUserInput(userInput);
-            
-            
+            String reply = Controller.processUserInput(userInput);
+            showInConsole("\n");
+            displayMessageToUser(reply);
         }
 	    
 	}
