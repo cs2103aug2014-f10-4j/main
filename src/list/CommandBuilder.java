@@ -25,7 +25,7 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY
+		ADD, EDIT, DELETE, DISPLAY, CLOSE
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -93,6 +93,15 @@ class CommandBuilder {
 		    command = new EditCommand(mTaskNumber, mTitle, mStartTime, mEndTime,
 		            mRepeatFrequency, mPlace, mCategory, mNotes);
 		    break;
+		case DISPLAY:
+			command = new DisplayCommand(mTaskNumber);
+			break;
+		case DELETE:
+			command = new DeleteCommand(mTaskNumber);
+			break;
+		case CLOSE:
+			command = new CloseCommand();
+			break;
 	    default:
 		    throw new CommandTypeNotSetException();    
 		}

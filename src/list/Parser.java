@@ -47,6 +47,22 @@ public class Parser implements IParser {
         ICommand command = getCommandObject(commandBuilder);
         return command;
     }
+    
+    /**
+     * Get a command object from the given commandBuilder object.
+     * @param commandBuilder a command builder
+     * @return an instance of class implementing ICommand 
+     */
+    private ICommand getCommandObject(CommandBuilder commandBuilder) {
+        ICommand command = null;
+        try {
+            command = commandBuilder.getCommandObject();
+        } catch (CommandTypeNotSetException e) {
+            assert(false); //should not be called at all
+            e.printStackTrace();
+        }
+        return command;
+    }
 
     private Integer getTaskNumber(String input) throws ParseException {
         CommandType commandType = getCommandType(input);
@@ -109,22 +125,6 @@ public class Parser implements IParser {
     private String getNotes(String input) {
         String notes = findFirstMatch(REGEX_NOTES, input);
         return notes;
-    }
-    
-    /**
-     * Get a command object from the given commandBuilder object.
-     * @param commandBuilder a command builder
-     * @return an instance of class implementing ICommand 
-     */
-    private ICommand getCommandObject(CommandBuilder commandBuilder) {
-        ICommand command = null;
-        try {
-            command = commandBuilder.getCommandObject();
-        } catch (CommandTypeNotSetException e) {
-            assert(false); //should not be called at all
-            e.printStackTrace();
-        }
-        return command;
     }
 
     /**
