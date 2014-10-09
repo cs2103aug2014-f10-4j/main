@@ -2,12 +2,16 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.event.FocusListener;
 
 public class UserInterface {
 	private static JFrame mainFrame = new JFrame("List");
+	private static JTextArea console = new JTextArea();
+	private final static String charForConsole = ">> "
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
 	private final static int NUMBEROFLINESALLOWED = 10;
@@ -23,7 +27,7 @@ public class UserInterface {
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
 
-	public UserInterface(){
+	public UserInterface(FocusListener listenerForTextArea){
 
 		// set the size of the frame
 		mainFrame.setSize(MAINFRAMEWIDTH, MAINFRAMEHEIGHT);
@@ -36,6 +40,9 @@ public class UserInterface {
 
 		// set that the application quit when the window closed
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// set the console part on the frame
+		setUpConsole(listenerForTextArea);
 
 		// make the window visible to the user
 		mainFrame.setVisible(true);
@@ -169,5 +176,33 @@ public class UserInterface {
 		// increment the number of the lines already displayed, and if it is maximum, isFull = true
 		numberOfLines++;
 		if (numberOfLines == NUMBEROFLINESALLOWED - 1) isFull = true;
+	}
+
+	public void setUpConsole(FocusListener listenerForTextArea) {
+
+		// make the instance of the JPanel to set the JTextArea on that
+		JPanel panelOfTextArea = new JPanel();
+
+		// set the FocusListener to the JTextArea
+		console.addFocusListener(listenerForTextArea);
+
+		// append the letter that appears at the first place
+		console.append(">> ");
+
+		// set the size of the console
+		console.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
+
+		// add the console on the panel
+		panelOfTextArea.add(console);
+
+		// get the area that I can use for the panel
+		Container containerForTextArea = mainFrame.getContentPane();
+
+		// add the label to the container
+		containerForTextArea.add(console);
+	}
+
+	public void displayMessageToUser(String message) {
+		console.append("\n" + ">> " + message);
 	}
 }
