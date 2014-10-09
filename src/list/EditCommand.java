@@ -1,7 +1,5 @@
 package list;
 
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 
 /**
@@ -13,8 +11,8 @@ public class EditCommand implements ICommand {
 		
 	private Integer mTaskNumber;
 	private String mTitle;
-	private Calendar mStartTime;
-	private Calendar mEndTime;
+	private Date mStartTime;
+	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
 	private String mCategory;
@@ -22,8 +20,8 @@ public class EditCommand implements ICommand {
 	
 	public EditCommand(Integer taskNumber,
 					   String title,
-			           Calendar startTime,
-			           Calendar endTime,
+			           Date startTime,
+			           Date endTime,
 			           RepeatFrequency repeatFrequency,
 			           String place,
 			           String category,
@@ -82,6 +80,38 @@ public class EditCommand implements ICommand {
 
 	private boolean isValid(Integer taskNumber) {
 		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
+	}
+	
+	public Integer getTaskNumber() {
+	    return mTaskNumber;
+	}
+	
+	public String getTitle() {
+	    return mTitle;
+	}
+	
+	public Date getStartTime() {
+	    return mStartTime;
+	}
+	
+	public Date getEndTime() {
+	    return mEndTime;
+	}
+	
+	public RepeatFrequency getRepeatFrequency() {
+	    return mRepeatFrequency;
+	}
+	
+	public String getPlace() {
+	    return mPlace;
+	}
+	
+	public String getCategory() {
+	    return mCategory;
+	}
+	
+	public String getNotes() {
+	    return mNotes;
 	}
 
 }

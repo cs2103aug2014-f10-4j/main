@@ -7,7 +7,14 @@ package list;
  * @author andhieka, michael
  */
 interface IParser {
-	class ParseException extends Exception { };
+	class ParseException extends Exception {
+        public ParseException(String string) {
+            super(string);
+        }
+        public ParseException() {
+            super();
+        }
+    };
 	
 	/**
 	 * Processes a given input into a corresponding command object
