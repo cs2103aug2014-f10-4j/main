@@ -10,6 +10,7 @@ import list.CommandBuilder.RepeatFrequency;
  *
  */
 public class EditCommand implements ICommand {
+		
 	private Integer mTaskNumber;
 	private String mTitle;
 	private Calendar mStartTime;
@@ -38,9 +39,49 @@ public class EditCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() {
-		// TODO Auto-generated method stub
-		return null;
+	public String execute() throws InvalidTaskNumberException {
+			
+		if (!isValid(mTaskNumber)) {
+			throw new InvalidTaskNumberException();
+		}
+		
+		ITask taskToEdit = TaskManager.getTask(mTaskNumber);
+				
+		if (mTitle != null) {
+			taskToEdit.setTitle(mTitle);	
+		}
+		
+		if (mStartTime != null) {
+			taskToEdit.setStartTime(mStartTime);
+		}
+		
+		if (mEndTime != null) {
+			taskToEdit.setEndTime(mEndTime);
+		}
+		
+		if (mRepeatFrequency != null) {
+			taskToEdit.setRepeatFrequency(mRepeatFrequency);
+		}
+		
+		if (mPlace != null) {
+			taskToEdit.setPlace(mPlace);
+		}
+		
+		if (mCategory != null) {
+			taskToEdit.setCategory(mCategory);
+		}
+		
+		if (mNotes != null) {
+			taskToEdit.setNotes(mNotes);
+		}
+		
+		Controller.displayTasksInUI();
+		
+		return "Task is successfully edited";
+	}
+
+	private boolean isValid(Integer taskNumber) {
+		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
 	}
 
 }
