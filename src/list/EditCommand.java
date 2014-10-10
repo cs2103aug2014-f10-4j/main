@@ -75,7 +75,7 @@ public class EditCommand implements ICommand {
 		
 		TaskManager.sortTasks();
 		
-		//Controller.updateListOfTasksInUI();
+		Controller.updateListOfTasksInUI();
 		
 		return "Task is successfully edited";
 	}

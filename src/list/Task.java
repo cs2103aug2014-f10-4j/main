@@ -8,7 +8,7 @@ public class Task implements ITask {
 	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
-	private String mCategory;
+	private ICategory mCategory;
 	private String mNotes;
 	
 	@Override
@@ -61,11 +61,11 @@ public class Task implements ITask {
 		return this;
 	}
 
-	public String getCategory() {
+	public ICategory getCategory() {
 		return mCategory;
 	}
 
-	public Task setCategory(String mCategory) {
+	public Task setCategory(ICategory mCategory) {
 		this.mCategory = mCategory;
 		return this;
 	}
@@ -77,6 +77,12 @@ public class Task implements ITask {
 	public Task setNotes(String mNotes) {
 		this.mNotes = mNotes;
 		return this;
+	}
+
+	@Override
+	public ITask setCategory(String mCategory) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
