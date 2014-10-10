@@ -148,6 +148,9 @@ public class UserInterface implements IUserInterface {
 
 		// display the contents to the window
 		displayNewLine(stringOfDateToDisplay, fontForDate);
+
+		// display the task as well
+		displayNewTask(task);
 	}
 
 	public void displayNewTask(ITask task) {
