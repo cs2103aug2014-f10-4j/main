@@ -22,7 +22,6 @@ class TaskManager {
     //METHODS FOR COMMANDS EXECUTION
     static void addTask(ITask task) {
         mTasks.add(task);
-        Collections.sort(mTasks); //keep mTasks sorted
     }
     
     static ITask getTask(Integer taskNumberShownOnScreen) {
@@ -37,29 +36,61 @@ class TaskManager {
     	mTasks.clear();
     }
     
+    public static void sortTasks() {
+    	Collections.sort(mTasks);
+	}
+    
     static int getNumberOfTasks() {
     	return mTasks.size();
     }
+    
+    static boolean isTaskExist(ITask task) {
+    	return mTasks.contains(task);
+    }
+    
+    static boolean isValid(Integer taskNumber) {
+		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
+	}
+    
+    static boolean isListOfTasksSorted() {
+    	if (mTasks.size() <= 1) {
+    		return true;
+    	} else {
+    		for (int i = 0; i < mTasks.size() - 1; i++) {
+    			if (mTasks.get(i).compareTo(mTasks.get(i + 1)) > 0) {
+    				return false;
+    			}
+    		}
+    	}
+    	
+    	return true;
+	}
     
     /**
      * Converts a 1-based id to 0-based id as represented in the array.
      * @param taskNumberShownOnScreen 1-based index
      * @return 0-based index
      */
-    static Integer getTaskId(Integer taskNumberShownOnScreen) {
+    static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
     }
     
-    //METHODS FOR UPDATING GUI
-    static void displayTenTasks(int startIndex, IUserInterface ui) {
-        int i = getTaskId(startIndex);
-        List<ITask> tasks = mTasks.subList(i, i + 10);
-        ui.displayTasks(tasks);
+    static void printTasks() {
+    	for (int i = 0; i < mTasks.size(); i++) {
+    		System.out.println(mTasks.get(i).getTitle());
+    	}
     }
     
-    static void displayTaskDetail(int taskId, IUserInterface ui) {
-        ITask task = mTasks.get(getTaskId(taskId));
-        ui.displayTaskDetail(task);
-    }
+//    //METHODS FOR UPDATING GUI
+//    static void displayTenTasks(int startIndex, IUserInterface ui) {
+//        int i = getTaskId(startIndex);
+//        List<ITask> tasks = mTasks.subList(i, i + 10);
+//        ui.displayTasks(tasks);
+//    }
+//    
+//    static void displayTaskDetail(int taskId, IUserInterface ui) {
+//        ITask task = mTasks.get(getTaskId(taskId));
+//        ui.displayTaskDetail(task);
+//    }
     
 }

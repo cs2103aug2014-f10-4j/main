@@ -1,7 +1,5 @@
 package list;
 
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 
 interface ITask extends Comparable<ITask> {
@@ -9,13 +7,13 @@ interface ITask extends Comparable<ITask> {
 
 	public ITask setTitle(String mTitle);
 
-	public Calendar getStartTime();
+	public Date getStartTime();
 
-	public ITask setStartTime(Calendar mStartTime);
+	public ITask setStartTime(Date mStartTime);
 
-	public Calendar getEndTime();
+	public Date getEndTime();
 
-	public ITask setEndTime(Calendar mEndTime);
+	public ITask setEndTime(Date mEndTime);
 
 	public RepeatFrequency getRepeatFrequency();
 
