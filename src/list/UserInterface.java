@@ -1,15 +1,14 @@
 package list;
 
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusListener;
@@ -31,6 +30,7 @@ public class UserInterface implements IUserInterface {
 	private static int LISTHEIGHT = MAINFRAMEHEIGHT - CONSOLEHEIGHT;
 	private static int LABELWIDTH = MAINFRAMEWIDTH;
 	private static int LABELHEIGHT = LISTHEIGHT / NUMBEROFLINESALLOWED;
+	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
 	private static Font fontForDate = new Font("Arial", Font.BOLD, 36);
 	private static Font fontForTask = new Font("Arial", Font.PLAIN, 36);
 	private static Date previousDate = new Date(0, 0, 0);
@@ -56,6 +56,15 @@ public class UserInterface implements IUserInterface {
 
 		// make the window visible to the user
 		mainFrame.setVisible(true);
+	}
+
+	public void clearAll() {
+		for (int i = 0; i <  arrayListOfJLabel.size(); i++) {		
+			mainFrame.getContentPane().remove(arrayListOfJLabel.get(i));
+		}
+		mainFrame.repaint();
+		arrayListOfJLabel = new ArrayList<JLabel>();
+		numberOfLines = 0;
 	}
 
 	@Override
@@ -164,9 +173,6 @@ public class UserInterface implements IUserInterface {
 
 	public static void displayNewLine(String stringToDisplay, Font fontForLabel) {
 
-		// make the instance of the JPanel to set the label on that
-		JPanel panelOfLine = new JPanel();
-
 		// make new label that hold the string to be displayed
 		JLabel labelOfString = new JLabel(stringToDisplay);
 
@@ -176,14 +182,11 @@ public class UserInterface implements IUserInterface {
 		// set the font of the Label
 		labelOfString.setFont(fontForLabel);
 
-		// add the label on the panel
-		panelOfLine.add(labelOfString);
-
-		// get the area that I can use for the panel
-		Container containerForLabel = mainFrame.getContentPane();
-
 		// add the label to the container
-		containerForLabel.add(labelOfString);
+		mainFrame.getContentPane().add(labelOfString);
+
+		// save the reference of the JLabel
+		arrayListOfJLabel.add(labelOfString);
 
 		// update the 
 		SwingUtilities.updateComponentTreeUI(mainFrame);
@@ -197,9 +200,6 @@ public class UserInterface implements IUserInterface {
 
 	public void setUpConsole() {
 
-		// make the instance of the JPanel to set the JTextArea on that
-		JPanel panelOfTextArea = new JPanel();
-
 		//use key bindings
 		EnterAction enterAction = new EnterAction();
 		console.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doEnterAction");
@@ -211,14 +211,8 @@ public class UserInterface implements IUserInterface {
 		// set the size of the console
 		console.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
 
-		// add the console on the panel
-		panelOfTextArea.add(console);
-
-		// get the area that I can use for the panel
-		Container containerForTextArea = mainFrame.getContentPane();
-
 		// add the label to the container
-		containerForTextArea.add(console);
+		mainFrame.getContentPane().add(console);
 	}
 
 	public void displayMessageToUser(String message) {
