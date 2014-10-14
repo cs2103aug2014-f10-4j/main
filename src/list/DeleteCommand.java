@@ -1,5 +1,10 @@
 package list;
 
+/**
+ * 
+ * @author Michael
+ *
+ */
 public class DeleteCommand implements ICommand {
 	private Integer mTaskNumber;
 
@@ -8,9 +13,18 @@ public class DeleteCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() {
-		// TODO Auto-generated method stub
-		return null;
+	public String execute() throws InvalidTaskNumberException {
+		if (!TaskManager.isValid(mTaskNumber)) {
+			throw new InvalidTaskNumberException();
+		}
+		
+		TaskManager.deleteTask(mTaskNumber);
+		
+		//Controller.updateListOfTasksInUI();
+		
+		return "Task is deleted successfully";
 	}
+	
+	
 
 }

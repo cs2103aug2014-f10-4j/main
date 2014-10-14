@@ -1,5 +1,4 @@
 package list;
-import java.util.Calendar;
 
 /**
  * A builder class for generating various command objects
@@ -9,14 +8,15 @@ import java.util.Calendar;
  * @author andhieka, michael
  */
 class CommandBuilder {
-	private CommandType mCommandType;
-	private String mTitle;
-	private Calendar mStartTime;
-	private Calendar mEndTime;
-	private RepeatFrequency mRepeatFrequency;
-	private String mPlace;
-	private String mCategory;
-	private String mNotes;
+	private CommandType mCommandType = null;
+	private String mTitle = null;
+	private Date mStartTime = null;
+	private Date mEndTime = new Date(31, 12, 2999);
+	private RepeatFrequency mRepeatFrequency = null;
+	private String mPlace = null;
+	private String mCategory = null;
+	private String mNotes = null;
+	private Integer mTaskNumber = null;
 	
 	class CommandTypeNotSetException extends Exception { };
 	
@@ -25,7 +25,7 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY
+		ADD, EDIT, DELETE, DISPLAY, CLOSE
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -38,12 +38,12 @@ class CommandBuilder {
 		return this;
 	}
 	
-	CommandBuilder setStartTime(Calendar startTime) {
+	CommandBuilder setStartTime(Date startTime) {
 		mStartTime = startTime;
 		return this;
 	}
 	
-	CommandBuilder setEndTime(Calendar endTime) {
+	CommandBuilder setEndTime(Date endTime) {
 		mEndTime = endTime;
 		return this;
 	}
@@ -67,6 +67,11 @@ class CommandBuilder {
 		mNotes = notes;
 		return this;
 	}
+	
+	CommandBuilder setTaskNumber(Integer taskNumber) {
+	    mTaskNumber = taskNumber;
+	    return this;
+	}
 
 	/**
 	 * This method uses the given information to construct
@@ -78,8 +83,29 @@ class CommandBuilder {
 		if (mCommandType == null) {
 			throw new CommandTypeNotSetException();
 		}
-		//TODO: a lot of things
-		return null;
+		ICommand command;
+		switch (mCommandType) {
+		case ADD:
+		    command = new AddCommand(mTitle, mStartTime, mEndTime,
+		            mRepeatFrequency, mPlace, mCategory, mNotes);
+		    break;
+		case EDIT:
+		    command = new EditCommand(mTaskNumber, mTitle, mStartTime, mEndTime,
+		            mRepeatFrequency, mPlace, mCategory, mNotes);
+		    break;
+		case DISPLAY:
+			command = new DisplayCommand(mTaskNumber);
+			break;
+		case DELETE:
+			command = new DeleteCommand(mTaskNumber);
+			break;
+		case CLOSE:
+			command = new CloseCommand();
+			break;
+	    default:
+		    throw new CommandTypeNotSetException();    
+		}
+		return command;
 	}
 	
 }

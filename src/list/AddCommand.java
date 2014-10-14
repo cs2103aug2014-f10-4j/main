@@ -1,7 +1,5 @@
 package list;
 
-import java.util.Calendar;
-
 import list.CommandBuilder.RepeatFrequency;
 
 /**
@@ -9,12 +7,12 @@ import list.CommandBuilder.RepeatFrequency;
  * Other commands (Edit, Delete, etc.) should follow
  * this sample.
  * 
- * @author andhieka, michael
+ * @author Michael
  */
 public class AddCommand implements ICommand {
 	private String mTitle;
-	private Calendar mStartTime;
-	private Calendar mEndTime;
+	private Date mStartTime;
+	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
 	private String mCategory;
@@ -33,8 +31,8 @@ public class AddCommand implements ICommand {
 	 * @param notes
 	 */
 	AddCommand(String title,
-               Calendar startTime,
-               Calendar endTime,
+               Date startTime,
+               Date endTime,
                RepeatFrequency repeatFrequency,
                String place,
                String category,
@@ -52,9 +50,19 @@ public class AddCommand implements ICommand {
 	@Override
 	public String execute() {
 		Task task = new Task();
-		task.setTitle(mTitle);
+		task.setTitle(mTitle)
+			.setStartTime(mStartTime)
+			.setEndTime(mEndTime)
+			.setRepeatFrequency(mRepeatFrequency)
+			.setPlace(mPlace)
+			.setCategory(mCategory)
+			.setNotes(mNotes);
 		
 		TaskManager.addTask(task);
+		TaskManager.sortTasks();
+		
+//		Controller.updateListOfTasksInUI();
+		
 		return "Task added succesfully";
 	}
 
