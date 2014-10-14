@@ -4,15 +4,19 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserInterface implements IUserInterface {
@@ -20,6 +24,8 @@ public class UserInterface implements IUserInterface {
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
 	private static int mCursorPosition = 0;
+	
+	private List<JPanel> mPanels = new ArrayList<JPanel>();
 	
 	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
@@ -35,7 +41,7 @@ public class UserInterface implements IUserInterface {
 	private static Font fontForTask = new Font("Arial", Font.PLAIN, 36);
 	private static Date previousDate = new Date(0, 0, 0);
 	private static boolean isFull = false;
-	private static int numberOfLines = 0;
+	private int numberOfLines = 0;
 
 	public UserInterface() {
 	    
@@ -71,7 +77,8 @@ public class UserInterface implements IUserInterface {
 		// if it's the same, display the task
 		if (!checkDateIsAppeared(task)) {
 			displayNewDate(task);
-		} else {
+		}
+		if (!isFull) {
 			displayNewTask(task);
 		}
 		
@@ -159,10 +166,11 @@ public class UserInterface implements IUserInterface {
 		displayNewLine(stringOfTaskToDisplay, fontForTask);
 	}
 
-	public static void displayNewLine(String stringToDisplay, Font fontForLabel) {
+	public void displayNewLine(String stringToDisplay, Font fontForLabel) {
 
 		// make the instance of the JPanel to set the label on that
 		JPanel panelOfLine = new JPanel();
+		mPanels.add(panelOfLine);
 
 		// make new label that hold the string to be displayed
 		JLabel labelOfString = new JLabel(stringToDisplay);
@@ -190,12 +198,21 @@ public class UserInterface implements IUserInterface {
 		if (numberOfLines == NUMBEROFLINESALLOWED - 1) {
 		    isFull = true;
 		}
+		
+
+        mainFrame.revalidate();
+        mainFrame.repaint();
+        mainFrame.getContentPane().repaint();
 	}
 
 	public void setUpConsole() {
 
 		// make the instance of the JPanel to set the JTextArea on that
 		JPanel panelOfTextArea = new JPanel();
+		
+//		// add scrollpane to JTextArea
+//		JScrollPane scrollPane = new JScrollPane(console);
+//		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		//use key bindings
 		EnterAction enterAction = new EnterAction();
@@ -257,5 +274,16 @@ public class UserInterface implements IUserInterface {
     @Override
     public boolean isFull() {
         return isFull;
+    }
+
+    @Override
+    public void clearDisplay() {
+        for (JPanel panel: mPanels) {
+            mainFrame.getContentPane().remove(panel);
+            mainFrame.remove(panel);
+        }
+        mPanels.clear();
+        
+        numberOfLines = 0;
     }
 }

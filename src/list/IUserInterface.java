@@ -19,4 +19,6 @@ interface IUserInterface {
     
     boolean isFull();
     
+    void clearDisplay();
+    
 }

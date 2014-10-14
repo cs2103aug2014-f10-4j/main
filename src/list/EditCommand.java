@@ -39,7 +39,7 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 			
-		if (!TaskManager.isValid(mTaskNumber)) {
+		if (!TaskManager.isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		

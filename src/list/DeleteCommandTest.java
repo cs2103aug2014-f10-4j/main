@@ -63,7 +63,7 @@ public class DeleteCommandTest {
 		DeleteCommand deleteCommand = new DeleteCommand(taskNumber);
 		deleteCommand.execute();
 		
-		assertEquals(false, TaskManager.isTaskExist(task));
+		assertEquals(false, TaskManager.hasTask(task));
 	}
 
 }
