@@ -18,6 +18,8 @@ interface IUserInterface {
     void displayCategories(List<ICategory> categories);
     
     boolean isFull();
+
+    void clearAll();
     
     void clearDisplay();
     
