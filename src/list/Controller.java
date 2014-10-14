@@ -32,12 +32,14 @@ public class Controller {
 	}
 	
 	public static void updateListOfTasksInUI() {
+	    mUserInterface.clearDisplay();
+	    
 		int taskNumberToDisplay = 1;
 		
 		//Naming of boolean condition OK?
 		try {
 		    while (UICanDisplayMoreTask() && 
-		               TaskManager.isValid(taskNumberToDisplay)) {
+		               TaskManager.isValidTaskNumber(taskNumberToDisplay)) {
 	            ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);         
 	            mUserInterface.displayNewTaskOrDate(taskToDisplay);
 	            taskNumberToDisplay++;

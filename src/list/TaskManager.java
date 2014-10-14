@@ -36,7 +36,7 @@ class TaskManager {
     	mTasks.clear();
     }
     
-    public static void sortTasks() {
+    static void sortTasks() {
     	Collections.sort(mTasks);
 	}
     
@@ -44,11 +44,11 @@ class TaskManager {
     	return mTasks.size();
     }
     
-    static boolean isTaskExist(ITask task) {
+    static boolean hasTask(ITask task) {
     	return mTasks.contains(task);
     }
     
-    static boolean isValid(Integer taskNumber) {
+    static boolean isValidTaskNumber(Integer taskNumber) {
 		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
 	}
     
@@ -71,11 +71,11 @@ class TaskManager {
      * @param taskNumberShownOnScreen 1-based index
      * @return 0-based index
      */
-    static int getTaskId(Integer taskNumberShownOnScreen) {
+    private static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
     }
     
-    static void printTasks() {
+    private static void printTasks() {
     	for (int i = 0; i < mTasks.size(); i++) {
     		System.out.println(mTasks.get(i).getTitle());
     	}
