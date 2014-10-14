@@ -32,10 +32,8 @@ public class Controller {
 	}
 	
 	public static void updateListOfTasksInUI() {
-	    mUserInterface.clearDisplay();
-	    
 		int taskNumberToDisplay = 1;
-		
+		mUserInterface.clearAll();
 		//Naming of boolean condition OK?
 		try {
 		    while (UICanDisplayMoreTask() && 
