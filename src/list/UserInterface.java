@@ -1,6 +1,10 @@
 package list;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -8,11 +12,6 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
-
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusListener;
-import java.util.List;
 
 public class UserInterface implements IUserInterface {
     
@@ -254,5 +253,11 @@ public class UserInterface implements IUserInterface {
     @Override
     public boolean isFull() {
         return isFull;
+    }
+
+    @Override
+    public void clearDisplay() {
+        // TODO Auto-generated method stub
+        
     }
 }
