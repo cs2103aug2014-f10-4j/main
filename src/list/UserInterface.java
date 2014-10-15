@@ -224,12 +224,12 @@ public class UserInterface implements IUserInterface {
 	    showInConsole(CONSOLE_ARROWS);
 	}
 	
-	public void showInConsole(String text) {
+	private void showInConsole(String text) {
 	    console.append(text);
 	    mCursorPosition = console.getText().length();
 	}
 	
-	public class EnterAction extends AbstractAction {
+	private class EnterAction extends AbstractAction {
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -257,5 +257,10 @@ public class UserInterface implements IUserInterface {
     @Override
     public boolean isFull() {
         return isFull;
+    }
+
+    @Override
+    public void clearDisplay(){
+    	
     }
 }

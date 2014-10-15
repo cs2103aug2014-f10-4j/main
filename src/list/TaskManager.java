@@ -1,8 +1,11 @@
 package list;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is a passive class that keeps track of Tasks.
@@ -18,6 +21,20 @@ class TaskManager {
     //TODO: keep the methods and variables static
     //TODO: please maintain mTasks sorted at all times
     private static List<ITask> mTasks = new ArrayList<ITask>();
+    private static Map<String, ICategory> mCategories = new HashMap<String, ICategory>();
+    
+    //CATEGORY METHODS
+    static ICategory getCategory(String categoryName) {
+    	if (mCategories.containsKey(categoryName)) {
+    		return mCategories.get(categoryName);
+    	} else {
+    		ICategory category = new Category();
+    		category.setCategoryName(categoryName)
+    			.setColor(Color.BLACK);
+    		mCategories.put(categoryName, category);
+    		return category;
+    	}
+    }
     
     //METHODS FOR COMMANDS EXECUTION
     static void addTask(ITask task) {
@@ -36,7 +53,7 @@ class TaskManager {
     	mTasks.clear();
     }
     
-    public static void sortTasks() {
+    static void sortTasks() {
     	Collections.sort(mTasks);
 	}
     
@@ -44,11 +61,11 @@ class TaskManager {
     	return mTasks.size();
     }
     
-    static boolean isTaskExist(ITask task) {
+    static boolean hasTask(ITask task) {
     	return mTasks.contains(task);
     }
     
-    static boolean isValid(Integer taskNumber) {
+    static boolean isValidTaskNumber(Integer taskNumber) {
 		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
 	}
     
@@ -71,11 +88,11 @@ class TaskManager {
      * @param taskNumberShownOnScreen 1-based index
      * @return 0-based index
      */
-    static int getTaskId(Integer taskNumberShownOnScreen) {
+    private static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
     }
     
-    static void printTasks() {
+    private static void printTasks() {
     	for (int i = 0; i < mTasks.size(); i++) {
     		System.out.println(mTasks.get(i).getTitle());
     	}

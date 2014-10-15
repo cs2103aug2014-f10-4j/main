@@ -27,6 +27,7 @@ public class Controller {
             reply = "Invalid task number!";
         } catch (Exception e) {
             reply = "Error!";
+            e.printStackTrace();
         }
 		return reply;
 	}
@@ -37,8 +38,8 @@ public class Controller {
 		//Naming of boolean condition OK?
 		try {
 		    while (UICanDisplayMoreTask() && 
-		               TaskManager.isValid(taskNumberToDisplay)) {
-	            ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);
+		               TaskManager.isValidTaskNumber(taskNumberToDisplay)) {
+	            ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);         
 	            mUserInterface.displayNewTaskOrDate(taskToDisplay);
 	            taskNumberToDisplay++;
 		    }

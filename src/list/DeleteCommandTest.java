@@ -14,7 +14,7 @@ public class DeleteCommandTest {
 	private final Date END_TIME = new Date(0,0,0);
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
-	private final String CATEGORY = null;
+	private final ICategory CATEGORY = null;
 	private final String NOTES = null;
 	
 	@Before
@@ -63,7 +63,7 @@ public class DeleteCommandTest {
 		DeleteCommand deleteCommand = new DeleteCommand(taskNumber);
 		deleteCommand.execute();
 		
-		assertEquals(false, TaskManager.isTaskExist(task));
+		assertEquals(false, TaskManager.hasTask(task));
 	}
 
 }

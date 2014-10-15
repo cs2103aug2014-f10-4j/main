@@ -15,7 +15,7 @@ public class AddCommand implements ICommand {
 	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
-	private String mCategory;
+	private ICategory mCategory;
 	private String mNotes;
 	
 	/**
@@ -35,7 +35,7 @@ public class AddCommand implements ICommand {
                Date endTime,
                RepeatFrequency repeatFrequency,
                String place,
-               String category,
+               ICategory category,
                String notes) {
 		
 		mTitle = title;

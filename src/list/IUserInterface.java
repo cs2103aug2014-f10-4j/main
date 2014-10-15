@@ -21,4 +21,6 @@ interface IUserInterface {
 
     void clearAll();
     
+    void clearDisplay();
+    
 }

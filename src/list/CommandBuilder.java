@@ -11,10 +11,10 @@ class CommandBuilder {
 	private CommandType mCommandType = null;
 	private String mTitle = null;
 	private Date mStartTime = null;
-	private Date mEndTime = new Date(31, 12, 2999);
+	private Date mEndTime = null;
 	private RepeatFrequency mRepeatFrequency = null;
 	private String mPlace = null;
-	private String mCategory = null;
+	private ICategory mCategory = null;
 	private String mNotes = null;
 	private Integer mTaskNumber = null;
 	
@@ -58,7 +58,7 @@ class CommandBuilder {
 		return this;
 	}
 
-	CommandBuilder setCategory(String category) {
+	CommandBuilder setCategory(ICategory category) {
 		mCategory = category;
 		return this;
 	}

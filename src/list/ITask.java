@@ -25,7 +25,7 @@ interface ITask extends Comparable<ITask> {
 
 	public ICategory getCategory();
 
-	public ITask setCategory(String mCategory);
+	public ITask setCategory(ICategory mCategory);
 
 	public String getNotes();
 

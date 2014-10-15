@@ -15,7 +15,7 @@ public class EditCommand implements ICommand {
 	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
-	private String mCategory;
+	private ICategory mCategory;
 	private String mNotes;
 	
 	public EditCommand(Integer taskNumber,
@@ -24,7 +24,7 @@ public class EditCommand implements ICommand {
 			           Date endTime,
 			           RepeatFrequency repeatFrequency,
 			           String place,
-			           String category,
+			           ICategory category,
 			           String notes) {
 		mTaskNumber = taskNumber;
 		mTitle = title;
@@ -39,7 +39,7 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 			
-		if (!TaskManager.isValid(mTaskNumber)) {
+		if (!TaskManager.isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
@@ -104,7 +104,7 @@ public class EditCommand implements ICommand {
 	    return mPlace;
 	}
 	
-	public String getCategory() {
+	public ICategory getCategory() {
 	    return mCategory;
 	}
 	

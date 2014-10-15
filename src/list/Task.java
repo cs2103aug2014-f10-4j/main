@@ -78,11 +78,4 @@ public class Task implements ITask {
 		this.mNotes = mNotes;
 		return this;
 	}
-
-	@Override
-	public ITask setCategory(String mCategory) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
