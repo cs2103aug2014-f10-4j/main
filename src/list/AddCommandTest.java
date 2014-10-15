@@ -15,6 +15,7 @@ import org.junit.Test;
  */
 public class AddCommandTest {
 
+	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
 	private final Date START_TIME = new Date(0,0,0);
 	private final Date END_TIME = new Date(0,0,0);
@@ -25,25 +26,25 @@ public class AddCommandTest {
 	
 	@Before
 	public void initializeTest() {
-		TaskManager.clearTasks();
+		taskManager.clearTasks();
 	}
 	
 	@Test
 	public void shouldIncreaseNumberOfTasksByOne() {
 		
-		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 		
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);
 		addCommand.execute();
 		
-		assertEquals(initialNumberOfTasks + 1, TaskManager.getNumberOfTasks());
+		assertEquals(initialNumberOfTasks + 1, taskManager.getNumberOfTasks());
 	}
 
 	@Test
 	public void shouldAddTheCorrectTask() {
-		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 	
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
@@ -51,7 +52,7 @@ public class AddCommandTest {
 		
 		addCommand.execute();
 		
-		ITask newlyAddedTask = TaskManager.getTask(initialNumberOfTasks + 1);
+		ITask newlyAddedTask = taskManager.getTask(initialNumberOfTasks + 1);
 		
 		assertEquals(TITLE, newlyAddedTask.getTitle());
 		assertEquals(START_TIME, newlyAddedTask.getStartTime());
@@ -81,6 +82,6 @@ public class AddCommandTest {
 		secondAddCommand.execute();
 		thirdAddCommand.execute();
 		
-		assertEquals(true, TaskManager.isListOfTasksSorted());
+		assertEquals(true, taskManager.isListOfTasksSorted());
 	}
 }

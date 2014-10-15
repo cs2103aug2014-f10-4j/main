@@ -9,6 +9,7 @@ import org.junit.Test;
 
 public class DeleteCommandTest {
 
+	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
 	private final Date START_TIME = new Date(0,0,0);
 	private final Date END_TIME = new Date(0,0,0);
@@ -19,7 +20,7 @@ public class DeleteCommandTest {
 	
 	@Before
 	public void initializeTest() {
-		TaskManager.clearTasks();
+		taskManager.clearTasks();
 		
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
@@ -39,7 +40,7 @@ public class DeleteCommandTest {
 	@Test(expected = InvalidTaskNumberException.class)
 	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
 			throws InvalidTaskNumberException {
-		int numberGreaterThanTotalNumberOfTasks = TaskManager.getNumberOfTasks() + 1;
+		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
 		
 		DeleteCommand deleteCommand = new DeleteCommand(numberGreaterThanTotalNumberOfTasks);
 		deleteCommand.execute();
@@ -47,23 +48,23 @@ public class DeleteCommandTest {
 	 
 	@Test
 	public void shouldDecreaseNumberOfTasksByOne() throws InvalidTaskNumberException {
-		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 		
 		DeleteCommand deleteCommand = new DeleteCommand(1);
 		deleteCommand.execute();
 				
-		assertEquals(initialNumberOfTasks - 1, TaskManager.getNumberOfTasks());
+		assertEquals(initialNumberOfTasks - 1, taskManager.getNumberOfTasks());
 	}
 	
 	@Test
 	public void deletedTaskShouldNotExistAnymore() throws InvalidTaskNumberException {
 		int taskNumber = 1;
-		ITask task = TaskManager.getTask(taskNumber);
+		ITask task = taskManager.getTask(taskNumber);
 		
 		DeleteCommand deleteCommand = new DeleteCommand(taskNumber);
 		deleteCommand.execute();
 		
-		assertEquals(false, TaskManager.hasTask(task));
+		assertEquals(false, taskManager.hasTask(task));
 	}
 
 }

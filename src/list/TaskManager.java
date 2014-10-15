@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is a passive class that keeps track of Tasks.
- * Execution of commands is not handled by this class
+ * This is a Singleton class that keeps track of Tasks 
+ * and Categories. Execution of commands is not handled by this class
  * but by the individual command types.
  * 
  * This class modifies the user interface by the methods
@@ -17,64 +17,76 @@ import java.util.Map;
  * 
  * @author andhieka, michael
  */
-class TaskManager {
+public class TaskManager {
     //TODO: keep the methods and variables static
     //TODO: please maintain mTasks sorted at all times
-    private static List<ITask> mTasks = new ArrayList<ITask>();
-    private static Map<String, ICategory> mCategories = new HashMap<String, ICategory>();
+    private static List<ITask> tasks = new ArrayList<ITask>();
+    private static Map<String, ICategory> categories = new HashMap<String, ICategory>();
+    
+    private static TaskManager taskManagerInstance = null;
+    
+    private TaskManager() { } ;
+    
+    static TaskManager getInstance() {
+    	if (taskManagerInstance == null) {
+    		taskManagerInstance = new TaskManager();
+    	}
+    	
+    	return taskManagerInstance;
+    }
     
     //CATEGORY METHODS
     static ICategory getCategory(String categoryName) {
-    	if (mCategories.containsKey(categoryName)) {
-    		return mCategories.get(categoryName);
+    	if (categories.containsKey(categoryName)) {
+    		return categories.get(categoryName);
     	} else {
     		ICategory category = new Category();
     		category.setCategoryName(categoryName)
     			.setColor(Color.BLACK);
-    		mCategories.put(categoryName, category);
+    		categories.put(categoryName, category);
     		return category;
     	}
     }
     
     //METHODS FOR COMMANDS EXECUTION
-    static void addTask(ITask task) {
-        mTasks.add(task);
+    void addTask(ITask task) {
+        tasks.add(task);
     }
     
-    static ITask getTask(Integer taskNumberShownOnScreen) {
-        return mTasks.get(getTaskId(taskNumberShownOnScreen));
+    ITask getTask(Integer taskNumberShownOnScreen) {
+        return tasks.get(getTaskId(taskNumberShownOnScreen));
     }
     
-    static void deleteTask(Integer taskNumberShownOnScreen) {
-        mTasks.remove(getTaskId(taskNumberShownOnScreen));
+    void deleteTask(Integer taskNumberShownOnScreen) {
+        tasks.remove(getTaskId(taskNumberShownOnScreen));
     }
     
-    static void clearTasks() {
-    	mTasks.clear();
+    void clearTasks() {
+    	tasks.clear();
     }
     
-    static void sortTasks() {
-    	Collections.sort(mTasks);
+    void sortTasks() {
+    	Collections.sort(tasks);
 	}
     
-    static int getNumberOfTasks() {
-    	return mTasks.size();
+    int getNumberOfTasks() {
+    	return tasks.size();
     }
     
-    static boolean hasTask(ITask task) {
-    	return mTasks.contains(task);
+    boolean hasTask(ITask task) {
+    	return tasks.contains(task);
     }
     
-    static boolean isValidTaskNumber(Integer taskNumber) {
-		return (taskNumber >= 1) && (taskNumber <= TaskManager.getNumberOfTasks());
+    boolean isValidTaskNumber(Integer taskNumber) {
+		return (taskNumber >= 1) && (taskNumber <= TaskManager.getInstance().getNumberOfTasks());
 	}
     
-    static boolean isListOfTasksSorted() {
-    	if (mTasks.size() <= 1) {
+    boolean isListOfTasksSorted() {
+    	if (tasks.size() <= 1) {
     		return true;
     	} else {
-    		for (int i = 0; i < mTasks.size() - 1; i++) {
-    			if (mTasks.get(i).compareTo(mTasks.get(i + 1)) > 0) {
+    		for (int i = 0; i < tasks.size() - 1; i++) {
+    			if (tasks.get(i).compareTo(tasks.get(i + 1)) > 0) {
     				return false;
     			}
     		}
@@ -93,8 +105,8 @@ class TaskManager {
     }
     
     private static void printTasks() {
-    	for (int i = 0; i < mTasks.size(); i++) {
-    		System.out.println(mTasks.get(i).getTitle());
+    	for (int i = 0; i < tasks.size(); i++) {
+    		System.out.println(tasks.get(i).getTitle());
     	}
     }
     

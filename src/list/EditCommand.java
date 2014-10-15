@@ -9,6 +9,7 @@ import list.CommandBuilder.RepeatFrequency;
  */
 public class EditCommand implements ICommand {
 		
+	private TaskManager taskManager = TaskManager.getInstance(); 
 	private Integer mTaskNumber;
 	private String mTitle;
 	private Date mStartTime;
@@ -39,11 +40,11 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 			
-		if (!TaskManager.isValidTaskNumber(mTaskNumber)) {
+		if (!taskManager.isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
-		ITask taskToEdit = TaskManager.getTask(mTaskNumber);
+		ITask taskToEdit = taskManager.getTask(mTaskNumber);
 				
 		if (mTitle != null) {
 			taskToEdit.setTitle(mTitle);	
@@ -73,7 +74,7 @@ public class EditCommand implements ICommand {
 			taskToEdit.setNotes(mNotes);
 		}
 		
-		TaskManager.sortTasks();
+		taskManager.sortTasks();
 		
 		Controller.updateListOfTasksInUI();
 		

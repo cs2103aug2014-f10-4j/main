@@ -6,6 +6,7 @@ package list;
  *
  */
 public class DeleteCommand implements ICommand {
+	private TaskManager taskManager = TaskManager.getInstance();
 	private Integer mTaskNumber;
 
 	public DeleteCommand(Integer taskNumber) {
@@ -14,11 +15,11 @@ public class DeleteCommand implements ICommand {
 	
 	@Override
 	public String execute() throws InvalidTaskNumberException {
-		if (!TaskManager.isValidTaskNumber(mTaskNumber)) {
+		if (!TaskManager.getInstance().isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
-		TaskManager.deleteTask(mTaskNumber);
+		TaskManager.getInstance().deleteTask(mTaskNumber);
 		
 		Controller.updateListOfTasksInUI();
 		

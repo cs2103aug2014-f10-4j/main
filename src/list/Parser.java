@@ -17,6 +17,8 @@ import list.CommandBuilder.RepeatFrequency;
 public class Parser implements IParser {
     private static final int MINIMUM_TASK_NUMBER = 1;
     
+    private TaskManager taskManager = TaskManager.getInstance();
+    
     //Regular Expression Patterns
     //Note: backslash must be escaped in Java
     private final Pattern REGEX_COMMAND_TYPE = Pattern.compile("^\\w+");
@@ -103,7 +105,7 @@ public class Parser implements IParser {
         if (categoryName == null) {
         	categoryName = "";
         }
-        ICategory category = TaskManager.getCategory(categoryName);
+        ICategory category = taskManager.getCategory(categoryName);
         return category;
     }
     
