@@ -27,6 +27,7 @@ public class Controller {
             reply = "Invalid task number!";
         } catch (Exception e) {
             reply = "Error!";
+            e.printStackTrace();
         }
 		return reply;
 	}

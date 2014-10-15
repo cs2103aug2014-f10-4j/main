@@ -1,10 +1,6 @@
 package list;
 
-import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,6 +8,11 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class UserInterface implements IUserInterface {
     
@@ -89,11 +90,11 @@ public class UserInterface implements IUserInterface {
 
 		//**********display the title and category**********//
 		// display the title of the task
-		displayNewLine("Title: " + task.getTitle() + " (" + task.getCategory() + ")", fontForDate);
+		displayNewLine("Title: " + task.getTitle() + " (" + task.getCategory() + ")", fontForDate, task.getCategory().getColor());
 
 		//**********display the place**********//
 		// display the place of the task
-		displayNewLine("Place: " + task.getPlace(), fontForTask);
+		displayNewLine("Place: " + task.getPlace(), fontForTask, Color.BLACK);
 
 		//**********display the start time**********//
 		// string for the start time
@@ -110,7 +111,7 @@ public class UserInterface implements IUserInterface {
 		stringForStartTime += startDateToDisplay.getYear();
 
 		// display the start time of the task
-		displayNewLine(stringForStartTime, fontForTask);
+		displayNewLine(stringForStartTime, fontForTask, Color.BLACK);
 
 		//**********display the end time**********//
 		// string for the end time
@@ -127,11 +128,11 @@ public class UserInterface implements IUserInterface {
 		stringForEndTime += endDateToDisplay.getYear();
 
 		// display the end time of the task
-		displayNewLine(stringForEndTime, fontForTask);
+		displayNewLine(stringForEndTime, fontForTask, Color.BLACK);
 
 		//**********display the notes**********//
 		// display the notes of the task
-		displayNewLine("Notes: " + task.getNotes(), fontForTask);
+		displayNewLine("Notes: " + task.getNotes(), fontForTask, Color.BLACK);
 	}
 
 	public boolean checkDateIsAppeared(ITask task) {
@@ -155,7 +156,7 @@ public class UserInterface implements IUserInterface {
 		stringOfDateToDisplay += dateToDisplay.getYear();
 
 		// display the contents to the window
-		displayNewLine(stringOfDateToDisplay, fontForDate);
+		displayNewLine(stringOfDateToDisplay, fontForDate, task.getCategory().getColor());
 
 		// display the task as well
 		displayNewTask(task);
@@ -167,10 +168,10 @@ public class UserInterface implements IUserInterface {
 		String stringOfTaskToDisplay = task.getTitle();
 
 		// display the contents to the window
-		displayNewLine(stringOfTaskToDisplay, fontForTask);
+		displayNewLine(stringOfTaskToDisplay, fontForTask, task.getCategory().getColor());
 	}
 
-	public static void displayNewLine(String stringToDisplay, Font fontForLabel) {
+	public static void displayNewLine(String stringToDisplay, Font fontForLabel, Color textColor) {
 
 		// make new label that hold the string to be displayed
 		JLabel labelOfString = new JLabel(stringToDisplay);
@@ -180,6 +181,9 @@ public class UserInterface implements IUserInterface {
 
 		// set the font of the Label
 		labelOfString.setFont(fontForLabel);
+
+		// set the color of the label
+		labelOfString.setForeground(textColor);
 
 		// add the label to the container
 		mainFrame.getContentPane().add(labelOfString);
@@ -225,7 +229,7 @@ public class UserInterface implements IUserInterface {
 	    mCursorPosition = console.getText().length();
 	}
 	
-	class EnterAction extends AbstractAction {
+	private class EnterAction extends AbstractAction {
 
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -256,8 +260,7 @@ public class UserInterface implements IUserInterface {
     }
 
     @Override
-    public void clearDisplay() {
-        // TODO Auto-generated method stub
-        
+    public void clearDisplay(){
+    	
     }
 }

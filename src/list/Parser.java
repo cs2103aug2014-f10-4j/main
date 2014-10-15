@@ -98,8 +98,12 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the category argument
      */
-    private String getCategory(String input) {
-        String category = findFirstMatch(REGEX_CATEGORY, input);
+    private ICategory getCategory(String input) {
+        String categoryName = findFirstMatch(REGEX_CATEGORY, input);
+        if (categoryName == null) {
+        	categoryName = "";
+        }
+        ICategory category = TaskManager.getCategory(categoryName);
         return category;
     }
     

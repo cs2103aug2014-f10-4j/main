@@ -8,4 +8,8 @@ interface ICategory {
     
     String getCategoryName();
     
+    ICategory setColor(Color color);
+    
+    ICategory setCategoryName(String name);
+    
 }

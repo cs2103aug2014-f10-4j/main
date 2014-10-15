@@ -15,7 +15,7 @@ public class EditCommand implements ICommand {
 	private Date mEndTime;
 	private RepeatFrequency mRepeatFrequency;
 	private String mPlace;
-	private String mCategory;
+	private ICategory mCategory;
 	private String mNotes;
 	
 	public EditCommand(Integer taskNumber,
@@ -24,7 +24,7 @@ public class EditCommand implements ICommand {
 			           Date endTime,
 			           RepeatFrequency repeatFrequency,
 			           String place,
-			           String category,
+			           ICategory category,
 			           String notes) {
 		mTaskNumber = taskNumber;
 		mTitle = title;
@@ -75,7 +75,7 @@ public class EditCommand implements ICommand {
 		
 		TaskManager.sortTasks();
 		
-		//Controller.updateListOfTasksInUI();
+		Controller.updateListOfTasksInUI();
 		
 		return "Task is successfully edited";
 	}
@@ -104,7 +104,7 @@ public class EditCommand implements ICommand {
 	    return mPlace;
 	}
 	
-	public String getCategory() {
+	public ICategory getCategory() {
 	    return mCategory;
 	}
 	

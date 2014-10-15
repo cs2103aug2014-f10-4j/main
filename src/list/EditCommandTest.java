@@ -20,7 +20,7 @@ public class EditCommandTest {
 	private final Date END_TIME = new Date(1,1,2014);
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
-	private final String CATEGORY = null;
+	private final ICategory CATEGORY = null;
 	private final String NOTES = null;
 	
 	@Before
