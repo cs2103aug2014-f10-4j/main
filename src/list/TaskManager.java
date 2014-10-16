@@ -40,8 +40,15 @@ public class TaskManager {
     	if (categories.containsKey(categoryName)) {
     		return categories.get(categoryName);
     	} else {
+<<<<<<< HEAD
     		ICategory category = new Category(categoryName);
     		categories.put(categoryName, category);
+=======
+    		ICategory category = new Category();
+    		category.setName(categoryName)
+    			.setColor(Color.BLACK);
+    		mCategories.put(categoryName, category);
+>>>>>>> master
     		return category;
     	}
     }

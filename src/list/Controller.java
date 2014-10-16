@@ -8,7 +8,7 @@ public class Controller {
 		
 	private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
 	
-	private static IUserInterface mUserInterface = null;
+	private static IUserInterface mUserInterface = new UserInterface();
 	private static IParser mParser = new Parser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	
@@ -36,6 +36,7 @@ public class Controller {
 	public static void updateListOfTasksInUI() {
 		int taskNumberToDisplay = 1;
 		mUserInterface.clearAll();
+		
 		//Naming of boolean condition OK?
 		try {
 		    while (UICanDisplayMoreTask() && 

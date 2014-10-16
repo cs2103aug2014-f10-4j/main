@@ -10,6 +10,6 @@ interface ICategory {
     
     ICategory setColor(Color color);
     
-    ICategory setCategoryName(String name);
+    ICategory setName(String name);
     
 }

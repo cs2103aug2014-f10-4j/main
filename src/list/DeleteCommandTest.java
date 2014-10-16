@@ -2,6 +2,7 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import list.CommandBuilder.RepeatFrequency;
+import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
 
 import org.junit.Before;
@@ -11,16 +12,17 @@ public class DeleteCommandTest {
 
 	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
-	private final Date START_TIME = new Date(0,0,0);
-	private final Date END_TIME = new Date(0,0,0);
+	private final Date START_TIME = null;
+	private Date END_TIME = null;
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
 	private final ICategory CATEGORY = null;
 	private final String NOTES = null;
 	
 	@Before
-	public void initializeTest() {
+	public void initializeTest() throws Exception {
 		taskManager.clearTasks();
+		END_TIME = new Date(1,1,1);
 		
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 

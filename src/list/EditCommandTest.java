@@ -2,6 +2,7 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import list.CommandBuilder.RepeatFrequency;
+import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
 
 import org.junit.Before;
@@ -17,17 +18,18 @@ public class EditCommandTest {
 	
 	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
-	private final Date START_TIME = new Date(0,0,0);
-	private final Date END_TIME = new Date(1,1,2014);
+	private final Date START_TIME = null;
+	private Date END_TIME = null; //01-01-2014
 	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
 	private final String PLACE = null;
 	private final ICategory CATEGORY = null;
 	private final String NOTES = null;
 	
 	@Before
-	public void initializeTest() {
+	public void initializeTest() throws Exception {
 		taskManager.clearTasks();
-		
+		END_TIME = new Date(1,1,1);
+
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);		
@@ -92,7 +94,7 @@ public class EditCommandTest {
 	}
 	
 	@Test
-	public void shouldOnlyEditTheStartTime() throws InvalidTaskNumberException {
+	public void shouldOnlyEditTheStartTime() throws InvalidTaskNumberException, InvalidDateException {
 		int taskNumber = 1;
 		Date newStartTime = new Date(1,1,2014);
 		
@@ -119,7 +121,7 @@ public class EditCommandTest {
 	
 	@Test
 	public void shouldMaintainListOfTasksSortedAfterEditingTask() 
-			throws InvalidTaskNumberException {
+			throws InvalidTaskNumberException, InvalidDateException {
 		AddCommand addCommand = new AddCommand("task 1", null, new Date(2,1,2014), 
 											   null, null, 
 										   	   null, null);
