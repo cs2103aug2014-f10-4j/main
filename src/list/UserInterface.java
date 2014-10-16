@@ -35,7 +35,7 @@ public class UserInterface implements IUserInterface {
 	private static Font fontForDate = new Font("American Typewriter", Font.BOLD, 36);
 	private static Font fontForTask = new Font("American Typewriter", Font.PLAIN, 36);
 	private static Font fontForConsole = new Font("American Typewriter", Font.PLAIN, 12);
-	private static Date previousDate = new Date(0, 0, 0);
+	private static Date previousDate = null;
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
 
@@ -67,6 +67,7 @@ public class UserInterface implements IUserInterface {
 		mainFrame.repaint();
 		arrayListOfJLabel = new ArrayList<JLabel>();
 		numberOfLines = 0;
+		previousDate = null;
 	}
 
 	@Override
