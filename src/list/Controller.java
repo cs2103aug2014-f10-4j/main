@@ -12,7 +12,6 @@ public class Controller {
 	private static IParser mParser = new Parser();
 	
 	public static void main(String[] args) {
-		mUserInterface = new UserInterface();
 	}
 	
 	public static String processUserInput(String userInput) {
