@@ -25,7 +25,7 @@ public class UserInterface implements IUserInterface {
 	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
-	private final static int NUMBEROFLINESALLOWED = 10;
+	private final static int NUMBEROFLINESALLOWED = 13;
 	private static int CONSOLEWIDTH = MAINFRAMEWIDTH;
 	private static int CONSOLEHEIGHT = MAINFRAMEHEIGHT * 2 / 7;
 	private static int LISTWIDTH = MAINFRAMEWIDTH;
@@ -107,15 +107,8 @@ public class UserInterface implements IUserInterface {
 		// get the start date to be displayed
 		Date startDateToDisplay = task.getStartTime();
 
-		// set the dates to the string to be displayed
-		stringForStartTime += startDateToDisplay.getDay();
-		stringForStartTime += "/";
-		stringForStartTime += startDateToDisplay.getMonth();
-		stringForStartTime += "/";
-		stringForStartTime += startDateToDisplay.getYear();
-
 		// display the start time of the task
-		displayNewLine(stringForStartTime, fontForTask, Color.BLACK);
+		displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
 
 		//**********display the end time**********//
 		// string for the end time
@@ -124,15 +117,8 @@ public class UserInterface implements IUserInterface {
 		// get the end date to be displayed
 		Date endDateToDisplay = task.getEndTime();
 
-		// set the dates to the string to be displayed
-		stringForEndTime += endDateToDisplay.getDay();
-		stringForEndTime += "/";
-		stringForEndTime += endDateToDisplay.getMonth();
-		stringForEndTime += "/";
-		stringForEndTime += endDateToDisplay.getYear();
-
 		// display the end time of the task
-		displayNewLine(stringForEndTime, fontForTask, Color.BLACK);
+		displayNewLine(stringForEndTime + endDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
 
 		//**********display the notes**********//
 		// display the notes of the task
@@ -160,17 +146,8 @@ public class UserInterface implements IUserInterface {
 		// get the date to be displayed
 		Date dateToDisplay = task.getEndTime();
 
-		String stringOfDateToDisplay = "";
-
-		// set the dates to the string to be displayed
-		stringOfDateToDisplay += dateToDisplay.getDay();
-		stringOfDateToDisplay += "/";
-		stringOfDateToDisplay += dateToDisplay.getMonth();
-		stringOfDateToDisplay += "/";
-		stringOfDateToDisplay += dateToDisplay.getYear();
-
 		// display the contents to the window
-		displayNewLine(stringOfDateToDisplay, fontForDate, getCategoryColor(task));
+		displayNewLine(dateToDisplay.getPrettyFormat(), fontForDate, getCategoryColor(task));
 
 		// display the task as well
 		displayNewTask(task);
@@ -267,7 +244,7 @@ public class UserInterface implements IUserInterface {
 
 	public void displayMessageToUser(String message) {
 	    showInConsole(message);
-	    showInConsole("\n");
+	    showInConsole("\n\n");
 	    showInConsole(CONSOLE_ARROWS);
 	    console.setCaretPosition(console.getDocument().getLength());
 	}

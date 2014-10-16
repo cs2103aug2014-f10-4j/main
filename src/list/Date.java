@@ -13,6 +13,8 @@ public class Date implements Comparable<Date> {
     private static final String FORMAT_STRING_DAY_NAME = "EEEE";
     private static final String FORMAT_STRING_MONTH_NAME = "MMMM";
     private static final String FORMAT_STRING_STANDARD = "dd-MM-yyyy"; //15-10-2014
+    private static final String STRING_TODAY = "TODAY";
+    private static final String STRING_TOMORROW = "TOMORROW";
     
     private static final DateTimeFormatter FORMATTER_PRETTY = DateTimeFormat.forPattern(FORMAT_STRING_PRETTY);
     private static final DateTimeFormatter FORMATTER_DAY_NAME = DateTimeFormat.forPattern(FORMAT_STRING_DAY_NAME);
@@ -22,6 +24,8 @@ public class Date implements Comparable<Date> {
     private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
     
     private DateTime dateTime;
+    private DateTime today = new DateTime();
+    private DateTime tomorrow = today.plusDays(1);
     
     public class InvalidDateException extends Exception { };
     
@@ -69,7 +73,12 @@ public class Date implements Comparable<Date> {
      * @return
      */
     public String getPrettyFormat() {
-        return FORMATTER_PRETTY.print(this.dateTime);
+    	if(DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
+    		return STRING_TODAY;
+    	} else if (DATE_ONLY_COMPARATOR.compare(tomorrow, this.dateTime) == 0) {
+    		return STRING_TOMORROW;
+    	}
+        return FORMATTER_PRETTY.print(this.dateTime); 
     }
     
     @Override
