@@ -1,6 +1,5 @@
 package list;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,15 +39,9 @@ public class TaskManager {
     	if (categories.containsKey(categoryName)) {
     		return categories.get(categoryName);
     	} else {
-<<<<<<< HEAD
-    		ICategory category = new Category(categoryName);
-    		categories.put(categoryName, category);
-=======
     		ICategory category = new Category();
-    		category.setName(categoryName)
-    			.setColor(Color.BLACK);
-    		mCategories.put(categoryName, category);
->>>>>>> master
+    		category.setName(categoryName);
+    		categories.put(categoryName, category);
     		return category;
     	}
     }
@@ -118,18 +111,5 @@ public class TaskManager {
     	for (int i = 0; i < tasks.size(); i++) {
     		System.out.println(tasks.get(i).getTitle());
     	}
-    }
-    
-//    //METHODS FOR UPDATING GUI
-//    static void displayTenTasks(int startIndex, IUserInterface ui) {
-//        int i = getTaskId(startIndex);
-//        List<ITask> tasks = mTasks.subList(i, i + 10);
-//        ui.displayTasks(tasks);
-//    }
-//    
-//    static void displayTaskDetail(int taskId, IUserInterface ui) {
-//        ITask task = mTasks.get(getTaskId(taskId));
-//        ui.displayTaskDetail(task);
-//    }
-    
+    }    
 }

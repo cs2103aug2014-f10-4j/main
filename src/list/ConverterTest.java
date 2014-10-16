@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.Converter.CorruptedJsonObjectException;
+import list.Date.InvalidDateException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +77,7 @@ public class ConverterTest {
 //	}
 		
 	@Before
-	public void initializeTest() {
+	public void initializeTest() throws InvalidDateException {
 		converter = new Converter();
 		tasks = new ArrayList<ITask>();
 		prepareTask();
@@ -83,7 +85,7 @@ public class ConverterTest {
 	
 	@Test
 	public void shouldConvertListOfTasksToCorrectJsonObject() 
-			throws JSONException {	
+			throws JSONException, InvalidDateException {	
 		JSONArray tasksListInJson = converter.convertTasksListToJson(tasks);
 		
 		JSONObject firstTaskInJson = tasksListInJson.getJSONObject(0);
@@ -118,21 +120,72 @@ public class ConverterTest {
 		assertEquals(TASK_3_TITLE, thirdTaskInJson.get(KEY_TITLE));
 		assertEquals(true, thirdTaskInJson.has(KEY_DETAILS));
 		assertEquals(0, thirdTaskDetail.length());	
-		
-		System.out.println(tasksListInJson.toString());
 	}
 	
 	@Test
-	public void shouldConvertJsonObjectToTask() throws JSONException {
+	public void shouldConvertJsonArrayToTaskLists() throws JSONException, 
+			InvalidDateException, CorruptedJsonObjectException {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject jsonTaskOne = new JSONObject();
+		JSONObject jsonTaskDetailOne = new JSONObject();
+		jsonTaskDetailOne.put(KEY_END_TIME, new Date(1, 1, 2014).toString());
+		jsonTaskDetailOne.put(KEY_NOTES, TASK_1_NOTES);
+		jsonTaskOne.put(KEY_TITLE, TASK_1_TITLE);
+		jsonTaskOne.put(KEY_DETAILS, jsonTaskDetailOne);
+		
+		JSONObject jsonTaskTwo = new JSONObject();
+		JSONObject jsonTaskDetailTwo = new JSONObject();
+		jsonTaskDetailTwo.put(KEY_CATEGORY, TASK_2_CATEGORY);
+		jsonTaskTwo.put(KEY_TITLE, TASK_2_TITLE);
+		jsonTaskTwo.put(KEY_DETAILS, jsonTaskDetailTwo);
+		
+		jsonArray.put(jsonTaskOne);
+		jsonArray.put(jsonTaskTwo);
+		
+		List<ITask> tasks = converter.convertJsonToTasksList(jsonArray);
+		
+		ITask expectedTaskOne = new Task();
+		expectedTaskOne.setTitle(TASK_1_TITLE);
+		expectedTaskOne.setEndTime(new Date(1, 1, 2014));
+		expectedTaskOne.setNotes(TASK_1_NOTES);
+		
+		ITask expectedTaskTwo = new Task();
+		expectedTaskTwo.setTitle(TASK_2_TITLE);
+		Category category = new Category();
+		category.setName(TASK_2_CATEGORY);
+		expectedTaskTwo.setCategory(category);
+
+		assertEquals(expectedTaskOne.getTitle(), tasks.get(0).getTitle());
+		assertEquals(expectedTaskOne.getStartTime(), tasks.get(0).getStartTime());
+		assertEquals(expectedTaskOne.getEndTime(), tasks.get(0).getEndTime());
+		assertEquals(expectedTaskOne.getRepeatFrequency(), tasks.get(0).getRepeatFrequency());
+		assertEquals(expectedTaskOne.getPlace(), tasks.get(0).getPlace());
+		assertEquals(expectedTaskOne.getCategory(), tasks.get(0).getCategory());
+		assertEquals(expectedTaskOne.getNotes(), tasks.get(0).getNotes());
+		
+		assertEquals(expectedTaskTwo.getTitle(), tasks.get(1).getTitle());
+		assertEquals(expectedTaskTwo.getStartTime(), tasks.get(1).getStartTime());
+		assertEquals(expectedTaskTwo.getEndTime(), tasks.get(1).getEndTime());
+		assertEquals(expectedTaskTwo.getRepeatFrequency(), tasks.get(1).getRepeatFrequency());
+		assertEquals(expectedTaskTwo.getPlace(), tasks.get(1).getPlace());
+		assertEquals(expectedTaskTwo.getCategory().getName(), tasks.get(1).getCategory().getName());
+		assertEquals(expectedTaskTwo.getNotes(), tasks.get(1).getNotes());
+	}
+	
+	@Test
+	public void shouldConvertJsonObjectToTask() throws JSONException, 
+			InvalidDateException, CorruptedJsonObjectException {
 		JSONObject originalTaskInJson = new JSONObject();
 		JSONObject originalTaskDetail = new JSONObject();
 		
-		originalTaskDetail.put(KEY_END_TIME, new Date(1, 1, 2014));
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 1, 2014).toString());
 		originalTaskDetail.put(KEY_NOTES, TASK_1_NOTES);
 		originalTaskInJson.put(KEY_TITLE, TASK_1_TITLE);
 		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
-		
+				
 		ITask taskFromJson = converter.convertJsonToTask(originalTaskInJson);
+				
 		assertEquals(taskOne.getTitle(), taskFromJson.getTitle());
 		assertEquals(taskOne.getStartTime(), taskFromJson.getStartTime());
 		assertEquals(taskOne.getEndTime(), taskFromJson.getEndTime());
@@ -142,7 +195,34 @@ public class ConverterTest {
 		assertEquals(taskOne.getNotes(), taskFromJson.getNotes());
 	}
 	
-	private void prepareTask() {
+	@Test(expected=CorruptedJsonObjectException.class)
+	public void shouldNotConvertJsonObjectWithoutTitleToTask() throws JSONException,
+			InvalidDateException, CorruptedJsonObjectException {
+		
+		JSONObject originalTaskInJson = new JSONObject();
+		JSONObject originalTaskDetail = new JSONObject();
+		
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 1, 2014));
+		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
+		
+		converter.convertJsonToTask(originalTaskInJson);
+	}
+	
+	@Test(expected=InvalidDateException.class)
+	public void shouldNotConvertJsonObjectWithInvalidDate() throws JSONException,
+			InvalidDateException, CorruptedJsonObjectException {
+		
+		JSONObject originalTaskInJson = new JSONObject();
+		JSONObject originalTaskDetail = new JSONObject();
+		
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 13, 2014));
+		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
+		originalTaskInJson.put(KEY_TITLE, TASK_1_TITLE);
+		
+		converter.convertJsonToTask(originalTaskInJson);
+	}
+	
+	private void prepareTask() throws InvalidDateException {
 		taskOne = new Task();
 		taskOne.setTitle(TASK_1_TITLE)
 			.setEndTime(new Date(1, 1, 2014))
@@ -150,7 +230,7 @@ public class ConverterTest {
 		taskTwo = new Task();
 		taskTwo.setTitle(TASK_2_TITLE)
 			.setStartTime(new Date(2, 1, 2014))
-			.setCategory(new Category(TASK_2_CATEGORY))
+			.setCategory(new Category().setName(TASK_2_CATEGORY))
 			.setRepeatFrequency(RepeatFrequency.DAILY);	
 		taskThree = new Task();
 		taskThree.setTitle(TASK_3_TITLE);
@@ -161,3 +241,4 @@ public class ConverterTest {
 	}
 	
 }
+
