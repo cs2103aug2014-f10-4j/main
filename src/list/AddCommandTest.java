@@ -69,29 +69,24 @@ public class AddCommandTest {
 	}	
 	
 	@Test
-	public void shouldMaintainListOfTasksSortedAfterAddingTasks() {
-		try {
-		    Date firstDate = new Date(2, 1, 2014);
-		    Date secondDate = new Date(1, 1, 2014);
-		    Date thirdDate = new Date(3, 1, 2014);
+	public void shouldMaintainListOfTasksSortedAfterAddingTasks() throws Exception {
+	    Date firstDate = new Date(2, 1, 2014);
+        Date secondDate = new Date(1, 1, 2014);
+        Date thirdDate = new Date(3, 1, 2014);
 
-		    AddCommand firstAddCommand = new AddCommand("task 1", null, firstDate, 
-		            REPEAT_FREQUENCY, PLACE, 
-                    CATEGORY, NOTES);
-		    AddCommand secondAddCommand = new AddCommand("task 2", null, secondDate, 
-		            REPEAT_FREQUENCY, PLACE, 
-                    CATEGORY, NOTES);
-		    AddCommand thirdAddCommand = new AddCommand("task 3", null, thirdDate, 
-		            REPEAT_FREQUENCY, PLACE, 
-                    CATEGORY, NOTES);
-		    firstAddCommand.execute();
-		    secondAddCommand.execute();
-		    thirdAddCommand.execute();
+        AddCommand firstAddCommand = new AddCommand("task 1", null, firstDate, 
+                REPEAT_FREQUENCY, PLACE, 
+                CATEGORY, NOTES);
+        AddCommand secondAddCommand = new AddCommand("task 2", null, secondDate, 
+                REPEAT_FREQUENCY, PLACE, 
+                CATEGORY, NOTES);
+        AddCommand thirdAddCommand = new AddCommand("task 3", null, thirdDate, 
+                REPEAT_FREQUENCY, PLACE, 
+                CATEGORY, NOTES);
+        firstAddCommand.execute();
+        secondAddCommand.execute();
+        thirdAddCommand.execute();
 
-		    assertEquals(true, TaskManager.isListOfTasksSorted());
-		} catch (InvalidDateException e) {
-		    e.printStackTrace();
-		    fail("Date instantiation error");
-		}
+        assertEquals(true, TaskManager.isListOfTasksSorted());
 	}
 }

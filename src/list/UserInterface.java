@@ -181,6 +181,13 @@ public class UserInterface implements IUserInterface {
 		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
 	}
 	
+	/**
+	 * Returns the color of the category of the given task if the category is not null.
+	 * If the task's category is null, will return the color of Category.getDefaultCategory()
+	 * @param task
+	 * @return <code>java.awt.Color</code>. Will never return <code>null</code>.
+	 * @author andhieka
+	 */
 	private Color getCategoryColor(ITask task) {
 	    if (task.getCategory() == null) {
 	        return Category.getDefaultCategory().getColor();
