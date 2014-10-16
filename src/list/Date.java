@@ -51,4 +51,10 @@ public class Date implements Comparable<Date> {
         Date other = (Date) o;
         return this.compareTo(other) == 0; 
     }
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return mDay + " " + mMonth + " " + mYear;
+    }
 }

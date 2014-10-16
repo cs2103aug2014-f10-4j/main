@@ -40,12 +40,15 @@ public class TaskManager {
     	if (categories.containsKey(categoryName)) {
     		return categories.get(categoryName);
     	} else {
-    		ICategory category = new Category();
-    		category.setCategoryName(categoryName)
-    			.setColor(Color.BLACK);
+    		ICategory category = new Category(categoryName);
     		categories.put(categoryName, category);
     		return category;
     	}
+    }
+    
+    //METHODS FOR STORAGE
+    List<ITask> getTasksList() {
+    	return tasks;
     }
     
     //METHODS FOR COMMANDS EXECUTION

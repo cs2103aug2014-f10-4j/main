@@ -17,11 +17,11 @@ public class DisplayCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 		
-		if (!TaskManager.getInstance().isValidTaskNumber(mTaskNumber)) {
+		if (!taskManager.isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();	
 		} 
 		
-		ITask selectedTask = TaskManager.getInstance().getTask(mTaskNumber);
+		ITask selectedTask = taskManager.getTask(mTaskNumber);
 		
 		
 		Controller.updateUIWithTaskDetail(selectedTask);

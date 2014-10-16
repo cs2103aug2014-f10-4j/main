@@ -6,7 +6,7 @@ interface ICategory {
     
     Color getColor();
     
-    String getCategoryName();
+    String getName();
     
     ICategory setColor(Color color);
     

@@ -10,7 +10,7 @@ package list;
  */
 interface ICommand {	
 	class InvalidTaskNumberException extends Exception { };
-	
+		
 	/**
 	 * Executes this command.
 	 * 
