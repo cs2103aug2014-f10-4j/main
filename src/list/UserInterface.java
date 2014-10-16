@@ -33,7 +33,7 @@ public class UserInterface implements IUserInterface {
 	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
 	private static Font fontForDate = new Font("Arial", Font.BOLD, 36);
 	private static Font fontForTask = new Font("Arial", Font.PLAIN, 36);
-	private static Date previousDate = new Date(0, 0, 0);
+	private static Date previousDate = null;
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
 
@@ -90,7 +90,7 @@ public class UserInterface implements IUserInterface {
 
 		//**********display the title and category**********//
 		// display the title of the task
-		displayNewLine("Title: " + task.getTitle() + " (" + task.getCategory() + ")", fontForDate, task.getCategory().getColor());
+	    displayNewLine("Title: " + task.getTitle() + " (" + task.getCategory() + ")", fontForDate, getCategoryColor(task));
 
 		//**********display the place**********//
 		// display the place of the task
@@ -135,10 +135,20 @@ public class UserInterface implements IUserInterface {
 		displayNewLine("Notes: " + task.getNotes(), fontForTask, Color.BLACK);
 	}
 
+	/**
+	 * Returns whether the UI already contains another Task with the same 
+	 * deadline as the task supplied.
+	 * @param task 
+	 * @return
+	 */
 	public boolean checkDateIsAppeared(ITask task) {
-
-		// return whether the date held was the same with the date of the task
-		return previousDate.equals(task.getEndTime());
+	    boolean dateHasAppeared = false;
+	    if (previousDate != null) {
+	        dateHasAppeared = previousDate.equals(task.getEndTime());
+	    }
+	    assert(task.getEndTime() != null);
+	    previousDate = task.getEndTime();
+		return dateHasAppeared;
 	}
 
 	public void displayNewDate(ITask task) {
@@ -156,7 +166,7 @@ public class UserInterface implements IUserInterface {
 		stringOfDateToDisplay += dateToDisplay.getYear();
 
 		// display the contents to the window
-		displayNewLine(stringOfDateToDisplay, fontForDate, task.getCategory().getColor());
+		displayNewLine(stringOfDateToDisplay, fontForDate, getCategoryColor(task));
 
 		// display the task as well
 		displayNewTask(task);
@@ -168,7 +178,15 @@ public class UserInterface implements IUserInterface {
 		String stringOfTaskToDisplay = task.getTitle();
 
 		// display the contents to the window
-		displayNewLine(stringOfTaskToDisplay, fontForTask, task.getCategory().getColor());
+		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
+	}
+	
+	private Color getCategoryColor(ITask task) {
+	    if (task.getCategory() == null) {
+	        return Category.getDefaultCategory().getColor();
+	    } else {
+	        return task.getCategory().getColor();
+	    }
 	}
 
 	public static void displayNewLine(String stringToDisplay, Font fontForLabel, Color textColor) {

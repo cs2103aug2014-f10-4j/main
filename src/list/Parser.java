@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
 import list.CommandBuilder.RepeatFrequency;
+import list.Date.InvalidDateException;
 
 /**
  * A simple implementation of IParser using Regex. 
@@ -33,19 +34,24 @@ public class Parser implements IParser {
     
     @Override
     public ICommand parse(String input) throws ParseException {
-        CommandBuilder commandBuilder = new CommandBuilder();
-        commandBuilder.setCommandType(getCommandType(input));
-        commandBuilder.setTitle(getTitle(input));
-        commandBuilder.setStartTime(getStartTime(input));
-        commandBuilder.setEndTime(getEndTime(input));
-        commandBuilder.setNotes(getNotes(input));
-        commandBuilder.setPlace(getPlace(input));
-        commandBuilder.setCategory(getCategory(input));
-        commandBuilder.setRepeatFrequency(getRepeatFrequency(input));
-        commandBuilder.setTaskNumber(getTaskNumber(input));
-        
-        ICommand command = getCommandObject(commandBuilder);
-        return command;
+        try {
+            CommandBuilder commandBuilder = new CommandBuilder();
+            commandBuilder.setCommandType(getCommandType(input));
+            commandBuilder.setTitle(getTitle(input));
+            commandBuilder.setStartTime(getStartTime(input));
+            commandBuilder.setEndTime(getEndTime(input));
+            commandBuilder.setNotes(getNotes(input));
+            commandBuilder.setPlace(getPlace(input));
+            commandBuilder.setCategory(getCategory(input));
+            commandBuilder.setRepeatFrequency(getRepeatFrequency(input));
+            commandBuilder.setTaskNumber(getTaskNumber(input));
+            
+            ICommand command = getCommandObject(commandBuilder);
+            return command;
+        } catch (InvalidDateException e) {
+            e.printStackTrace();
+            throw new ParseException("Error parsing dates!");
+        }
     }
     
     /**
@@ -188,7 +194,7 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the start time argument
      */
-    private Date getStartTime(String input) {
+    private Date getStartTime(String input) throws InvalidDateException {
         String startTime = findFirstMatch(REGEX_START_TIME, input);
         if (startTime == null) {
             return null;
@@ -212,7 +218,7 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the end time argument
      */
-    private Date getEndTime(String input) {
+    private Date getEndTime(String input) throws InvalidDateException {
         String startTime = findFirstMatch(REGEX_END_TIME, input);
         if (startTime == null) {
             return null;
@@ -252,7 +258,7 @@ public class Parser implements IParser {
      * @param year int
      * @return an instance of Date (LIST's own Date class)
      */
-    private Date getDateInstance(int date, int month, int year) {
+    private Date getDateInstance(int date, int month, int year) throws InvalidDateException {
         return new Date(date, month, year);
     }
     
