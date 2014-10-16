@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.text.Document;
 import javax.swing.text.BadLocationException;
 
 import java.awt.Font;
@@ -55,7 +56,7 @@ public class UserInterface implements IUserInterface {
 
 		// set the console part on the frame
 		setUpConsole();
-
+		
 		// make the window visible to the user
 		mainFrame.setVisible(true);
 	}
@@ -231,15 +232,22 @@ public class UserInterface implements IUserInterface {
 
 	public void setUpConsole() {
 
-		//use key bindings
+		//use key bindings for enter key
 		EnterAction enterAction = new EnterAction();
 		console.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doEnterAction");
 		console.getActionMap().put("doEnterAction", enterAction);
 		
-		//use key bindings
+		//use key bindings for delete key
 		DeleteAction deleteAction = new DeleteAction();
 		console.getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "doDeleteAction");
 		console.getActionMap().put("doDeleteAction", deleteAction);
+		
+		
+		// use key bindings for arrows key
+		String[] keys = {"UP", "DOWN", "LEFT", "RIGHT"};
+        for (String key : keys) {
+            console.getInputMap().put(KeyStroke.getKeyStroke(key), "none");
+        }
 		
 		// append the letter that appears at the first place
 		showInConsole(CONSOLE_ARROWS);
@@ -273,7 +281,6 @@ public class UserInterface implements IUserInterface {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            System.out.println("Enter pressed!");
             String userInput = "";
             try {
                 userInput = console.getText(mCursorPosition, console.getText().length() - mCursorPosition);    
@@ -291,14 +298,19 @@ public class UserInterface implements IUserInterface {
 	private class DeleteAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent event) {
-            System.out.println("Delete pressed!");
-            
+            Document documentInConsole = console.getDocument();
+            try {
+            	if(mCursorPosition < console.getText().length()){
+            		documentInConsole.remove(documentInConsole.getLength() - 1, 1);
+            	}
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
         }
 	}
 
     @Override
     public void displayCategories(List<ICategory> categories) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -308,6 +320,5 @@ public class UserInterface implements IUserInterface {
 
     @Override
     public void clearDisplay(){
-    	
     }
 }
