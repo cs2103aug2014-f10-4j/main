@@ -10,6 +10,7 @@ import org.junit.Test;
 
 public class DisplayCommandTest {
 	
+	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
 	private final Date START_TIME = null;
 	private Date END_TIME = null;
@@ -20,9 +21,9 @@ public class DisplayCommandTest {
 	
 	@Before
 	public void initializeTest() throws Exception {
-		TaskManager.clearTasks();
+		taskManager.clearTasks();
 		END_TIME = new Date(1,1,1);
-        
+
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);
@@ -35,7 +36,7 @@ public class DisplayCommandTest {
 		DisplayCommand displayCommand = new DisplayCommand(taskNumber);
 		displayCommand.execute();
 		
-		ITask selectedTask = TaskManager.getTask(taskNumber);
+		ITask selectedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(TITLE, selectedTask.getTitle());
 		assertEquals(START_TIME, selectedTask.getStartTime());

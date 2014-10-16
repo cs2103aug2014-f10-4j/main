@@ -3,13 +3,13 @@ package list;
 import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
-	private String mTitle;
-	private Date mStartTime;
-	private Date mEndTime;
-	private RepeatFrequency mRepeatFrequency;
-	private String mPlace;
-	private ICategory mCategory;
-	private String mNotes;
+	private String title;
+	private Date startTime;
+	private Date endTime;
+	private RepeatFrequency repeatFrequency;
+	private String place;
+	private ICategory category;
+	private String notes;
 	
 	@Override
 	public int compareTo(ITask o) {
@@ -17,65 +17,65 @@ public class Task implements ITask {
 	}
 
 	public String getTitle() {
-		return mTitle;
+		return title;
 	}
 
-	public Task setTitle(String mTitle) {
-		this.mTitle = mTitle;
+	public Task setTitle(String title) {
+		this.title = title;
 		return this;
 	}
 
 	public Date getStartTime() {
-		return mStartTime;
+		return startTime;
 	}
 
-	public Task setStartTime(Date mStartTime) {
-		this.mStartTime = mStartTime;
+	public Task setStartTime(Date startTime) {
+		this.startTime = startTime;
 		return this;
 	}
 
 	public Date getEndTime() {
-		return mEndTime;
+		return endTime;
 	}
 
-	public Task setEndTime(Date mEndTime) {
-		this.mEndTime = mEndTime;
+	public Task setEndTime(Date endTime) {
+		this.endTime = endTime;
 		return this;
 	}
 
 	public RepeatFrequency getRepeatFrequency() {
-		return mRepeatFrequency;
+		return repeatFrequency;
 	}
 
-	public Task setRepeatFrequency(RepeatFrequency mRepeatFrequency) {
-		this.mRepeatFrequency = mRepeatFrequency;
+	public Task setRepeatFrequency(RepeatFrequency repeatFrequency) {
+		this.repeatFrequency = repeatFrequency;
 		return this;
 	}
 
 	public String getPlace() {
-		return mPlace;
+		return place;
 	}
 
-	public Task setPlace(String mPlace) {
-		this.mPlace = mPlace;
+	public Task setPlace(String place) {
+		this.place = place;
 		return this;
 	}
 
 	public ICategory getCategory() {
-		return mCategory;
+		return category;
 	}
 
-	public Task setCategory(ICategory mCategory) {
-		this.mCategory = mCategory;
+	public Task setCategory(ICategory category) {
+		this.category = category;
 		return this;
 	}
 
 	public String getNotes() {
-		return mNotes;
+		return notes;
 	}
 
-	public Task setNotes(String mNotes) {
-		this.mNotes = mNotes;
+	public Task setNotes(String notes) {
+		this.notes = notes;
 		return this;
 	}
 }

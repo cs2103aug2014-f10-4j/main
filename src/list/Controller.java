@@ -10,6 +10,7 @@ public class Controller {
 	
 	private static IUserInterface mUserInterface = new UserInterface();
 	private static IParser mParser = new Parser();
+	private static TaskManager taskManager = TaskManager.getInstance();
 	
 	public static void main(String[] args) {
 	}
@@ -38,8 +39,8 @@ public class Controller {
 		//Naming of boolean condition OK?
 		try {
 		    while (UICanDisplayMoreTask() && 
-		               TaskManager.isValidTaskNumber(taskNumberToDisplay)) {
-	            ITask taskToDisplay = TaskManager.getTask(taskNumberToDisplay);         
+		    	   taskManager.isValidTaskNumber(taskNumberToDisplay)) {
+	            ITask taskToDisplay = taskManager.getTask(taskNumberToDisplay);         
 	            mUserInterface.displayNewTaskOrDate(taskToDisplay);
 	            taskNumberToDisplay++;
 		    }

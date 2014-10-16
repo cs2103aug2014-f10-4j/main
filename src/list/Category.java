@@ -33,6 +33,7 @@ public class Category implements ICategory {
 	@Override
 	public ICategory setName(String name) {
 		this.name = name;
+
 		return this;
 	}
 	

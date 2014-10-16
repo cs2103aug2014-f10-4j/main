@@ -1,5 +1,7 @@
 package list;
 
+import junit.extensions.RepeatedTest;
+
 /**
  * A builder class for generating various command objects
  * which implements ICommand. This class should only be used by 
@@ -19,9 +21,18 @@ class CommandBuilder {
 	private Integer mTaskNumber = null;
 	
 	class CommandTypeNotSetException extends Exception { };
-	
+			
 	static enum RepeatFrequency {
-		DAILY, WEEKLY, MONTHLY, NONE
+		DAILY, WEEKLY, MONTHLY, NONE;
+	
+		static boolean isValidRepeatFrequencyType(String repeatFrequency) {
+			try {
+				valueOf(repeatFrequency.trim().toUpperCase());
+				return true;
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
+		}
 	}
 	
 	static enum CommandType {

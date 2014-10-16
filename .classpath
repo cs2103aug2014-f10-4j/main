@@ -8,5 +8,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/LIST/libs/joda-time-2.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/java-json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

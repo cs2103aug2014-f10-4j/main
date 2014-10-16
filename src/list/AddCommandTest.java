@@ -18,6 +18,7 @@ import org.junit.Test;
  */
 public class AddCommandTest {
 
+	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
 	private Date START_TIME = null;
 	private Date END_TIME = null;
@@ -30,26 +31,26 @@ public class AddCommandTest {
 	
 	@Before
 	public void initializeTest() throws Exception {
-		TaskManager.clearTasks();
+		taskManager.clearTasks();
 		END_TIME = new Date(1,1,1);
 	}
 	
 	@Test
 	public void shouldIncreaseNumberOfTasksByOne() {
 		
-		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 		
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);
 		addCommand.execute();
 		
-		assertEquals(initialNumberOfTasks + 1, TaskManager.getNumberOfTasks());
+		assertEquals(initialNumberOfTasks + 1, taskManager.getNumberOfTasks());
 	}
 
 	@Test
 	public void shouldAddTheCorrectTask() {
-		int initialNumberOfTasks = TaskManager.getNumberOfTasks();
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 	
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
@@ -57,7 +58,7 @@ public class AddCommandTest {
 		
 		addCommand.execute();
 		
-		ITask newlyAddedTask = TaskManager.getTask(initialNumberOfTasks + 1);
+		ITask newlyAddedTask = taskManager.getTask(initialNumberOfTasks + 1);
 		
 		assertEquals(TITLE, newlyAddedTask.getTitle());
 		assertEquals(START_TIME, newlyAddedTask.getStartTime());
@@ -75,18 +76,18 @@ public class AddCommandTest {
         Date thirdDate = new Date(3, 1, 2014);
 
         AddCommand firstAddCommand = new AddCommand("task 1", null, firstDate, 
-                REPEAT_FREQUENCY, PLACE, 
-                CATEGORY, NOTES);
+									                REPEAT_FREQUENCY, PLACE, 
+									                CATEGORY, NOTES);
         AddCommand secondAddCommand = new AddCommand("task 2", null, secondDate, 
-                REPEAT_FREQUENCY, PLACE, 
-                CATEGORY, NOTES);
+										             REPEAT_FREQUENCY, PLACE, 
+										             CATEGORY, NOTES);
         AddCommand thirdAddCommand = new AddCommand("task 3", null, thirdDate, 
-                REPEAT_FREQUENCY, PLACE, 
-                CATEGORY, NOTES);
+								                    REPEAT_FREQUENCY, PLACE, 
+								                    CATEGORY, NOTES);
         firstAddCommand.execute();
         secondAddCommand.execute();
         thirdAddCommand.execute();
 
-        assertEquals(true, TaskManager.isListOfTasksSorted());
+        assertEquals(true, taskManager.isListOfTasksSorted());
 	}
 }
