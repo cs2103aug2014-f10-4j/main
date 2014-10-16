@@ -3,30 +3,44 @@ package list;
 import java.awt.Color;
 
 public class Category implements ICategory {
-	private String mCategoryName = null;
-	private Color mColor = null;
-	
+	private static final String DEFAULT_NAME = "";
+    private static final Color DEFAULT_COLOR = Color.BLACK;
+    private static ICategory defaultCategory = null;
+    
+    private String name = null;
+	private Color color = null;
 	
 	@Override
 	public Color getColor() {
-		return mColor;
+		if (color == null) {
+		    return DEFAULT_COLOR;
+		} else {
+	        return color;
+		}
 	}
 
 	@Override
-	public String getCategoryName() {
-		return mCategoryName;
+	public String getName() {
+		return this.name;
 	}
 
 	@Override
 	public ICategory setColor(Color color) {
-		mColor = color;
+		this.color = color;
 		return this;
 	}
 
 	@Override
-	public ICategory setCategoryName(String name) {
-		mCategoryName = name;
+	public ICategory setName(String name) {
+		this.name = name;
 		return this;
+	}
+	
+	public static ICategory getDefaultCategory() {
+	    if (defaultCategory == null) {
+	        defaultCategory = new Category().setName(DEFAULT_NAME).setColor(DEFAULT_COLOR);
+	    }
+	    return defaultCategory;
 	}
 
 	

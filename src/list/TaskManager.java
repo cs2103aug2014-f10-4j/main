@@ -29,7 +29,7 @@ class TaskManager {
     		return mCategories.get(categoryName);
     	} else {
     		ICategory category = new Category();
-    		category.setCategoryName(categoryName)
+    		category.setName(categoryName)
     			.setColor(Color.BLACK);
     		mCategories.put(categoryName, category);
     		return category;
