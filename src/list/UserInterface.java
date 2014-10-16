@@ -5,6 +5,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
@@ -18,8 +19,8 @@ public class UserInterface implements IUserInterface {
     
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
+	private static JScrollPane scrollPanel = new JScrollPane(console);
 	private static int mCursorPosition = 0;
-	
 	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
@@ -31,9 +32,10 @@ public class UserInterface implements IUserInterface {
 	private static int LABELWIDTH = MAINFRAMEWIDTH;
 	private static int LABELHEIGHT = LISTHEIGHT / NUMBEROFLINESALLOWED;
 	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
-	private static Font fontForDate = new Font("Arial", Font.BOLD, 36);
-	private static Font fontForTask = new Font("Arial", Font.PLAIN, 36);
-	private static Date previousDate = null;
+	private static Font fontForDate = new Font("American Typewriter", Font.BOLD, 36);
+	private static Font fontForTask = new Font("American Typewriter", Font.PLAIN, 36);
+	private static Font fontForConsole = new Font("American Typewriter", Font.PLAIN, 12);
+	private static Date previousDate = new Date(0, 0, 0);
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
 
@@ -233,20 +235,32 @@ public class UserInterface implements IUserInterface {
 		console.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "doEnterAction");
 		console.getActionMap().put("doEnterAction", enterAction);
 		
+		//use key bindings
+		DeleteAction deleteAction = new DeleteAction();
+		console.getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "doDeleteAction");
+		console.getActionMap().put("doDeleteAction", deleteAction);
+		
 		// append the letter that appears at the first place
 		showInConsole(CONSOLE_ARROWS);
 
-		// set the size of the console
-		console.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
+		// set the size of the scrollPanel
+		scrollPanel.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
+		
+		// set the font of the console
+		console.setFont(fontForConsole);
+		
+		// set the position of the cursor to the last of the console
+		console.setCaretPosition(console.getDocument().getLength());
 
 		// add the label to the container
-		mainFrame.getContentPane().add(console);
+		mainFrame.getContentPane().add(scrollPanel);
 	}
 
 	public void displayMessageToUser(String message) {
 	    showInConsole(message);
 	    showInConsole("\n");
 	    showInConsole(CONSOLE_ARROWS);
+	    console.setCaretPosition(console.getDocument().getLength());
 	}
 	
 	private void showInConsole(String text) {
@@ -272,11 +286,18 @@ public class UserInterface implements IUserInterface {
         }
 	    
 	}
+	
+	private class DeleteAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            System.out.println("Delete pressed!");
+            
+        }
+	}
 
     @Override
     public void displayCategories(List<ICategory> categories) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
