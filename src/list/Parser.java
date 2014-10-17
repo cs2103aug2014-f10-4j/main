@@ -1,5 +1,6 @@
 package list;
 
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -17,8 +18,9 @@ import list.Date.InvalidDateException;
  */
 public class Parser implements IParser {
     private static final int MINIMUM_TASK_NUMBER = 1;
-    
-    private TaskManager taskManager = TaskManager.getInstance();
+
+    private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
+    private final TaskManager taskManager = TaskManager.getInstance();
     
     //Regular Expression Patterns
     //Note: backslash must be escaped in Java
@@ -33,6 +35,11 @@ public class Parser implements IParser {
     private final Pattern REGEX_TASK_NUMBER_EDIT = Pattern.compile("(?<=^edit\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DELETE = Pattern.compile("(?<=^delete\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DISPLAY = Pattern.compile("(?<=^display\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
+    
+    private final String[] syntaxTokens = {
+            "-t", "--title",
+            "-s", "--start"
+    };
     
     @Override
     public ICommand parse(String input) throws ParseException {
@@ -264,6 +271,14 @@ public class Parser implements IParser {
         return new Date(date, month, year);
     }
     
+    protected boolean isListSyntax(String input) {
+        for(String token: this.syntaxTokens) {
+            if (input.contains(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     
 }
