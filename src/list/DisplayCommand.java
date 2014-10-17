@@ -6,6 +6,8 @@ package list;
  *
  */
 public class DisplayCommand implements ICommand {
+	
+	private TaskManager taskManager = TaskManager.getInstance();
 	private Integer mTaskNumber;
 
 	public DisplayCommand(Integer taskNumber) {
@@ -15,14 +17,14 @@ public class DisplayCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 		
-		if (!TaskManager.isValidTaskNumber(mTaskNumber)) {
+		if (!taskManager.isValidTaskNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();	
 		} 
 		
-		ITask selectedTask = TaskManager.getTask(mTaskNumber);
+		ITask selectedTask = taskManager.getTask(mTaskNumber);
 		
 		
-		//Controller.updateUIWithTaskDetail(selectedTask);
+		Controller.updateUIWithTaskDetail(selectedTask);
 		
 		return "Displaying ...";
 	}

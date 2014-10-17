@@ -10,6 +10,7 @@ import list.CommandBuilder.RepeatFrequency;
  * @author Michael
  */
 public class AddCommand implements ICommand {
+	private TaskManager taskManager = TaskManager.getInstance();
 	private String mTitle;
 	private Date mStartTime;
 	private Date mEndTime;
@@ -58,8 +59,8 @@ public class AddCommand implements ICommand {
 			.setCategory(mCategory)
 			.setNotes(mNotes);
 		
-		TaskManager.addTask(task);
-		TaskManager.sortTasks();
+		taskManager.addTask(task);
+		taskManager.sortTasks();
 		
 		Controller.updateListOfTasksInUI();
 		

@@ -16,6 +16,7 @@ import org.junit.Test;
  */
 public class EditCommandTest {
 	
+	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
 	private final Date START_TIME = null;
 	private Date END_TIME = null; //01-01-2014
@@ -26,9 +27,9 @@ public class EditCommandTest {
 	
 	@Before
 	public void initializeTest() throws Exception {
-		TaskManager.clearTasks();
+		taskManager.clearTasks();
 		END_TIME = new Date(1,1,1);
-		
+
 		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
 											   REPEAT_FREQUENCY, PLACE, 
 											   CATEGORY, NOTES);		
@@ -53,7 +54,7 @@ public class EditCommandTest {
 	@Test(expected = InvalidTaskNumberException.class)
 	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
 			throws InvalidTaskNumberException {
-		int numberGreaterThanTotalNumberOfTasks = TaskManager.getNumberOfTasks() + 1;
+		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
 		
 		EditCommand editCommand = new EditCommand(numberGreaterThanTotalNumberOfTasks, 
 												  null, 
@@ -81,7 +82,7 @@ public class EditCommandTest {
 												  null);
 		editCommand.execute();
 						
-		ITask modifiedTask = TaskManager.getTask(taskNumber);
+		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(newTitle, modifiedTask.getTitle());
 		assertEquals(START_TIME, modifiedTask.getStartTime());
@@ -107,7 +108,7 @@ public class EditCommandTest {
 												  null);
 		editCommand.execute();
 		
-		ITask modifiedTask = TaskManager.getTask(taskNumber);
+		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(TITLE, modifiedTask.getTitle());
 		assertEquals(newStartTime, modifiedTask.getStartTime());
@@ -137,6 +138,6 @@ public class EditCommandTest {
 												  null);
 		editCommand.execute();
 				
-		assertEquals(true, TaskManager.isListOfTasksSorted());
+		assertEquals(true, taskManager.isListOfTasksSorted());
 	}
 }
