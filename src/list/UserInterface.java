@@ -39,6 +39,7 @@ public class UserInterface implements IUserInterface {
 	private static Date previousDate = null;
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
+	private static int numberOfTasks = 0;
 
 	public UserInterface() {
 	    
@@ -68,6 +69,7 @@ public class UserInterface implements IUserInterface {
 		mainFrame.repaint();
 		arrayListOfJLabel = new ArrayList<JLabel>();
 		numberOfLines = 0;
+		numberOfTasks = 0;
 		previousDate = null;
 	}
 
@@ -155,9 +157,15 @@ public class UserInterface implements IUserInterface {
 
 	public void displayNewTask(ITask task) {
 		
+		// increment numberOfTasks by 1
+		numberOfTasks++;
+		
+		// get the task number to be displayed
+		String stringOfTaskToDisplay = Integer.toString(numberOfTasks) + ": ";
+		
 		// get the title of the task to be displayed
-		String stringOfTaskToDisplay = task.getTitle();
-
+		stringOfTaskToDisplay += task.getTitle();
+		
 		// display the contents to the window
 		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
 	}
@@ -171,8 +179,10 @@ public class UserInterface implements IUserInterface {
 	 */
 	private Color getCategoryColor(ITask task) {
 	    if (task.getCategory() == null) {
+	    	assert(Category.getDefaultCategory().getColor() != null);
 	        return Category.getDefaultCategory().getColor();
 	    } else {
+	    	assert(task.getCategory().getColor() != null);
 	        return task.getCategory().getColor();
 	    }
 	}
