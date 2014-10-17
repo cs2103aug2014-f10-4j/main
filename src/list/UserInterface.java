@@ -14,6 +14,7 @@ import javax.swing.text.BadLocationException;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.util.List;
 
 public class UserInterface implements IUserInterface {
