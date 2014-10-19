@@ -9,7 +9,9 @@ import list.CommandBuilder.RepeatFrequency;
  */
 public class EditCommand implements ICommand {
 		
-	private TaskManager taskManager = TaskManager.getInstance(); 
+	private static final String MESSAGE_SUCCESS = "Task is successfully edited";
+    private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
+    private TaskManager taskManager = TaskManager.getInstance(); 
 	private Integer taskNumber;
 	private String title;
 	private Date startDate;
@@ -18,11 +20,13 @@ public class EditCommand implements ICommand {
 	private String place;
 	private ICategory category;
 	private String notes;
-	
+
+    public EditCommand() { };
+    
 	public EditCommand(Integer taskNumber,
 					   String title,
 			           Date startDate,
-			           Date endTime,
+			           Date endDate,
 			           RepeatFrequency repeatFrequency,
 			           String place,
 			           ICategory category,
@@ -30,16 +34,54 @@ public class EditCommand implements ICommand {
 		this.taskNumber = taskNumber;
 		this.title = title;
 		this.startDate = startDate;
-		this.endDate = endTime;
+		this.endDate = endDate;
 		this.repeatFrequency = repeatFrequency;
 		this.place = place;
 		this.category = category;
 		this.notes = notes;
 	}
-	
+
+	public EditCommand setTitle(String title) {
+	    this.title = title;
+	    return this;
+	}
+
+	public EditCommand setStartDate(Date startDate) {
+	    this.startDate = startDate;
+	    return this;
+	}
+
+	public EditCommand setEndDate(Date endDate) {
+	    this.endDate = endDate;
+	    return this;
+	}
+
+	public EditCommand setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    this.repeatFrequency = repeatFrequency;
+	    return this;
+	}
+
+	public EditCommand setPlace(String place) {
+	    this.place = place;
+	    return this;
+	}
+
+	public EditCommand setCategory(ICategory category) {
+	    this.category = category;
+	    return this;
+	}
+
+	public EditCommand setNotes(String notes) {
+	    this.notes = notes;
+	    return this;
+	}
+
 	@Override
-	public String execute() throws InvalidTaskNumberException {
-			
+	public String execute() throws InvalidTaskNumberException,
+	                               CommandExecutionException {
+		if (this.taskNumber == null) {
+		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
+		}
 		if (!taskManager.hasTaskWithNumber(taskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
@@ -78,7 +120,7 @@ public class EditCommand implements ICommand {
 		
 		Controller.updateListOfTasksInUi();
 		
-		return "Task is successfully edited";
+		return MESSAGE_SUCCESS;
 	}
 	
 	public Integer getTaskNumber() {
