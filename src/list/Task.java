@@ -4,8 +4,8 @@ import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
 	private String title;
-	private Date startTime;
-	private Date endTime;
+	private Date startDate;
+	private Date endDate;
 	private RepeatFrequency repeatFrequency;
 	private String place;
 	private ICategory category;
@@ -13,7 +13,11 @@ public class Task implements ITask {
 	
 	@Override
 	public int compareTo(ITask o) {
-	    return this.getEndTime().compareTo(o.getEndTime());
+	    if (this.getEndDate() != null && o.getEndDate() != null) {
+	        return this.getEndDate().compareTo(o.getEndDate());
+	    } else {
+	        return this.getTitle().compareTo(o.getTitle());
+	    }
 	}
 
 	public String getTitle() {
@@ -25,21 +29,21 @@ public class Task implements ITask {
 		return this;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public Task setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public Task setStartDate(Date startDate) {
+		this.startDate = startDate;
 		return this;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Date getEndDate() {
+		return endDate;
 	}
 
-	public Task setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public Task setEndDate(Date endDate) {
+		this.endDate = endDate;
 		return this;
 	}
 

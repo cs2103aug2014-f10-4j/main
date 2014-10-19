@@ -10,8 +10,8 @@ public class CloseCommand implements ICommand {
 	
 	@Override
 	public String execute() {
-		//TODO: save necessary files, configuration, etc.
-		return MESSAGE_EXIT;
+	    System.exit(0);
+	    return MESSAGE_EXIT;
 	}
 
 }

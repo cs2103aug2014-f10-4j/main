@@ -47,8 +47,8 @@ public class Parser implements IParser {
             CommandBuilder commandBuilder = new CommandBuilder();
             commandBuilder.setCommandType(getCommandType(input));
             commandBuilder.setTitle(getTitle(input));
-            commandBuilder.setStartTime(getStartTime(input));
-            commandBuilder.setEndTime(getEndTime(input));
+            commandBuilder.setStartDate(getStartDate(input));
+            commandBuilder.setEndDate(getEndDate(input));
             commandBuilder.setNotes(getNotes(input));
             commandBuilder.setPlace(getPlace(input));
             commandBuilder.setCategory(getCategory(input));
@@ -203,16 +203,16 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the start time argument
      */
-    private Date getStartTime(String input) throws InvalidDateException {
-        String startTime = findFirstMatch(REGEX_START_TIME, input);
-        if (startTime == null) {
+    private Date getStartDate(String input) throws InvalidDateException {
+        String startDate = findFirstMatch(REGEX_START_TIME, input);
+        if (startDate == null) {
             return null;
         }
-        String[] startTimeSplit = startTime.split("-");
-        if (startTimeSplit.length == 3) {
-            return getDateInstance(Integer.parseInt(startTimeSplit[0]),
-                    Integer.parseInt(startTimeSplit[1]),
-                    Integer.parseInt(startTimeSplit[2]));
+        String[] startDateSplit = startDate.split("-");
+        if (startDateSplit.length == 3) {
+            return getDateInstance(Integer.parseInt(startDateSplit[0]),
+                    Integer.parseInt(startDateSplit[1]),
+                    Integer.parseInt(startDateSplit[2]));
         } else {
             assert(false); //should never be called. format has been enforced by Regex
             return null;
@@ -227,16 +227,16 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the end time argument
      */
-    private Date getEndTime(String input) throws InvalidDateException {
-        String startTime = findFirstMatch(REGEX_END_TIME, input);
-        if (startTime == null) {
+    private Date getEndDate(String input) throws InvalidDateException {
+        String startDate = findFirstMatch(REGEX_END_TIME, input);
+        if (startDate == null) {
             return null;
         }
-        String[] startTimeSplit = startTime.split("-");
-        if (startTimeSplit.length == 3) {
-            return getDateInstance(Integer.parseInt(startTimeSplit[0]),
-                    Integer.parseInt(startTimeSplit[1]),
-                    Integer.parseInt(startTimeSplit[2]));
+        String[] startDateSplit = startDate.split("-");
+        if (startDateSplit.length == 3) {
+            return getDateInstance(Integer.parseInt(startDateSplit[0]),
+                    Integer.parseInt(startDateSplit[1]),
+                    Integer.parseInt(startDateSplit[2]));
         } else {
             assert(false); //should never be called. format has been enforced by Regex
             return null;

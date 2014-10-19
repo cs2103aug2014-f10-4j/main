@@ -9,14 +9,22 @@ package list;
  *
  */
 interface ICommand {	
-	class InvalidTaskNumberException extends Exception { };
+	@SuppressWarnings("serial")
+    class InvalidTaskNumberException extends Exception { };
 		
+	@SuppressWarnings("serial")
+    class CommandExecutionException extends Exception {
+	    public CommandExecutionException(String message) {
+	        super(message);
+	    }
+	};
+	
 	/**
 	 * Executes this command.
 	 * 
 	 * @return the response to be shown in the console.
 	 * @throws InvalidTaskNumberException 
 	 */
-	String execute() throws InvalidTaskNumberException;
+	String execute() throws InvalidTaskNumberException, CommandExecutionException;
 	
 }

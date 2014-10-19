@@ -10,13 +10,14 @@ public class Category implements ICategory {
     private String name = null;
 	private Color color = null;
 	
+	public Category() {
+	    this.name = DEFAULT_NAME;
+	    this.color = DEFAULT_COLOR;
+	}
+	
 	@Override
 	public Color getColor() {
-		if (color == null) {
-		    return DEFAULT_COLOR;
-		} else {
-	        return color;
-		}
+        return this.color;
 	}
 
 	@Override
@@ -33,7 +34,6 @@ public class Category implements ICategory {
 	@Override
 	public ICategory setName(String name) {
 		this.name = name;
-
 		return this;
 	}
 	

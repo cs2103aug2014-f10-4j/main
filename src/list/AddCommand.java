@@ -10,61 +10,92 @@ import list.CommandBuilder.RepeatFrequency;
  * @author Michael
  */
 public class AddCommand implements ICommand {
-	private TaskManager taskManager = TaskManager.getInstance();
-	private String mTitle;
-	private Date mStartTime;
-	private Date mEndTime;
-	private RepeatFrequency mRepeatFrequency;
-	private String mPlace;
-	private ICategory mCategory;
-	private String mNotes;
+	private static final String MESSAGE_TASK_ADDED_SUCCESFULLY = "Task added succesfully";
+    private static final String MESSAGE_NO_TITLE = "Please specify title for the task.";
+    private TaskManager taskManager = TaskManager.getInstance();
+	private String title = null;
+	private Date startDate = null;
+	private Date endDate = null;
+	private RepeatFrequency repeatFrequency = RepeatFrequency.NONE;
+	private String place = null;
+	private ICategory category = null;
+	private String notes = null;
 	
-	/**
-	 * Save the provided information in private variable so that it can
-	 * be used during execute() command
-	 * 
-	 * @param title
-	 * @param startTime
-	 * @param endTime
-	 * @param repeatFrequency
-	 * @param place
-	 * @param category
-	 * @param notes
-	 */
-	AddCommand(String title,
-               Date startTime,
-               Date endTime,
-               RepeatFrequency repeatFrequency,
-               String place,
-               ICategory category,
-               String notes) {
-		
-		mTitle = title;
-		mStartTime = startTime;
-		mEndTime = endTime;
-		mRepeatFrequency = repeatFrequency;
-		mPlace = place;
-		mCategory = category;
-		mNotes = notes;
+	public AddCommand() { };
+	
+	public AddCommand(String title, 
+	                  Date startDate, 
+	                  Date endDate,
+	                  RepeatFrequency repeatFrequency, 
+	                  String place,
+	                  ICategory category, 
+	                  String notes) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.repeatFrequency = repeatFrequency;
+        this.place = place;
+        this.category = category;
+        this.notes = notes;
+    }
+
+    public AddCommand setTitle(String title) {
+	    this.title = title;
+        return this;
+	}
+	
+	public AddCommand setStartDate(Date startDate) {
+	    this.startDate = startDate;
+        return this;
+	}
+	
+	public AddCommand setEndDate(Date endDate) {
+	    this.endDate = endDate;
+        return this;
+	}
+	
+	public AddCommand setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    this.repeatFrequency = repeatFrequency;
+        return this;
+	}
+	
+	public AddCommand setPlace(String place) {
+	    this.place = place;
+        return this;
+	}
+	
+	public AddCommand setCategory(ICategory category) {
+	    this.category = category;
+        return this;
+	}
+	
+	public AddCommand setNotes(String notes) {
+	    this.notes = notes;
+	    return this;
 	}
 	
 	@Override
-	public String execute() {
+	public String execute() throws CommandExecutionException {
+	    //enforce required conditions
+	    if (this.title == null) {
+	        throw new CommandExecutionException(MESSAGE_NO_TITLE);
+	    }
+	    
 		Task task = new Task();
-		task.setTitle(mTitle)
-			.setStartTime(mStartTime)
-			.setEndTime(mEndTime)
-			.setRepeatFrequency(mRepeatFrequency)
-			.setPlace(mPlace)
-			.setCategory(mCategory)
-			.setNotes(mNotes);
+		task.setTitle(this.title)
+			.setStartDate(this.startDate)
+			.setEndDate(this.endDate)
+			.setRepeatFrequency(this.repeatFrequency)
+			.setPlace(this.place)
+			.setCategory(this.category)
+			.setNotes(this.notes);
 		
 		taskManager.addTask(task);
 		taskManager.sortTasks();
 		
-		Controller.updateListOfTasksInUI();
+		Controller.updateListOfTasksInUi();
 		
-		return "Task added succesfully";
+		return MESSAGE_TASK_ADDED_SUCCESFULLY;
 	}
 
 }
