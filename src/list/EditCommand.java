@@ -40,6 +40,11 @@ public class EditCommand implements ICommand {
 		this.category = category;
 		this.notes = notes;
 	}
+	
+	public EditCommand setTaskNumber(Integer taskNumber) {
+	    this.taskNumber = taskNumber;
+	    return this;
+	}
 
 	public EditCommand setTitle(String title) {
 	    this.title = title;
