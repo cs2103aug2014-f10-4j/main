@@ -8,10 +8,8 @@ import java.util.List;
  * @author andhieka, michael, shotaro
  */
 interface IUserInterface {
-    class DisplayFullException extends Exception { };
     
-    
-    void displayNewTaskOrDate(ITask task) throws DisplayFullException;
+    void displayNewTaskOrDate(ITask task);
     
     void displayTaskDetail(ITask task);
     

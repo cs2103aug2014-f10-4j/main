@@ -1,6 +1,12 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
+import list.AddCommand;
+import list.Date;
+import list.EditCommand;
+import list.ICategory;
+import list.ITask;
+import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
@@ -85,8 +91,8 @@ public class EditCommandTest {
 		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(newTitle, modifiedTask.getTitle());
-		assertEquals(START_TIME, modifiedTask.getStartTime());
-		assertEquals(END_TIME, modifiedTask.getEndTime());
+		assertEquals(START_TIME, modifiedTask.getStartDate());
+		assertEquals(END_TIME, modifiedTask.getEndDate());
 		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
 		assertEquals(PLACE, modifiedTask.getPlace());
 		assertEquals(CATEGORY, modifiedTask.getCategory());
@@ -111,8 +117,8 @@ public class EditCommandTest {
 		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(TITLE, modifiedTask.getTitle());
-		assertEquals(newStartTime, modifiedTask.getStartTime());
-		assertEquals(END_TIME, modifiedTask.getEndTime());
+		assertEquals(newStartTime, modifiedTask.getStartDate());
+		assertEquals(END_TIME, modifiedTask.getEndDate());
 		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
 		assertEquals(PLACE, modifiedTask.getPlace());
 		assertEquals(CATEGORY, modifiedTask.getCategory());
@@ -120,8 +126,7 @@ public class EditCommandTest {
 	}
 	
 	@Test
-	public void shouldMaintainListOfTasksSortedAfterEditingTask() 
-			throws InvalidTaskNumberException, InvalidDateException {
+	public void shouldMaintainListOfTasksSortedAfterEditingTask() throws Exception {
 		AddCommand addCommand = new AddCommand("task 1", null, new Date(2,1,2014), 
 											   null, null, 
 										   	   null, null);

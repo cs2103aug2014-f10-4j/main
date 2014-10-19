@@ -105,12 +105,12 @@ public class Converter {
 	private void putAllJsonAttributesOfTask(JSONObject taskDetail, ITask task) 
 			throws JSONException {
 		
-		if (task.getStartTime() != null) {
-			taskDetail.put(KEY_START_TIME, task.getStartTime().toString());
+		if (task.getStartDate() != null) {
+			taskDetail.put(KEY_START_TIME, task.getStartDate().toString());
 		}
 		
-		if (task.getEndTime() != null) {
-			taskDetail.put(KEY_END_TIME, task.getEndTime().toString());
+		if (task.getEndDate() != null) {
+			taskDetail.put(KEY_END_TIME, task.getEndDate().toString());
 		}
 		
 		if (task.getRepeatFrequency() != null) {
@@ -133,7 +133,7 @@ public class Converter {
 			String startTime = taskDetailInJson.getString(KEY_START_TIME);
 						
 			if (startTime != null) {
-				task.setStartTime(new Date(startTime));
+				task.setStartDate(new Date(startTime));
 			}
 		}
 		
@@ -141,7 +141,7 @@ public class Converter {
 			String endTime = taskDetailInJson.getString(KEY_END_TIME);
 						
 			if (endTime != null) {
-				task.setEndTime(new Date(endTime));
+				task.setEndDate(new Date(endTime));
 			}
 		}
 		

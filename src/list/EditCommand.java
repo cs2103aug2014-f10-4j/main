@@ -40,7 +40,7 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException {
 			
-		if (!taskManager.isValidTaskNumber(mTaskNumber)) {
+		if (!taskManager.hasTaskWithNumber(mTaskNumber)) {
 			throw new InvalidTaskNumberException();
 		}
 		
@@ -51,11 +51,11 @@ public class EditCommand implements ICommand {
 		}
 		
 		if (mStartTime != null) {
-			taskToEdit.setStartTime(mStartTime);
+			taskToEdit.setStartDate(mStartTime);
 		}
 		
 		if (mEndTime != null) {
-			taskToEdit.setEndTime(mEndTime);
+			taskToEdit.setEndDate(mEndTime);
 		}
 		
 		if (mRepeatFrequency != null) {
@@ -76,7 +76,7 @@ public class EditCommand implements ICommand {
 		
 		taskManager.sortTasks();
 		
-		Controller.updateListOfTasksInUI();
+		Controller.updateListOfTasksInUi();
 		
 		return "Task is successfully edited";
 	}

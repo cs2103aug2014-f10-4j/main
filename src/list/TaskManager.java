@@ -26,7 +26,7 @@ public class TaskManager {
     
     private TaskManager() { } ;
     
-    static TaskManager getInstance() {
+    public static TaskManager getInstance() {
     	if (taskManagerInstance == null) {
     		taskManagerInstance = new TaskManager();
     	}
@@ -80,8 +80,8 @@ public class TaskManager {
     	return tasks.contains(task);
     }
     
-    boolean isValidTaskNumber(Integer taskNumber) {
-		return (taskNumber >= 1) && (taskNumber <= TaskManager.getInstance().getNumberOfTasks());
+    boolean hasTaskWithNumber(Integer taskNumber) {
+		return (taskNumber >= 1) && (taskNumber <= getNumberOfTasks());
 	}
     
     boolean isListOfTasksSorted() {
