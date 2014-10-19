@@ -6,7 +6,8 @@ import list.IParser.ParseException;
 
 public class Controller {
 		
-	private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
+	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
+    private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
     private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
 	
 	private static IUserInterface userInterface = new UserInterface();
@@ -29,7 +30,7 @@ public class Controller {
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
         } catch (Exception e) {
-            reply = "Unknown error!";
+            reply = MESSAGE_UNKNOWN_ERROR;
             e.printStackTrace();
         }
 		return reply;

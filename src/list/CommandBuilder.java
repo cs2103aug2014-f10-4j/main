@@ -12,7 +12,7 @@ import junit.extensions.RepeatedTest;
 class CommandBuilder {
 	private CommandType mCommandType = null;
 	private String mTitle = null;
-	private Date mStartTime = null;
+	private Date mStartDate = null;
 	private Date mEndTime = null;
 	private RepeatFrequency mRepeatFrequency = null;
 	private String mPlace = null;
@@ -49,12 +49,12 @@ class CommandBuilder {
 		return this;
 	}
 	
-	CommandBuilder setStartTime(Date startTime) {
-		mStartTime = startTime;
+	CommandBuilder setStartDate(Date startDate) {
+		mStartDate = startDate;
 		return this;
 	}
 	
-	CommandBuilder setEndTime(Date endTime) {
+	CommandBuilder setEndDate(Date endTime) {
 		mEndTime = endTime;
 		return this;
 	}
@@ -97,11 +97,11 @@ class CommandBuilder {
 		ICommand command;
 		switch (mCommandType) {
 		case ADD:
-		    command = new AddCommand(mTitle, mStartTime, mEndTime,
+		    command = new AddCommand(mTitle, mStartDate, mEndTime,
 		            mRepeatFrequency, mPlace, mCategory, mNotes);
 		    break;
 		case EDIT:
-		    command = new EditCommand(mTaskNumber, mTitle, mStartTime, mEndTime,
+		    command = new EditCommand(mTaskNumber, mTitle, mStartDate, mEndTime,
 		            mRepeatFrequency, mPlace, mCategory, mNotes);
 		    break;
 		case DISPLAY:

@@ -33,8 +33,8 @@ public class Task implements ITask {
 		return startDate;
 	}
 
-	public Task setStartDate(Date startTime) {
-		this.startDate = startTime;
+	public Task setStartDate(Date startDate) {
+		this.startDate = startDate;
 		return this;
 	}
 
@@ -42,8 +42,8 @@ public class Task implements ITask {
 		return endDate;
 	}
 
-	public Task setEndDate(Date endTime) {
-		this.endDate = endTime;
+	public Task setEndDate(Date endDate) {
+		this.endDate = endDate;
 		return this;
 	}
 

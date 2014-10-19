@@ -49,8 +49,8 @@ public class AddCommandTest {
 		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 		
 		String title = "Should add the correct task.";
-		Date startTime = new Date("11-12-2013");
-		Date endTime = new Date("31-12-2013");
+		Date startDate = new Date("11-12-2013");
+		Date endDate = new Date("31-12-2013");
 		RepeatFrequency repeatFrequency = RepeatFrequency.DAILY;
 		String place = "The school of computing";
 		ICategory category = new Category().setName("Software Engineering");
@@ -58,8 +58,8 @@ public class AddCommandTest {
 		
 		AddCommand addCommand = new AddCommand();
 		addCommand.setTitle(title)
-		    .setStartDate(startTime)
-		    .setEndDate(endTime)
+		    .setStartDate(startDate)
+		    .setEndDate(endDate)
 		    .setRepeatFrequency(repeatFrequency)
 		    .setPlace(place)
 		    .setCategory(category)
@@ -69,8 +69,8 @@ public class AddCommandTest {
 		ITask newlyAddedTask = taskManager.getTask(initialNumberOfTasks + 1);
 		
 		assertEquals(title, newlyAddedTask.getTitle());
-		assertEquals(startTime, newlyAddedTask.getStartDate());
-		assertEquals(endTime, newlyAddedTask.getEndDate());
+		assertEquals(startDate, newlyAddedTask.getStartDate());
+		assertEquals(endDate, newlyAddedTask.getEndDate());
 		assertEquals(repeatFrequency, newlyAddedTask.getRepeatFrequency());
 		assertEquals(place, newlyAddedTask.getPlace());
 		assertEquals(category, newlyAddedTask.getCategory());

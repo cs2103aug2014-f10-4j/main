@@ -9,7 +9,7 @@ interface ITask extends Comparable<ITask> {
 
 	public Date getStartDate();
 
-	public ITask setStartDate(Date startTime);
+	public ITask setStartDate(Date startDate);
 
 	public Date getEndDate();
 

@@ -130,10 +130,10 @@ public class Converter {
 			JSONObject taskDetailInJson) throws JSONException,
 			InvalidDateException {
 		if (taskDetailInJson.has(KEY_START_TIME)) {
-			String startTime = taskDetailInJson.getString(KEY_START_TIME);
+			String startDate = taskDetailInJson.getString(KEY_START_TIME);
 						
-			if (startTime != null) {
-				task.setStartDate(new Date(startTime));
+			if (startDate != null) {
+				task.setStartDate(new Date(startDate));
 			}
 		}
 		

@@ -26,7 +26,7 @@ public class TaskManager {
     
     private TaskManager() { } ;
     
-    public static TaskManager getInstance() {
+    static TaskManager getInstance() {
     	if (taskManagerInstance == null) {
     		taskManagerInstance = new TaskManager();
     	}
