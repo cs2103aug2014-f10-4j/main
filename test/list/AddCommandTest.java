@@ -92,4 +92,15 @@ public class AddCommandTest {
 
         assertEquals(true, taskManager.isListOfTasksSorted());
 	}
+	
+	@Test
+	public void shouldDefaultToNonRepeating() throws Exception {
+	    AddCommand command = new AddCommand();
+	    command.setTitle("Testing").setEndDate(new Date("01-01-2001"));
+	    command.execute();
+	    
+	    ITask task = taskManager.getTask(1);
+	    assertEquals("Testing", task.getTitle());
+	    assertEquals(RepeatFrequency.NONE, task.getRepeatFrequency());
+	}
 }

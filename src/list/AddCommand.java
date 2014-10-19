@@ -16,7 +16,7 @@ public class AddCommand implements ICommand {
 	private String title = null;
 	private Date startDate = null;
 	private Date endDate = null;
-	private RepeatFrequency repeatFrequency = null;
+	private RepeatFrequency repeatFrequency = RepeatFrequency.NONE;
 	private String place = null;
 	private ICategory category = null;
 	private String notes = null;
