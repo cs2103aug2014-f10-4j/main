@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class UserInterface implements IUserInterface {
+    private static UserInterface singletonInstance = null;
     
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
@@ -41,7 +42,11 @@ public class UserInterface implements IUserInterface {
 	private static int numberOfLines = 0;
 	private static int numberOfTasks = 0;
 
-	public UserInterface() {
+	/**
+	 * UserInterface is a singleton class.
+	 * Use getInstance() get the UserInterface object.
+	 */
+	private UserInterface() {
 	    
 		// set the size of the frame
 		mainFrame.setSize(MAINFRAMEWIDTH, MAINFRAMEHEIGHT);
@@ -60,6 +65,13 @@ public class UserInterface implements IUserInterface {
 		
 		// make the window visible to the user
 		mainFrame.setVisible(true);
+	}
+	
+	public static UserInterface getInstance() {
+	    if (UserInterface.singletonInstance == null) {
+	        UserInterface.singletonInstance = new UserInterface();
+	    }
+	    return UserInterface.singletonInstance;
 	}
 
 	public void clearAll() {

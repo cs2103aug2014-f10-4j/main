@@ -10,7 +10,7 @@ public class Controller {
     private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
     private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
 	
-	private static IUserInterface userInterface = new UserInterface();
+	private static IUserInterface userInterface = UserInterface.getInstance();
 	private static IParser parser = new Parser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	
