@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class UserInterface implements IUserInterface {
+    private static UserInterface singletonInstance = null;
     
 	private static JFrame mainFrame = new JFrame("List");
 	private static JTextArea console = new JTextArea();
@@ -25,13 +26,13 @@ public class UserInterface implements IUserInterface {
 	private final static String CONSOLE_ARROWS = ">> ";
 	private final static int MAINFRAMEWIDTH = 700;
 	private final static int MAINFRAMEHEIGHT = 700;
-	private final static int NUMBEROFLINESALLOWED = 13;
+	private final static int NUMBER_OF_LINES_ALLOWED = 13;
 	private static int CONSOLEWIDTH = MAINFRAMEWIDTH;
 	private static int CONSOLEHEIGHT = MAINFRAMEHEIGHT * 2 / 7;
 	private static int LISTWIDTH = MAINFRAMEWIDTH;
 	private static int LISTHEIGHT = MAINFRAMEHEIGHT - CONSOLEHEIGHT;
 	private static int LABELWIDTH = MAINFRAMEWIDTH;
-	private static int LABELHEIGHT = LISTHEIGHT / NUMBEROFLINESALLOWED;
+	private static int LABELHEIGHT = LISTHEIGHT / NUMBER_OF_LINES_ALLOWED;
 	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
 	private static Font fontForDate = new Font("American Typewriter", Font.BOLD, 36);
 	private static Font fontForTask = new Font("American Typewriter", Font.PLAIN, 36);
@@ -39,8 +40,13 @@ public class UserInterface implements IUserInterface {
 	private static Date previousDate = null;
 	private static boolean isFull = false;
 	private static int numberOfLines = 0;
+	private static int numberOfTasks = 0;
 
-	public UserInterface() {
+	/**
+	 * UserInterface is a singleton class.
+	 * Use getInstance() get the UserInterface object.
+	 */
+	private UserInterface() {
 	    
 		// set the size of the frame
 		mainFrame.setSize(MAINFRAMEWIDTH, MAINFRAMEHEIGHT);
@@ -60,6 +66,13 @@ public class UserInterface implements IUserInterface {
 		// make the window visible to the user
 		mainFrame.setVisible(true);
 	}
+	
+	public static UserInterface getInstance() {
+	    if (UserInterface.singletonInstance == null) {
+	        UserInterface.singletonInstance = new UserInterface();
+	    }
+	    return UserInterface.singletonInstance;
+	}
 
 	public void clearAll() {
 		for (int i = 0; i <  arrayListOfJLabel.size(); i++) {		
@@ -68,17 +81,15 @@ public class UserInterface implements IUserInterface {
 		mainFrame.repaint();
 		arrayListOfJLabel = new ArrayList<JLabel>();
 		numberOfLines = 0;
+		numberOfTasks = 0;
 		previousDate = null;
 	}
 
 	@Override
-	public void displayNewTaskOrDate(ITask task) throws DisplayFullException {
-
-		// return if the lines are full
-		if (numberOfLines == NUMBEROFLINESALLOWED - 1) {
-		    throw new DisplayFullException();
-		}
-
+	public void displayNewTaskOrDate(ITask task) {
+	    //Do not exceed number of lines
+		assert(numberOfLines < NUMBER_OF_LINES_ALLOWED - 1);
+		
 		// check whether the date is the same with the date of the previous task
 		// if it's not the same, display the new date
 		// if it's the same, display the task
@@ -105,7 +116,7 @@ public class UserInterface implements IUserInterface {
 		String stringForStartTime = "Start time: ";
 		
 		// get the start date to be displayed
-		Date startDateToDisplay = task.getStartTime();
+		Date startDateToDisplay = task.getStartDate();
 
 		// display the start time of the task
 		displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
@@ -115,7 +126,7 @@ public class UserInterface implements IUserInterface {
 		String stringForEndTime = "End time: ";
 		
 		// get the end date to be displayed
-		Date endDateToDisplay = task.getEndTime();
+		Date endDateToDisplay = task.getEndDate();
 
 		// display the end time of the task
 		displayNewLine(stringForEndTime + endDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
@@ -134,17 +145,17 @@ public class UserInterface implements IUserInterface {
 	public boolean checkDateIsAppeared(ITask task) {
 	    boolean dateHasAppeared = false;
 	    if (previousDate != null) {
-	        dateHasAppeared = previousDate.equals(task.getEndTime());
+	        dateHasAppeared = previousDate.equals(task.getEndDate());
 	    }
-	    assert(task.getEndTime() != null);
-	    previousDate = task.getEndTime();
+	    assert(task.getEndDate() != null);
+	    previousDate = task.getEndDate();
 		return dateHasAppeared;
 	}
 
 	public void displayNewDate(ITask task) {
 
 		// get the date to be displayed
-		Date dateToDisplay = task.getEndTime();
+		Date dateToDisplay = task.getEndDate();
 
 		// display the contents to the window
 		displayNewLine(dateToDisplay.getPrettyFormat(), fontForDate, getCategoryColor(task));
@@ -155,9 +166,15 @@ public class UserInterface implements IUserInterface {
 
 	public void displayNewTask(ITask task) {
 		
+		// increment numberOfTasks by 1
+		numberOfTasks++;
+		
+		// get the task number to be displayed
+		String stringOfTaskToDisplay = Integer.toString(numberOfTasks) + ": ";
+		
 		// get the title of the task to be displayed
-		String stringOfTaskToDisplay = task.getTitle();
-
+		stringOfTaskToDisplay += task.getTitle();
+		
 		// display the contents to the window
 		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
 	}
@@ -171,8 +188,10 @@ public class UserInterface implements IUserInterface {
 	 */
 	private Color getCategoryColor(ITask task) {
 	    if (task.getCategory() == null) {
+	    	assert(Category.getDefaultCategory().getColor() != null);
 	        return Category.getDefaultCategory().getColor();
 	    } else {
+	    	assert(task.getCategory().getColor() != null);
 	        return task.getCategory().getColor();
 	    }
 	}
@@ -202,7 +221,7 @@ public class UserInterface implements IUserInterface {
 
 		// increment the number of the lines already displayed, and if it is maximum, isFull = true
 		numberOfLines++;
-		if (numberOfLines == NUMBEROFLINESALLOWED - 1) {
+		if (numberOfLines == NUMBER_OF_LINES_ALLOWED - 1) {
 		    isFull = true;
 		}
 	}

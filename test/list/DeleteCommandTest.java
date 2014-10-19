@@ -1,6 +1,12 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
+import list.AddCommand;
+import list.Date;
+import list.DeleteCommand;
+import list.ICategory;
+import list.ITask;
+import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
@@ -32,7 +38,7 @@ public class DeleteCommandTest {
 	
 	@Test(expected = InvalidTaskNumberException.class)
 	public void shouldHandleInvalidTaskNumberSmallerThanOne() 
-			throws InvalidTaskNumberException {
+			throws Exception {
 		int numberSmallerThanOne = 0;
 		
 		DeleteCommand deleteCommand = new DeleteCommand(numberSmallerThanOne);
@@ -41,7 +47,7 @@ public class DeleteCommandTest {
 	
 	@Test(expected = InvalidTaskNumberException.class)
 	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
-			throws InvalidTaskNumberException {
+			throws Exception {
 		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
 		
 		DeleteCommand deleteCommand = new DeleteCommand(numberGreaterThanTotalNumberOfTasks);
@@ -49,7 +55,7 @@ public class DeleteCommandTest {
 	}
 	 
 	@Test
-	public void shouldDecreaseNumberOfTasksByOne() throws InvalidTaskNumberException {
+	public void shouldDecreaseNumberOfTasksByOne() throws Exception {
 		int initialNumberOfTasks = taskManager.getNumberOfTasks();
 		
 		DeleteCommand deleteCommand = new DeleteCommand(1);
@@ -59,7 +65,7 @@ public class DeleteCommandTest {
 	}
 	
 	@Test
-	public void deletedTaskShouldNotExistAnymore() throws InvalidTaskNumberException {
+	public void deletedTaskShouldNotExistAnymore() throws Exception {
 		int taskNumber = 1;
 		ITask task = taskManager.getTask(taskNumber);
 		

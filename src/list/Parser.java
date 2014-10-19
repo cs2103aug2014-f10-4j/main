@@ -1,5 +1,6 @@
 package list;
 
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -17,8 +18,9 @@ import list.Date.InvalidDateException;
  */
 public class Parser implements IParser {
     private static final int MINIMUM_TASK_NUMBER = 1;
-    
-    private TaskManager taskManager = TaskManager.getInstance();
+
+    private final static Logger LOGGER = Logger.getLogger(Parser.class.getName());
+    private final TaskManager taskManager = TaskManager.getInstance();
     
     //Regular Expression Patterns
     //Note: backslash must be escaped in Java
@@ -34,14 +36,19 @@ public class Parser implements IParser {
     private final Pattern REGEX_TASK_NUMBER_DELETE = Pattern.compile("(?<=^delete\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DISPLAY = Pattern.compile("(?<=^display\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     
+    private final String[] syntaxTokens = {
+            "-t", "--title",
+            "-s", "--start"
+    };
+    
     @Override
     public ICommand parse(String input) throws ParseException {
         try {
             CommandBuilder commandBuilder = new CommandBuilder();
             commandBuilder.setCommandType(getCommandType(input));
             commandBuilder.setTitle(getTitle(input));
-            commandBuilder.setStartTime(getStartTime(input));
-            commandBuilder.setEndTime(getEndTime(input));
+            commandBuilder.setStartDate(getStartDate(input));
+            commandBuilder.setEndDate(getEndDate(input));
             commandBuilder.setNotes(getNotes(input));
             commandBuilder.setPlace(getPlace(input));
             commandBuilder.setCategory(getCategory(input));
@@ -196,16 +203,16 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the start time argument
      */
-    private Date getStartTime(String input) throws InvalidDateException {
-        String startTime = findFirstMatch(REGEX_START_TIME, input);
-        if (startTime == null) {
+    private Date getStartDate(String input) throws InvalidDateException {
+        String startDate = findFirstMatch(REGEX_START_TIME, input);
+        if (startDate == null) {
             return null;
         }
-        String[] startTimeSplit = startTime.split("-");
-        if (startTimeSplit.length == 3) {
-            return getDateInstance(Integer.parseInt(startTimeSplit[0]),
-                    Integer.parseInt(startTimeSplit[1]),
-                    Integer.parseInt(startTimeSplit[2]));
+        String[] startDateSplit = startDate.split("-");
+        if (startDateSplit.length == 3) {
+            return getDateInstance(Integer.parseInt(startDateSplit[0]),
+                    Integer.parseInt(startDateSplit[1]),
+                    Integer.parseInt(startDateSplit[2]));
         } else {
             assert(false); //should never be called. format has been enforced by Regex
             return null;
@@ -220,16 +227,16 @@ public class Parser implements IParser {
      * @param input the input typed by the user into the console.
      * @return the end time argument
      */
-    private Date getEndTime(String input) throws InvalidDateException {
-        String startTime = findFirstMatch(REGEX_END_TIME, input);
-        if (startTime == null) {
+    private Date getEndDate(String input) throws InvalidDateException {
+        String startDate = findFirstMatch(REGEX_END_TIME, input);
+        if (startDate == null) {
             return null;
         }
-        String[] startTimeSplit = startTime.split("-");
-        if (startTimeSplit.length == 3) {
-            return getDateInstance(Integer.parseInt(startTimeSplit[0]),
-                    Integer.parseInt(startTimeSplit[1]),
-                    Integer.parseInt(startTimeSplit[2]));
+        String[] startDateSplit = startDate.split("-");
+        if (startDateSplit.length == 3) {
+            return getDateInstance(Integer.parseInt(startDateSplit[0]),
+                    Integer.parseInt(startDateSplit[1]),
+                    Integer.parseInt(startDateSplit[2]));
         } else {
             assert(false); //should never be called. format has been enforced by Regex
             return null;
@@ -264,6 +271,14 @@ public class Parser implements IParser {
         return new Date(date, month, year);
     }
     
+    protected boolean isListSyntax(String input) {
+        for(String token: this.syntaxTokens) {
+            if (input.contains(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     
 }

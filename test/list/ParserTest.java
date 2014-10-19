@@ -1,6 +1,12 @@
 package list;
 
 import static org.junit.Assert.*;
+import list.AddCommand;
+import list.Date;
+import list.EditCommand;
+import list.ICommand;
+import list.IParser;
+import list.Parser;
 
 import org.junit.Test;
 
@@ -21,10 +27,10 @@ public class ParserTest {
         assertEquals(null, editCommand.getRepeatFrequency());
         
         Date startDate  = new Date(23, 5, 2014);
-        assertEquals(startDate, editCommand.getStartTime());
+        assertEquals(startDate, editCommand.getStartDate());
         
         Date endDate = new Date(28, 5, 2014);
-        assertEquals(endDate, editCommand.getEndTime());
+        assertEquals(endDate, editCommand.getEndDate());
 
     }
     

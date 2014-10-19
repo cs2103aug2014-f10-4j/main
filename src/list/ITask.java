@@ -7,13 +7,13 @@ interface ITask extends Comparable<ITask> {
 
 	public ITask setTitle(String title);
 
-	public Date getStartTime();
+	public Date getStartDate();
 
-	public ITask setStartTime(Date startTime);
+	public ITask setStartDate(Date startDate);
 
-	public Date getEndTime();
+	public Date getEndDate();
 
-	public ITask setEndTime(Date endTime);
+	public ITask setEndDate(Date endTime);
 
 	public RepeatFrequency getRepeatFrequency();
 
