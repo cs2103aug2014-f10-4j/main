@@ -14,8 +14,7 @@ public class Converter {
 	
 	class CorruptedJsonObjectException extends Exception { };
 	
-	// Exception: user manually deletes title field -> corrupted
-	
+	// Exception: user manually deletes title field -> corrupted	
 	private static final String KEY_TITLE = "title";
 	private static final String KEY_DETAILS = "details";
 	private static final String KEY_START_TIME = "start_time";
@@ -24,6 +23,9 @@ public class Converter {
 	private static final String KEY_PLACE = "place";
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_NOTES = "notes";
+	
+	// Messages
+	private static final String MESSAGE_CORRUPTED_OBJECTS = "There are %d corrupted object%s during %s";
 	
 	private int numOfCorruptedJsonObjects = 0;
 	
@@ -118,7 +120,7 @@ public class Converter {
 		}
 		
 		taskDetail.put(KEY_PLACE, task.getPlace());
-		
+			
 		if (task.getCategory() != null) {
 			taskDetail.put(KEY_CATEGORY, task.getCategory().getName());
 		}

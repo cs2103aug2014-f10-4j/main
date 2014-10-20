@@ -15,6 +15,7 @@ public class Controller {
 	private static TaskManager taskManager = TaskManager.getInstance();
 	
 	public static void main(String[] args) {
+		loadInitialData();
 	}
 	
 	public static String processUserInput(String userInput) {
@@ -49,6 +50,16 @@ public class Controller {
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
 		userInterface.displayTaskDetail(selectedTask);
+	}
+	
+	//TODO: Error with UI when loading
+	public static void loadInitialData() {
+		try {
+			taskManager.loadTasks();
+			updateListOfTasksInUi();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 }
