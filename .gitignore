@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io
 
+###Our own file###
+*.txt
+
 ### Java ###
 *.class
 
