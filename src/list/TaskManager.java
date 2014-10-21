@@ -35,8 +35,20 @@ public class TaskManager {
     }
     
     //CATEGORY METHODS
+    /**
+     * Accepts a string and returns a ICategory object with the same name as the input.
+     * If the input is <code>null</code>, will return a default category object.
+     * 
+     * @param categoryName
+     * @return
+     */
     static ICategory getCategory(String categoryName) {
-    	if (categories.containsKey(categoryName)) {
+    	//return a default category if undefined by user
+        if (categoryName == null || categoryName == "") {
+    	    return Category.getDefaultCategory();
+    	}
+    	
+        if (categories.containsKey(categoryName)) {
     		return categories.get(categoryName);
     	} else {
     		ICategory category = new Category();

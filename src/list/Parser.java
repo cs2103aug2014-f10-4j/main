@@ -109,16 +109,14 @@ public class Parser implements IParser {
     /**
      * Checks for a category argument (-c) inside a string.
      * 
-     * Warning: returns null if no place argument is found.
+     * Warning: returns null if no category argument is found.
      * @param input the input typed by the user into the console.
      * @return the category argument
      */
     private ICategory getCategory(String input) {
         String categoryName = findFirstMatch(REGEX_CATEGORY, input);
-        if (categoryName == null) {
-        	categoryName = "";
-        }
-        ICategory category = taskManager.getCategory(categoryName);
+        
+        ICategory category = TaskManager.getCategory(categoryName);
         return category;
     }
     
