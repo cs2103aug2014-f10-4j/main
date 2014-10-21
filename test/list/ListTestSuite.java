@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
     DeleteCommandTest.class,
     DisplayCommandTest.class,
     EditCommandTest.class,
+    FlexiCommandParserTest.class,
     JodaTimeTest.class,
     ParserTest.class,
     TaskTest.class
