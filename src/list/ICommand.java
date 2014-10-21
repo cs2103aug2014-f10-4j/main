@@ -32,10 +32,9 @@ interface ICommand {
 	 * @return the response to be shown in the console.
 	 * @throws CommandExecutionException 
 	 * @throws InvalidTaskNumberException 
-	 * @throws IOException 
-	 * @throws JSONException 
+	 * @throws IOException  
 	 */
-	String execute() throws CommandExecutionException, JSONException, 
+	String execute() throws CommandExecutionException, 
 			IOException, InvalidTaskNumberException;
 	
 }

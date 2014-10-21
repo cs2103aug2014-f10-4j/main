@@ -88,7 +88,6 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws InvalidTaskNumberException,
 	                               CommandExecutionException, 
-	                               JSONException, 
 	                               IOException {
 		if (this.taskNumber == null) {
 		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);

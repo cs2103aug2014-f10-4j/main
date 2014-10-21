@@ -2,6 +2,7 @@
 
 ###Our own file###
 *.txt
+tasks
 
 ### Java ###
 *.class
