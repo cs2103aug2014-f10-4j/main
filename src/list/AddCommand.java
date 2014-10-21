@@ -79,7 +79,7 @@ public class AddCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() throws CommandExecutionException, JSONException, IOException {
+	public String execute() throws CommandExecutionException, IOException {
 	    //enforce required conditions
 	    if (this.title == null) {
 	        throw new CommandExecutionException(MESSAGE_NO_TITLE);

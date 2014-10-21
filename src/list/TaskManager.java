@@ -80,12 +80,12 @@ public class TaskManager {
     	Collections.sort(tasks);
 	}
     
-    void loadTasks() throws IOException, JSONException, CorruptedJsonObjectException, InvalidDateException {
+    void loadTasks() throws IOException, JSONException {
     	List<ITask> listOfTasks = readerWriter.loadFromFile();
     	tasks = listOfTasks;
 	}   
     
-    void saveTasks() throws JSONException, IOException {
+    void saveTasks() throws IOException {
     	readerWriter.saveToFile(getListOfTasks());
     }
     

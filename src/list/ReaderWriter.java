@@ -17,8 +17,10 @@ import org.json.JSONException;
 
 public class ReaderWriter implements IStorage {
 	
+	class CorruptedFileException extends Exception { };
+	
 	//TODO: Better naming for messages
-	private static final String MESSAGE_ERROR = "IO Error!";
+	private static final String MESSAGE_IO_ERROR = "IO Error!";
 	private static final String TEXTFILE_NAME = "tasks";
 	private static final int INDENTATION_FACTOR = 4;	
 	
@@ -42,8 +44,7 @@ public class ReaderWriter implements IStorage {
 	}
 	
 	@Override
-	public List<ITask> loadFromFile() throws IOException, JSONException, 
-			CorruptedJsonObjectException, InvalidDateException {
+	public List<ITask> loadFromFile() throws IOException, JSONException {
 		
 		File taskStorageInTextFile = new File(TEXTFILE_NAME);
 		
@@ -68,18 +69,28 @@ public class ReaderWriter implements IStorage {
 	}
 
 	@Override
-	public void saveToFile(List<ITask> tasks) throws JSONException, IOException {
+	public void saveToFile(List<ITask> tasks) throws IOException {
 		JSONArray tasksListInJson = jsonConverter.convertTasksListToJson(tasks);
 		setUpBufferedWriter();
-		writer.write(tasksListInJson.toString(INDENTATION_FACTOR));
-		writer.flush();		
+		
+		try {
+			writer.write(tasksListInJson.toString(INDENTATION_FACTOR));
+			writer.flush();
+
+		} catch (JSONException e) { 
+			// JSONException is thrown when indentFactor is not valid,
+			// but INDENTATION_FACTOR is indeed a valid number, so this
+			// should be impossible
+			assert (false): e.getMessage();
+		}
+				
 	}
 	
 	private void setUpBufferedWriter() {
 		try {
 			writer = new BufferedWriter(new FileWriter(TEXTFILE_NAME));
 		} catch (IOException e) {
-			System.out.println(MESSAGE_ERROR);
+			System.out.println(MESSAGE_IO_ERROR);
 		}
 	}
 	
@@ -87,7 +98,7 @@ public class ReaderWriter implements IStorage {
 		try {
 			reader = new BufferedReader(new FileReader(TEXTFILE_NAME));
 		} catch (IOException e) {
-			System.out.println(MESSAGE_ERROR);
+			System.out.println(MESSAGE_IO_ERROR);
 		}
 	}
 	

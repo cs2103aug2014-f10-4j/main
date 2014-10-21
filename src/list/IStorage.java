@@ -24,7 +24,7 @@ interface IStorage {
      * @throws InvalidDateException 
      * @throws CorruptedJsonObjectException 
      */
-    List<ITask> loadFromFile() throws IOException, JSONException, CorruptedJsonObjectException, InvalidDateException;
+    List<ITask> loadFromFile() throws IOException, JSONException;
     
     
     /**
@@ -35,6 +35,6 @@ interface IStorage {
      * @throws JSONException 
      * @throws IOException 
      */
-    void saveToFile(List<ITask> tasks) throws JSONException, IOException;
+    void saveToFile(List<ITask> tasks) throws IOException;
     
 }

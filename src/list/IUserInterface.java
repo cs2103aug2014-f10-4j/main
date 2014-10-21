@@ -15,6 +15,10 @@ interface IUserInterface {
     
     void displayCategories(List<ICategory> categories);
     
+    void displayMessageToUser(String message);
+    
+    void prepareForUserInput();
+    
     boolean isFull();
 
     void clearAll();

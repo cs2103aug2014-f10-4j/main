@@ -1,5 +1,9 @@
 package list;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
 import list.ICommand.CommandExecutionException;
 import list.ICommand.InvalidTaskNumberException;
 import list.IParser.ParseException;
@@ -9,6 +13,11 @@ public class Controller {
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
     private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
     private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
+    private static final String MESSAGE_ERROR_LOADING ="Error loading data";
+	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT = "Data is not in a valid JSON format ." + 
+																	"Please ensure the JSON format is " + 
+																	"valid and relaunch the program.";
+	private static final String MESSAGE_ERROR_SAVING_DATA = null;
 	
 	private static IUserInterface userInterface = UserInterface.getInstance();
 	private static IParser parser = new Parser();
@@ -16,6 +25,7 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		loadInitialData();
+		userInterface.prepareForUserInput();
 	}
 	
 	public static String processUserInput(String userInput) {
@@ -30,6 +40,8 @@ public class Controller {
             reply = MESSAGE_INVALID_TASK_NUMBER;
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
+        } catch (IOException e) {
+        	reply = MESSAGE_ERROR_SAVING_DATA;
         } catch (Exception e) {
             reply = MESSAGE_UNKNOWN_ERROR;
             e.printStackTrace();
@@ -57,8 +69,11 @@ public class Controller {
 		try {
 			taskManager.loadTasks();
 			updateListOfTasksInUi();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
+		} catch (JSONException e) {
+			userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+			System.exit(1);
 		}
 	}
 

@@ -23,76 +23,91 @@ public class Converter {
 	private static final String KEY_PLACE = "place";
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_NOTES = "notes";
-	
-	// Messages
-	private static final String MESSAGE_CORRUPTED_OBJECTS = "There are %d corrupted object%s during %s";
-	
+		
+	private int numOfCorruptedProperties = 0;
 	private int numOfCorruptedJsonObjects = 0;
 	
-	//TODO: JsonException not handled when string supplied is invalid
-	//TODO: CorruptedJsonObjectException
-	List<ITask> convertJsonToTasksList(JSONArray jsonArray) 
-			throws JSONException, CorruptedJsonObjectException, InvalidDateException {
+	//TODO: Check JsonException 
+	List<ITask> convertJsonToTasksList(JSONArray jsonArray) {
+		
+		resetCorruptedJSONObjectCounter();
+		
 		List<ITask> listOfTasks = new ArrayList<ITask>();
 		
 		for (int i = 0; i < jsonArray.length(); i++) {
-			
 			try {
 				JSONObject taskInJson = jsonArray.getJSONObject(i);
 				ITask task = convertJsonToTask(taskInJson);
 				listOfTasks.add(task);
-				
-			} catch (InvalidDateException e) {
-				
+								
 			} catch (CorruptedJsonObjectException e) {
 				numOfCorruptedJsonObjects++;
+			} catch (JSONException e) {
+				assert (false): e.getMessage();
 			}
-		
 		}
 		
 		return listOfTasks;
-		
 	}
 	
-	//TODO: make this private here and remove in JUnitTest
-	ITask convertJsonToTask(JSONObject jsonObject) throws JSONException, 
-			CorruptedJsonObjectException, InvalidDateException {
-		if (!jsonObject.has(KEY_TITLE)) {
-			throw new CorruptedJsonObjectException();
-		}
-		
-		String title = jsonObject.getString(KEY_TITLE);
-				
-		ITask task = new Task();
-		task.setTitle(title);
-		
-		if (hasOnlyTitleAttribute(jsonObject)) {
-			return task;
-		}
-		
-		JSONObject taskDetailInJson = jsonObject.getJSONObject(KEY_DETAILS);
-				
-		convertTaskDetailFromJson(task, taskDetailInJson);
-		
-		return task;
-		
-	}
-
-	JSONArray convertTasksListToJson(List<ITask> tasks) throws JSONException {
+	JSONArray convertTasksListToJson(List<ITask> tasks) {
 		JSONArray tasksListInJson = new JSONArray();
 		
 		for (ITask task: tasks) {
-			JSONObject taskInJson = convertTaskToJson(task);
-			tasksListInJson.put(taskInJson);
+			try {
+				JSONObject taskInJson = convertTaskToJson(task);
+				tasksListInJson.put(taskInJson);
+			} catch (JSONException e) {
+				assert (false): e.getMessage();
+			}
+			
 		}
 		
 		return tasksListInJson;
 	}
 	
-	private boolean hasOnlyTitleAttribute(JSONObject jsonObject)
+	int getNumberOfCorruptedProperties() {
+		return numOfCorruptedProperties;
+	}
+	
+	int getNumerOfCorruptedJsonObjects() {
+		return numOfCorruptedJsonObjects;
+	}
+	
+	//TODO: make this private here and remove in JUnitTest
+	ITask convertJsonToTask(JSONObject jsonObject) 
+			throws CorruptedJsonObjectException, JSONException {
+		if (!jsonObject.has(KEY_TITLE)) {
+			throw new CorruptedJsonObjectException();
+		}
+		
+		ITask task = new Task();
+		
+		setTaskTitle(jsonObject, task);
+		
+		setTaskDetail(jsonObject, task);
+		
+		return task;
+		
+	}
+	
+	private void setTaskDetail(JSONObject jsonObject, ITask task)
 			throws JSONException {
-		return !jsonObject.has(KEY_DETAILS) || 
-			jsonObject.getJSONObject(KEY_DETAILS).length() == 0;
+		if (hasTaskDetails(jsonObject)) {
+			JSONObject taskDetailInJson = jsonObject.getJSONObject(KEY_DETAILS);
+			extractTaskDetailFromJson(task, taskDetailInJson);
+		}
+	}
+
+	private void setTaskTitle(JSONObject jsonObject, ITask task) throws JSONException {
+		String title = jsonObject.getString(KEY_TITLE);		
+		task.setTitle(title);		
+	}
+	
+	private boolean hasTaskDetails(JSONObject jsonObject)
+			throws JSONException {
+		return jsonObject.has(KEY_DETAILS) && 
+			   jsonObject.getJSONObject(KEY_DETAILS).length() > 0;
 	}
 	
 	private JSONObject convertTaskToJson(ITask task) throws JSONException {
@@ -128,23 +143,34 @@ public class Converter {
 		taskDetail.put(KEY_NOTES, task.getNotes());
 	}
 	
-	private void convertTaskDetailFromJson(ITask task,
-			JSONObject taskDetailInJson) throws JSONException,
-			InvalidDateException {
+	private void extractTaskDetailFromJson(ITask task, JSONObject taskDetailInJson) 
+			throws JSONException {	
+		resetCorruptedPropertyCounter();
+	
 		if (taskDetailInJson.has(KEY_START_TIME)) {
 			String startDate = taskDetailInJson.getString(KEY_START_TIME);
 						
-			if (startDate != null) {
-				task.setStartDate(new Date(startDate));
+			try {
+				if (startDate != null) {
+					task.setStartDate(new Date(startDate));
+				}
+			} catch (InvalidDateException e) {
+				numOfCorruptedProperties++;
 			}
+			
 		}
 		
 		if (taskDetailInJson.has(KEY_END_TIME)) {
 			String endTime = taskDetailInJson.getString(KEY_END_TIME);
-						
-			if (endTime != null) {
-				task.setEndDate(new Date(endTime));
+			
+			try {
+				if (endTime != null) {
+					task.setEndDate(new Date(endTime));
+				}
+			} catch (InvalidDateException e) {
+				numOfCorruptedProperties++;
 			}
+			
 		}
 		
 		if (taskDetailInJson.has(KEY_CATEGORY)) {
@@ -184,4 +210,14 @@ public class Converter {
 			}
 		}
 	}
+	
+	private void resetCorruptedPropertyCounter() {
+		numOfCorruptedProperties = 0;
+	}
+	
+	private void resetCorruptedJSONObjectCounter() {
+		numOfCorruptedJsonObjects = 0;
+	}
+	
+	
 }
