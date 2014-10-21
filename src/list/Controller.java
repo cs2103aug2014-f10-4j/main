@@ -11,7 +11,7 @@ public class Controller {
     private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
 	
 	private static IUserInterface userInterface = UserInterface.getInstance();
-	private static IParser parser = new Parser();
+	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	
 	public static void main(String[] args) {

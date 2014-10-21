@@ -36,10 +36,6 @@ public class Parser implements IParser {
     private final Pattern REGEX_TASK_NUMBER_DELETE = Pattern.compile("(?<=^delete\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DISPLAY = Pattern.compile("(?<=^display\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     
-    private final String[] syntaxTokens = {
-            "-t", "--title",
-            "-s", "--start"
-    };
     
     @Override
     public ICommand parse(String input) throws ParseException {
@@ -268,15 +264,5 @@ public class Parser implements IParser {
     private Date getDateInstance(int date, int month, int year) throws InvalidDateException {
         return new Date(date, month, year);
     }
-    
-    protected boolean isListSyntax(String input) {
-        for(String token: this.syntaxTokens) {
-            if (input.contains(token)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
     
 }
