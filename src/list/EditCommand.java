@@ -1,5 +1,9 @@
 package list;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
 import list.CommandBuilder.RepeatFrequency;
 
 /**
@@ -83,7 +87,8 @@ public class EditCommand implements ICommand {
 
 	@Override
 	public String execute() throws InvalidTaskNumberException,
-	                               CommandExecutionException {
+	                               CommandExecutionException, 
+	                               IOException {
 		if (this.taskNumber == null) {
 		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
 		}
@@ -122,6 +127,7 @@ public class EditCommand implements ICommand {
 		}
 		
 		taskManager.sortTasks();
+		taskManager.saveTasks();
 		
 		Controller.updateListOfTasksInUi();
 		

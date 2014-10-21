@@ -245,32 +245,41 @@ public class UserInterface implements IUserInterface {
             console.getInputMap().put(KeyStroke.getKeyStroke(key), "none");
         }
 		
-		// append the letter that appears at the first place
-		showInConsole(CONSOLE_ARROWS);
-
 		// set the size of the scrollPanel
 		scrollPanel.setBounds(0, LISTHEIGHT, CONSOLEWIDTH, CONSOLEHEIGHT);
 		
 		// set the font of the console
 		console.setFont(fontForConsole);
 		
-		// set the position of the cursor to the last of the console
-		console.setCaretPosition(console.getDocument().getLength());
+		moveCursorToEnd();
 
 		// add the label to the container
 		mainFrame.getContentPane().add(scrollPanel);
 	}
 
+	public void prepareForUserInput() {
+		// append the letter that appears at the first place
+		showInConsole("\n");
+		showInConsole(CONSOLE_ARROWS);
+	    moveCursorToEnd();
+	}
+
+	private void moveCursorToEnd() {
+		console.setCaretPosition(console.getDocument().getLength());
+	}
+
 	public void displayMessageToUser(String message) {
 	    showInConsole(message);
-	    showInConsole("\n\n");
-	    showInConsole(CONSOLE_ARROWS);
-	    console.setCaretPosition(console.getDocument().getLength());
+	    showInConsole("\n");
 	}
 	
 	private void showInConsole(String text) {
 	    console.append(text);
-	    mCursorPosition = console.getText().length();
+	    updateCursorPositionCounter();
+	}
+
+	void updateCursorPositionCounter() {
+		mCursorPosition = console.getText().length();
 	}
 	
 	private class EnterAction extends AbstractAction {
@@ -287,6 +296,7 @@ public class UserInterface implements IUserInterface {
             String reply = Controller.processUserInput(userInput);
             showInConsole("\n");
             displayMessageToUser(reply);
+            prepareForUserInput();
         }
 	    
 	}

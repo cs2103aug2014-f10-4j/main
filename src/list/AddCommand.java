@@ -1,5 +1,9 @@
 package list;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
 import list.CommandBuilder.RepeatFrequency;
 
 /**
@@ -75,7 +79,7 @@ public class AddCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() throws CommandExecutionException {
+	public String execute() throws CommandExecutionException, IOException {
 	    //enforce required conditions
 	    if (this.title == null) {
 	        throw new CommandExecutionException(MESSAGE_NO_TITLE);
@@ -92,6 +96,7 @@ public class AddCommand implements ICommand {
 		
 		taskManager.addTask(task);
 		taskManager.sortTasks();
+		taskManager.saveTasks();
 		
 		Controller.updateListOfTasksInUi();
 		

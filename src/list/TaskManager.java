@@ -1,10 +1,16 @@
 package list;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import list.Converter.CorruptedJsonObjectException;
+import list.Date.InvalidDateException;
+
+import org.json.JSONException;
 
 /**
  * This is a Singleton class that keeps track of Tasks 
@@ -19,12 +25,14 @@ import java.util.Map;
 public class TaskManager {
     //TODO: keep the methods and variables static
     //TODO: please maintain mTasks sorted at all times
-    private static List<ITask> tasks = new ArrayList<ITask>();
-    private static Map<String, ICategory> categories = new HashMap<String, ICategory>();
+	
+    private List<ITask> tasks = new ArrayList<ITask>();
+    private Map<String, ICategory> categories = new HashMap<String, ICategory>();
     
+    private ReaderWriter readerWriter = new ReaderWriter();
     private static TaskManager taskManagerInstance = null;
     
-    private TaskManager() { } ;
+    private TaskManager() { }
     
     static TaskManager getInstance() {
     	if (taskManagerInstance == null) {
@@ -35,7 +43,7 @@ public class TaskManager {
     }
     
     //CATEGORY METHODS
-    static ICategory getCategory(String categoryName) {
+    ICategory getCategory(String categoryName) {
     	if (categories.containsKey(categoryName)) {
     		return categories.get(categoryName);
     	} else {
@@ -72,6 +80,15 @@ public class TaskManager {
     	Collections.sort(tasks);
 	}
     
+    void loadTasks() throws IOException, JSONException {
+    	List<ITask> listOfTasks = readerWriter.loadFromFile();
+    	tasks = listOfTasks;
+	}   
+    
+    void saveTasks() throws IOException {
+    	readerWriter.saveToFile(getListOfTasks());
+    }
+    
     int getNumberOfTasks() {
     	return tasks.size();
     }
@@ -107,9 +124,13 @@ public class TaskManager {
         return taskNumberShownOnScreen - 1;
     }
     
-    private static void printTasks() {
-    	for (int i = 0; i < tasks.size(); i++) {
-    		System.out.println(tasks.get(i).getTitle());
-    	}
-    }    
+    // Getter for tasks
+    List<ITask> getListOfTasks() {
+    	return tasks;
+    }
+    
+    // Getter for categories
+    Map<String, ICategory> getListOfCategories() {
+    	return categories;
+    }
 }
