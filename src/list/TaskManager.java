@@ -1,11 +1,17 @@
 package list;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import list.Converter.CorruptedJsonObjectException;
+import list.Date.InvalidDateException;
+
+import org.json.JSONException;
 
 /**
  * This is a Singleton class that keeps track of Tasks 
@@ -22,6 +28,7 @@ public class TaskManager {
     private List<ITask> tasks = new ArrayList<ITask>();
     private Stack<ITask> deletedTasks = new Stack<ITask>();
     
+    private ReaderWriter readerWriter = new ReaderWriter();
     private Map<String, ICategory> categories = new HashMap<String, ICategory>();
     
     private static TaskManager taskManagerInstance = null;
@@ -141,6 +148,19 @@ public class TaskManager {
         floatingTasks.clear();
         tasks.clear();
         deletedTasks.clear();
+    }
+    
+    void sortTasks() {
+    	Collections.sort(tasks);
+	}
+    
+    void loadTasks() throws IOException, JSONException {
+    	List<ITask> listOfTasks = readerWriter.loadFromFile();
+    	tasks = listOfTasks;
+	}   
+    
+    void saveTasks() throws IOException {
+    	readerWriter.saveToFile(getListOfTasks());
     }
     
     @Deprecated
