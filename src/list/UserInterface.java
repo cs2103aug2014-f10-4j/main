@@ -1,6 +1,7 @@
 package list;
 
 import java.util.ArrayList;
+
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -85,7 +86,7 @@ public class UserInterface implements IUserInterface {
 		previousDate = null;
 	}
 
-	@Override
+	@Deprecated
 	public void displayNewTaskOrDate(ITask task) {
 	    //Do not exceed number of lines
 		assert(numberOfLines < NUMBER_OF_LINES_ALLOWED - 1);
@@ -119,7 +120,9 @@ public class UserInterface implements IUserInterface {
 		Date startDateToDisplay = task.getStartDate();
 
 		// display the start time of the task
-		displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		if (startDateToDisplay != null) {
+		    displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		}
 
 		//**********display the end time**********//
 		// string for the end time
@@ -142,7 +145,8 @@ public class UserInterface implements IUserInterface {
 	 * @param task 
 	 * @return
 	 */
-	public boolean checkDateIsAppeared(ITask task) {
+	@Deprecated
+	private boolean checkDateIsAppeared(ITask task) {
 	    boolean dateHasAppeared = false;
 	    if (previousDate != null) {
 	        dateHasAppeared = previousDate.equals(task.getEndDate());
@@ -151,7 +155,8 @@ public class UserInterface implements IUserInterface {
 	    previousDate = task.getEndDate();
 		return dateHasAppeared;
 	}
-
+	
+	@Deprecated
 	public void displayNewDate(ITask task) {
 
 		// get the date to be displayed
@@ -164,6 +169,7 @@ public class UserInterface implements IUserInterface {
 		displayNewTask(task);
 	}
 
+	@Deprecated
 	public void displayNewTask(ITask task) {
 		
 		// increment numberOfTasks by 1
@@ -257,6 +263,7 @@ public class UserInterface implements IUserInterface {
 		mainFrame.getContentPane().add(scrollPanel);
 	}
 
+	@Override
 	public void prepareForUserInput() {
 		// append the letter that appears at the first place
 		showInConsole("\n");
@@ -268,6 +275,7 @@ public class UserInterface implements IUserInterface {
 		console.setCaretPosition(console.getDocument().getLength());
 	}
 
+	@Override
 	public void displayMessageToUser(String message) {
 	    showInConsole(message);
 	    showInConsole("\n");
@@ -316,15 +324,15 @@ public class UserInterface implements IUserInterface {
 	}
 
     @Override
-    public void displayCategories(List<ICategory> categories) {
+    public void display(String pageTitle, List<ITask> tasks) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
-    public boolean isFull() {
-        return isFull;
+    public void clearDisplay() {
+        // TODO Auto-generated method stub
+        
     }
 
-    @Override
-    public void clearDisplay(){
-    }
 }

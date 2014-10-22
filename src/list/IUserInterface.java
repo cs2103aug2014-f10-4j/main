@@ -7,22 +7,15 @@ import java.util.List;
  * 
  * @author andhieka, michael, shotaro
  */
-interface IUserInterface {
-    
-    void displayNewTaskOrDate(ITask task);
+interface IUserInterface { 
     
     void displayTaskDetail(ITask task);
     
-    void displayCategories(List<ICategory> categories);
-    
-    void displayMessageToUser(String message);
+    void display(String pageTitle, List<ITask> tasks);
+        
+    void clearDisplay();
     
     void prepareForUserInput();
     
-    boolean isFull();
-
-    void clearAll();
-    
-    void clearDisplay();
-    
+    void displayMessageToUser(String message);
 }

@@ -175,11 +175,11 @@ public class Converter {
 		
 		if (taskDetailInJson.has(KEY_CATEGORY)) {
 			String categoryName = taskDetailInJson.getString(KEY_CATEGORY);
+			TaskManager taskManager = TaskManager.getInstance();
 			
 			if (categoryName != null) {
-				ICategory category = new Category();
-				category.setName(categoryName);
-				task.setCategory(category);
+			    ICategory category = taskManager.getCategory(categoryName);
+			    task.setCategory(category);
 			}
 		}
 			

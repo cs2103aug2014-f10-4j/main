@@ -95,10 +95,9 @@ public class AddCommand implements ICommand {
 			.setNotes(this.notes);
 		
 		taskManager.addTask(task);
-		taskManager.sortTasks();
 		taskManager.saveTasks();
 		
-		Controller.updateListOfTasksInUi();
+		Controller.refreshUi();
 		
 		return MESSAGE_TASK_ADDED_SUCCESFULLY;
 	}

@@ -35,7 +35,7 @@ public class DisplayCommand implements ICommand {
 		
 		ITask selectedTask = taskManager.getTask(this.taskNumber);
 		
-		Controller.updateUiWithTaskDetail(selectedTask);
+		Controller.displayTaskDetail(selectedTask);
 		
 		return MESSAGE_DISPLAYING;
 	}

@@ -27,6 +27,13 @@ public class Date implements Comparable<Date> {
     
     public class InvalidDateException extends Exception { };
     
+    /**
+     * Returns today's date
+     */
+    Date() {
+        this.dateTime = new DateTime().withTimeAtStartOfDay();
+    }
+    
     Date(int day, int month, int year) throws InvalidDateException {
         try {
             this.dateTime = new DateTime(year, month, day, HOUR_VALUE, MINUTE_VALUE);
