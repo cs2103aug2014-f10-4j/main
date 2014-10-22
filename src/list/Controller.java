@@ -92,7 +92,7 @@ public class Controller {
 	public static void loadInitialData() {
 		try {
 			taskManager.loadTasks();
-			updateListOfTasksInUi();
+			refreshUi();
 		} catch (IOException e) {
 			userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {

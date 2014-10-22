@@ -150,17 +150,13 @@ public class TaskManager {
         deletedTasks.clear();
     }
     
-    void sortTasks() {
-    	Collections.sort(tasks);
-	}
-    
     void loadTasks() throws IOException, JSONException {
     	List<ITask> listOfTasks = readerWriter.loadFromFile();
     	tasks = listOfTasks;
 	}   
     
     void saveTasks() throws IOException {
-    	readerWriter.saveToFile(getListOfTasks());
+    	readerWriter.saveToFile(getAllTasks());
     }
     
     @Deprecated

@@ -15,4 +15,7 @@ interface IUserInterface {
         
     void clearDisplay();
     
+    void prepareForUserInput();
+    
+    void displayMessageToUser(String message);
 }

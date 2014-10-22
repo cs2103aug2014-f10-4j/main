@@ -86,7 +86,7 @@ public class UserInterface implements IUserInterface {
 		previousDate = null;
 	}
 
-	//@Override
+	@Deprecated
 	public void displayNewTaskOrDate(ITask task) {
 	    //Do not exceed number of lines
 		assert(numberOfLines < NUMBER_OF_LINES_ALLOWED - 1);
@@ -145,7 +145,8 @@ public class UserInterface implements IUserInterface {
 	 * @param task 
 	 * @return
 	 */
-	public boolean checkDateIsAppeared(ITask task) {
+	@Deprecated
+	private boolean checkDateIsAppeared(ITask task) {
 	    boolean dateHasAppeared = false;
 	    if (previousDate != null) {
 	        dateHasAppeared = previousDate.equals(task.getEndDate());
@@ -154,7 +155,8 @@ public class UserInterface implements IUserInterface {
 	    previousDate = task.getEndDate();
 		return dateHasAppeared;
 	}
-
+	
+	@Deprecated
 	public void displayNewDate(ITask task) {
 
 		// get the date to be displayed
@@ -167,6 +169,7 @@ public class UserInterface implements IUserInterface {
 		displayNewTask(task);
 	}
 
+	@Deprecated
 	public void displayNewTask(ITask task) {
 		
 		// increment numberOfTasks by 1
@@ -260,6 +263,7 @@ public class UserInterface implements IUserInterface {
 		mainFrame.getContentPane().add(scrollPanel);
 	}
 
+	@Override
 	public void prepareForUserInput() {
 		// append the letter that appears at the first place
 		showInConsole("\n");
@@ -271,6 +275,7 @@ public class UserInterface implements IUserInterface {
 		console.setCaretPosition(console.getDocument().getLength());
 	}
 
+	@Override
 	public void displayMessageToUser(String message) {
 	    showInConsole(message);
 	    showInConsole("\n");

@@ -126,7 +126,6 @@ public class EditCommand implements ICommand {
 			taskToEdit.setNotes(notes);
 		}
 		
-		taskManager.sortTasks();
 		taskManager.saveTasks();
 		Controller.refreshUi();
 		

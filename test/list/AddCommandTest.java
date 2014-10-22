@@ -2,8 +2,6 @@ package list;
 
 import static org.junit.Assert.*;
 
-import java.awt.Color;
-
 import list.AddCommand;
 import list.Category;
 import list.Date;
@@ -11,7 +9,6 @@ import list.ICategory;
 import list.ITask;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
-import list.Date.InvalidDateException;
 
 import org.junit.Before;
 import org.junit.Test;
