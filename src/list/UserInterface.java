@@ -1,6 +1,7 @@
 package list;
 
 import java.util.ArrayList;
+
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -85,7 +86,7 @@ public class UserInterface implements IUserInterface {
 		previousDate = null;
 	}
 
-	@Override
+	//@Override
 	public void displayNewTaskOrDate(ITask task) {
 	    //Do not exceed number of lines
 		assert(numberOfLines < NUMBER_OF_LINES_ALLOWED - 1);
@@ -119,7 +120,9 @@ public class UserInterface implements IUserInterface {
 		Date startDateToDisplay = task.getStartDate();
 
 		// display the start time of the task
-		displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		if (startDateToDisplay != null) {
+		    displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		}
 
 		//**********display the end time**********//
 		// string for the end time
@@ -306,15 +309,15 @@ public class UserInterface implements IUserInterface {
 	}
 
     @Override
-    public void displayCategories(List<ICategory> categories) {
+    public void display(String pageTitle, List<ITask> tasks) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
-    public boolean isFull() {
-        return isFull;
+    public void clearDisplay() {
+        // TODO Auto-generated method stub
+        
     }
 
-    @Override
-    public void clearDisplay(){
-    }
 }

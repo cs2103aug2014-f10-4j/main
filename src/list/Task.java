@@ -14,7 +14,12 @@ public class Task implements ITask {
 	@Override
 	public int compareTo(ITask o) {
 	    if (this.getEndDate() != null && o.getEndDate() != null) {
-	        return this.getEndDate().compareTo(o.getEndDate());
+	        int result = this.getEndDate().compareTo(o.getEndDate());
+	        if (result != 0) {
+	            return result;
+	        } else {
+	            return this.getTitle().compareTo(o.getTitle());
+	        }
 	    } else {
 	        return this.getTitle().compareTo(o.getTitle());
 	    }

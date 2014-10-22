@@ -27,4 +27,11 @@ interface ICommand {
 	 */
 	String execute() throws InvalidTaskNumberException, CommandExecutionException;
 	
+	
+	/**
+	 * Returns the ICommand object necessary to undo the operation.
+	 * @return ICommand
+	 */
+	//ICommand getInverseCommand();
+	
 }

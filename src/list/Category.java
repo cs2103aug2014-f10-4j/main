@@ -10,7 +10,13 @@ public class Category implements ICategory {
     private String name = null;
 	private Color color = null;
 	
-	public Category() {
+	/**
+	 * Using Category constructor can cause the application to create
+	 * multiple Category objects for the same category name.
+	 * Use <code>TaskManager.getCategory(categoryName)</code> to prevent this 
+	 * potentially incorrect behavior.
+	 */
+	Category() {
 	    this.name = DEFAULT_NAME;
 	    this.color = DEFAULT_COLOR;
 	}

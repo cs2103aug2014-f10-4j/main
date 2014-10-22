@@ -7,18 +7,12 @@ import java.util.List;
  * 
  * @author andhieka, michael, shotaro
  */
-interface IUserInterface {
-    
-    void displayNewTaskOrDate(ITask task);
+interface IUserInterface { 
     
     void displayTaskDetail(ITask task);
     
-    void displayCategories(List<ICategory> categories);
-    
-    boolean isFull();
-
-    void clearAll();
-    
+    void display(String pageTitle, List<ITask> tasks);
+        
     void clearDisplay();
     
 }

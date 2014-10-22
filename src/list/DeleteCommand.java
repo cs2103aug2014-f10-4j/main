@@ -30,7 +30,7 @@ public class DeleteCommand implements ICommand {
 		
 		taskManager.deleteTask(this.taskNumber);
 		
-		Controller.updateListOfTasksInUi();
+		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}

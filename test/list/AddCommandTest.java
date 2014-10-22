@@ -90,7 +90,7 @@ public class AddCommandTest {
         secondAddCommand.execute();
         thirdAddCommand.execute();
 
-        assertEquals(true, taskManager.isListOfTasksSorted());
+        assertEquals(true, Utilities.isSorted(taskManager.getAllTasks()));
 	}
 	
 	@Test

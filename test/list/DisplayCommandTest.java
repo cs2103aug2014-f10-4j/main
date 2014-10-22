@@ -29,7 +29,7 @@ public class DisplayCommandTest {
 	}
 	
 	@Test
-	public void shouldRunWithoutException() throws Exception {
+	public void shouldGetTheCorrectTask() throws Exception {
 		int taskNumber = 1;
 		DisplayCommand displayCommand = new DisplayCommand(taskNumber);
 		displayCommand.execute();

@@ -112,7 +112,7 @@ public class Parser implements IParser {
     private ICategory getCategory(String input) {
         String categoryName = findFirstMatch(REGEX_CATEGORY, input);
         
-        ICategory category = TaskManager.getCategory(categoryName);
+        ICategory category = taskManager.getCategory(categoryName);
         return category;
     }
     
