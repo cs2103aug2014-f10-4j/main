@@ -35,7 +35,7 @@ public class Parser implements IParser {
     private final Pattern REGEX_TASK_NUMBER_EDIT = Pattern.compile("(?<=^edit\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DELETE = Pattern.compile("(?<=^delete\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
     private final Pattern REGEX_TASK_NUMBER_DISPLAY = Pattern.compile("(?<=^display\\s)\\d+(?=$|[\\s-])", Pattern.CASE_INSENSITIVE);
-    
+    private final String s = "mark 2";
     
     @Override
     public ICommand parse(String input) throws ParseException {
