@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import list.Converter.CorruptedJsonObjectException;
 import list.Date.InvalidDateException;
+import list.ITask.TaskStatus;
 
 import org.json.JSONException;
 
@@ -116,6 +117,14 @@ public class TaskManager {
         } else {
             floatingTasks.add(task);
         }
+    }
+    
+    void markTaskAsDone(ITask task) {
+    	task.setStatus(TaskStatus.DONE);
+    }
+    
+    void unmarkTask(ITask task) {
+    	task.setStatus(TaskStatus.PENDING);
     }
     
     @Deprecated

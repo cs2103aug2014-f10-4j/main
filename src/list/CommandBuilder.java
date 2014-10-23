@@ -36,7 +36,7 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY, CLOSE
+		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -96,25 +96,27 @@ class CommandBuilder {
 		}
 		ICommand command;
 		switch (mCommandType) {
-		case ADD:
-		    command = new AddCommand(mTitle, mStartDate, mEndTime,
-		            mRepeatFrequency, mPlace, mCategory, mNotes);
-		    break;
-		case EDIT:
-		    command = new EditCommand(mTaskNumber, mTitle, mStartDate, mEndTime,
-		            mRepeatFrequency, mPlace, mCategory, mNotes);
-		    break;
-		case DISPLAY:
-			command = new DisplayCommand(mTaskNumber);
-			break;
-		case DELETE:
-			command = new DeleteCommand(mTaskNumber);
-			break;
-		case CLOSE:
-			command = new CloseCommand();
-			break;
-	    default:
-		    throw new CommandTypeNotSetException();    
+			case ADD:
+			    command = new AddCommand(mTitle, mStartDate, mEndTime,
+			            mRepeatFrequency, mPlace, mCategory, mNotes);
+			    break;
+			case EDIT:
+			    command = new EditCommand(mTaskNumber, mTitle, mStartDate, mEndTime,
+			            mRepeatFrequency, mPlace, mCategory, mNotes);
+			    break;
+			case DISPLAY:
+				command = new DisplayCommand(mTaskNumber);
+				break;
+			case DELETE:
+				command = new DeleteCommand(mTaskNumber);
+				break;
+			case CLOSE:
+				command = new CloseCommand();
+				break;
+			case MARK:
+				command = new MarkCommand(mTaskNumber);
+		    default:
+			    throw new CommandTypeNotSetException();    
 		}
 		return command;
 	}
