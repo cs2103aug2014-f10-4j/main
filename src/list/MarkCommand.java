@@ -1,5 +1,7 @@
 package list;
 
+import java.io.IOException;
+
 public class MarkCommand implements ICommand {
 
 	private static final String MESSAGE_SUCCESS = "Task is marked as done successfully.";
@@ -14,19 +16,20 @@ public class MarkCommand implements ICommand {
 	}
 
 	@Override
-	public String execute() throws CommandExecutionException {
+	public String execute() throws CommandExecutionException, IOException {
 		
 		if (taskNumber == null) {
 			throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
 		}
 		
-		if (!Controller.hasTaskWithTaskNumber(taskNumber)) {
+		if (!Controller.hasTaskWithNumber(taskNumber)) {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 		
 		ITask taskToMark = Controller.getTask(taskNumber);
 		taskManager.markTaskAsDone(taskToMark);
-		
+		taskManager.saveTasks();
+        
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;

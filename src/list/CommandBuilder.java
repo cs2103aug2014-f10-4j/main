@@ -36,7 +36,7 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE
+		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -115,6 +115,10 @@ class CommandBuilder {
 				break;
 			case MARK:
 				command = new MarkCommand(mTaskNumber);
+				break;
+			case UNMARK:
+			    command = new UnmarkCommand(mTaskNumber);
+			    break;
 		    default:
 			    throw new CommandTypeNotSetException();    
 		}

@@ -31,8 +31,8 @@ public class MarkCommandTest {
 	}
 	
 	@Test
-	public void shouldChangeTaskStatusToDone() throws CommandExecutionException {
-		int taskNumber = 0;
+	public void shouldChangeTaskStatusToDone() throws Exception {
+		int taskNumber = 1;
 		ITask taskToMarkAsDone = Controller.getTask(taskNumber);
 		MarkCommand markCommand = new MarkCommand(taskNumber);
 		
@@ -43,7 +43,7 @@ public class MarkCommandTest {
 	
 	@Test
 	public void shouldReturnSuccessMessageUponSuccessfulOperation() 
-			throws CommandExecutionException {
+			throws Exception {
 		int taskNumber = 1;
 		MarkCommand markCommand = new MarkCommand(taskNumber);
 		
@@ -53,7 +53,7 @@ public class MarkCommandTest {
 	}
 		
 	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsNull() throws CommandExecutionException {
+	public void shouldThrowExceptionWhenTaskNumberIsNull() throws Exception {
 		Integer taskNumber = null;		
 		MarkCommand markCommand = new MarkCommand(taskNumber);
 		
@@ -61,8 +61,8 @@ public class MarkCommandTest {
 	}
 	
 	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsInvalid() throws CommandExecutionException {
-		int taskNumber = 2;
+	public void shouldThrowExceptionWhenTaskNumberIsInvalid() throws Exception {
+		int taskNumber = 3;
 		MarkCommand markCommand = new MarkCommand(taskNumber);
 		
 		markCommand.execute();		

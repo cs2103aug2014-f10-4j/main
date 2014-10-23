@@ -30,8 +30,8 @@ public class UnmarkCommandTest {
 	}
 	
 	@Test
-	public void shouldChangeTaskStatusToPending() throws CommandExecutionException {
-		int taskNumber = 0;
+	public void shouldChangeTaskStatusToPending() throws Exception {
+		int taskNumber = 1;
 		ITask taskToUnmark = Controller.getTask(taskNumber);
 		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
 		
@@ -42,7 +42,7 @@ public class UnmarkCommandTest {
 	
 	@Test
 	public void shouldReturnSuccessMessageUponSuccessfulOperation() 
-			throws CommandExecutionException {
+			throws Exception {
 		int taskNumber = 1;
 		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
 		
@@ -52,7 +52,7 @@ public class UnmarkCommandTest {
 	}
 		
 	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsNull() throws CommandExecutionException {
+	public void shouldThrowExceptionWhenTaskNumberIsNull() throws Exception {
 		Integer taskNumber = null;		
 		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
 		
@@ -60,8 +60,8 @@ public class UnmarkCommandTest {
 	}
 	
 	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsInvalid() throws CommandExecutionException {
-		int taskNumber = 2;
+	public void shouldThrowExceptionWhenTaskNumberIsInvalid() throws Exception {
+		int taskNumber = 3;
 		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
 		
 		unmarkCommand.execute();		

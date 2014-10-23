@@ -5,10 +5,12 @@ import java.util.List;
 
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
+import list.ITask.TaskStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import list.ITask.TaskStatus;
 
 public class Converter {
 	
@@ -23,6 +25,7 @@ public class Converter {
 	private static final String KEY_PLACE = "place";
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_NOTES = "notes";
+	private static final String KEY_STATUS = "status";
 		
 	private int numOfCorruptedProperties = 0;
 	private int numOfCorruptedJsonObjects = 0;
@@ -134,13 +137,21 @@ public class Converter {
 			taskDetail.put(KEY_REPEAT_FREQUENCY, task.getRepeatFrequency().name());
 		}
 		
-		taskDetail.put(KEY_PLACE, task.getPlace());
+		if (task.getStatus() != null) {
+		    taskDetail.put(KEY_STATUS, task.getStatus().name());
+		}
+		
+		if (task.getPlace() != null) {
+		    taskDetail.put(KEY_PLACE, task.getPlace());
+		}
 			
 		if (task.getCategory() != null) {
 			taskDetail.put(KEY_CATEGORY, task.getCategory().getName());
 		}
 		
-		taskDetail.put(KEY_NOTES, task.getNotes());
+		if (task.getNotes() != null) {
+	        taskDetail.put(KEY_NOTES, task.getNotes());   
+		}
 	}
 	
 	private void extractTaskDetailFromJson(ITask task, JSONObject taskDetailInJson) 
@@ -192,6 +203,20 @@ public class Converter {
 			} else {
 				task.setRepeatFrequency(RepeatFrequency.NONE);
 			}
+		}
+		
+		if (taskDetailInJson.has(KEY_STATUS)) {
+		    String statusName = taskDetailInJson.getString(KEY_STATUS);
+		    TaskStatus taskStatus = null;
+		    if (statusName != null) {
+		        taskStatus = TaskStatus.valueOf(statusName);
+		    }
+		    
+		    if (taskStatus == null) {
+		        task.setStatus(TaskStatus.PENDING);
+		    } else {
+		        task.setStatus(taskStatus);
+		    }
 		}
 		
 		if (taskDetailInJson.has(KEY_PLACE)) {

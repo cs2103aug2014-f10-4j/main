@@ -33,7 +33,7 @@ public class Controller {
 	private static IUserInterface userInterface = UserInterface.getInstance();
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
-	private static DisplayMode displayMode = DisplayMode.ALL;
+	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	private static List<ITask> displayedTasks = null;
 	
 	public static void main(String[] args) {
@@ -63,11 +63,12 @@ public class Controller {
 	}
 
 	public static ITask getTask(int taskNumber) {
-		return displayedTasks.get(taskNumber);
+	    int taskId = taskNumber - 1;
+		return displayedTasks.get(taskId);
 	}
 	
-	public static boolean hasTaskWithTaskNumber(int taskNumber) {
-		return (taskNumber >= 0 && taskNumber < displayedTasks.size());		
+	public static boolean hasTaskWithNumber(int taskNumber) {
+		return (taskNumber > 0 && taskNumber <= displayedTasks.size());		
 	}
 	
 	//UI FUNCTIONS
@@ -85,21 +86,19 @@ public class Controller {
 		    case ALL:
 		    	tasksToDisplay = taskManager.getAllTasks();
 		        userInterface.display(TITLE_ALL_TASKS, tasksToDisplay);
-		        displayedTasks = tasksToDisplay;
 		        break;
 		    case TODAY:
 		    	tasksToDisplay = taskManager.getTodayTasks();
 		        userInterface.display(TITLE_TODAY_TASKS, tasksToDisplay);
-		        displayedTasks = tasksToDisplay;
 		        break;
 		    case FLOATING:
 		    	tasksToDisplay = taskManager.getFloatingTasks();
 		        userInterface.display(TITLE_FLOATING_TASKS, tasksToDisplay);
-		        displayedTasks = tasksToDisplay;
 		        break;
 		    case CUSTOM:
 		        //do something, or possibly do nothing
 	    }
+	    Controller.displayedTasks = tasksToDisplay;
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {

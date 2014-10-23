@@ -142,6 +142,15 @@ public class TaskManager {
         }
         deletedTasks.push(task);
     }
+
+    void deleteTask(ITask task) {
+        if (hasDeadline(task)) {
+            tasks.remove(task);
+        } else {
+            floatingTasks.remove(task);
+        }
+        deletedTasks.push(task);
+    }
     
     @Deprecated
     boolean hasTaskWithNumber(Integer taskNumberShownOnScreen) {
@@ -159,13 +168,17 @@ public class TaskManager {
         deletedTasks.clear();
     }
     
+    // SAVING AND LOADING
+    
     void loadTasks() throws IOException, JSONException {
-    	List<ITask> listOfTasks = readerWriter.loadFromFile();
-    	tasks = listOfTasks;
+    	List<ITask> tasks = readerWriter.loadFromFile();
+    	for (ITask task: tasks) {
+    	    this.addTask(task);
+    	}
 	}   
     
     void saveTasks() throws IOException {
-    	readerWriter.saveToFile(getAllTasks());
+    	readerWriter.saveToFile(this.getAllTasks());
     }
     
     @Deprecated
