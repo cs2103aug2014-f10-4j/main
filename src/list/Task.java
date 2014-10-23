@@ -10,6 +10,7 @@ public class Task implements ITask {
 	private String place;
 	private ICategory category;
 	private String notes;
+	private TaskStatus status;
 	
 	@Override
 	public int compareTo(ITask o) {
@@ -86,5 +87,13 @@ public class Task implements ITask {
 	public Task setNotes(String notes) {
 		this.notes = notes;
 		return this;
+	}
+
+	public TaskStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TaskStatus status) {
+		this.status = status;
 	}
 }
