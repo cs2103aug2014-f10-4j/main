@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.font.TextAttribute;
 import java.util.List;
 
+import list.ITask.TaskStatus;
+
 public class UserInterface implements IUserInterface {
     private static final Color COLOR_FOR_DATE = Color.BLACK;
 
@@ -41,9 +43,9 @@ public class UserInterface implements IUserInterface {
 	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
 	private static Font fontForDate = new Font("American Typewriter", Font.BOLD, 36);
 	private static Font fontForTask = new Font("American Typewriter", Font.PLAIN, 36);
-	private static Font fontForDoneTask;
+	private static Font fontForDoneTask = null;
 	private static Font fontForConsole = new Font("American Typewriter", Font.PLAIN, 12);
-	private static Date previousDate = null;
+	private Date previousDate = null;
 	private boolean hasFloatingTask = false;
 	private static int numberOfLines = 0;
 	private static int numberOfTasks = 0;
@@ -91,9 +93,12 @@ public class UserInterface implements IUserInterface {
 		}
 		mainFrame.repaint();
 		arrayListOfJLabel = new ArrayList<JLabel>();
+		
 		numberOfLines = 0;
 		numberOfTasks = 0;
-		previousDate = null;
+		
+		this.previousDate = null;
+		this.hasFloatingTask = false;
 	}
 
 	@Deprecated
@@ -197,7 +202,11 @@ public class UserInterface implements IUserInterface {
 		stringOfTaskToDisplay += task.getTitle();
 		
 		// display the contents to the window
-		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
+		if (task.getStatus() == TaskStatus.DONE) {
+	        displayNewLine(stringOfTaskToDisplay, fontForDoneTask, getCategoryColor(task));
+		} else {
+	        displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
+		}
 	}
 	
 	/**

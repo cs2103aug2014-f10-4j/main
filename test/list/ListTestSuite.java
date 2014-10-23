@@ -20,8 +20,10 @@ import org.junit.runners.Suite.SuiteClasses;
     EditCommandTest.class,
     FlexiCommandParserTest.class,
     JodaTimeTest.class,
+    MarkCommandTest.class,
     ParserTest.class,
-    TaskTest.class
+    TaskTest.class,
+    UnmarkCommandTest.class
 })
 public class ListTestSuite {
     

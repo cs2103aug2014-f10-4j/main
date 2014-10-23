@@ -6,6 +6,7 @@ package list;
  *
  */
 public class DisplayCommand implements ICommand {
+    private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
     private static final String MESSAGE_DISPLAYING = "Displaying ...";
     private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
     
@@ -24,16 +25,15 @@ public class DisplayCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() throws InvalidTaskNumberException,
-	                               CommandExecutionException {
+	public String execute() throws CommandExecutionException {
 	    if (this.taskNumber == null) {
             throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
         }
-		if (!taskManager.hasTaskWithNumber(this.taskNumber)) {
-			throw new InvalidTaskNumberException();	
+		if (!Controller.hasTaskWithNumber(this.taskNumber)) {
+			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);	
 		} 
 		
-		ITask selectedTask = taskManager.getTask(this.taskNumber);
+		ITask selectedTask = Controller.getTask(this.taskNumber);
 		
 		Controller.displayTaskDetail(selectedTask);
 		

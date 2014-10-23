@@ -142,6 +142,15 @@ public class TaskManager {
         }
         deletedTasks.push(task);
     }
+
+    void deleteTask(ITask task) {
+        if (hasDeadline(task)) {
+            tasks.remove(task);
+        } else {
+            floatingTasks.remove(task);
+        }
+        deletedTasks.push(task);
+    }
     
     @Deprecated
     boolean hasTaskWithNumber(Integer taskNumberShownOnScreen) {

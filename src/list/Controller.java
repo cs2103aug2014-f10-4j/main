@@ -63,11 +63,12 @@ public class Controller {
 	}
 
 	public static ITask getTask(int taskNumber) {
-		return displayedTasks.get(taskNumber);
+	    int taskId = taskNumber - 1;
+		return displayedTasks.get(taskId);
 	}
 	
-	public static boolean hasTaskWithTaskNumber(int taskNumber) {
-		return (taskNumber >= 0 && taskNumber < displayedTasks.size());		
+	public static boolean hasTaskWithNumber(int taskNumber) {
+		return (taskNumber > 0 && taskNumber <= displayedTasks.size());		
 	}
 	
 	//UI FUNCTIONS

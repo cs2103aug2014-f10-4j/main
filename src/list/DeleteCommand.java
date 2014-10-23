@@ -10,7 +10,8 @@ import org.json.JSONException;
  *
  */
 public class DeleteCommand implements ICommand {
-	private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
+    private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
     private static final String MESSAGE_SUCCESS = "Task is deleted successfully";
 	
     private TaskManager taskManager = TaskManager.getInstance();
@@ -29,11 +30,12 @@ public class DeleteCommand implements ICommand {
 		if (this.taskNumber == null) {
 		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
 		}
-	    if (!taskManager.hasTaskWithNumber(taskNumber)) {
-			throw new InvalidTaskNumberException();
+	    if (!Controller.hasTaskWithNumber(taskNumber)) {
+			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
-		
-		taskManager.deleteTask(this.taskNumber);
+	    
+		ITask task = Controller.getTask(taskNumber);
+		taskManager.deleteTask(task);
 		taskManager.saveTasks();
 		
 		Controller.refreshUi();
