@@ -31,7 +31,7 @@ public class Controller {
 	private static IUserInterface userInterface = UserInterface.getInstance();
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
-	private static DisplayMode displayMode = DisplayMode.ALL;
+	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	
 	public static void main(String[] args) {
 		loadInitialData();
