@@ -24,10 +24,15 @@ public class Date implements Comparable<Date> {
     private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
     
     private DateTime dateTime;
-    private DateTime today = new DateTime();
-    private DateTime tomorrow = today.plusDays(1);
     
     public class InvalidDateException extends Exception { };
+    
+    /**
+     * Returns today's date
+     */
+    Date() {
+        this.dateTime = new DateTime().withTimeAtStartOfDay();
+    }
     
     Date(int day, int month, int year) throws InvalidDateException {
         try {
@@ -73,7 +78,9 @@ public class Date implements Comparable<Date> {
      * @return
      */
     public String getPrettyFormat() {
-    	if(DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
+        DateTime today = new DateTime();
+        DateTime tomorrow = today.plusDays(1);
+    	if (DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
     		return STRING_TODAY;
     	} else if (DATE_ONLY_COMPARATOR.compare(tomorrow, this.dateTime) == 0) {
     		return STRING_TOMORROW;

@@ -5,6 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import list.Category;
+import list.Converter;
+import list.Date;
+import list.ITask;
+import list.Task;
 import list.CommandBuilder.RepeatFrequency;
 import list.Converter.CorruptedJsonObjectException;
 import list.Date.InvalidDateException;
@@ -147,7 +152,7 @@ public class ConverterTest {
 		
 		ITask expectedTaskOne = new Task();
 		expectedTaskOne.setTitle(TASK_1_TITLE);
-		expectedTaskOne.setEndTime(new Date(1, 1, 2014));
+		expectedTaskOne.setEndDate(new Date(1, 1, 2014));
 		expectedTaskOne.setNotes(TASK_1_NOTES);
 		
 		ITask expectedTaskTwo = new Task();
@@ -157,16 +162,16 @@ public class ConverterTest {
 		expectedTaskTwo.setCategory(category);
 
 		assertEquals(expectedTaskOne.getTitle(), tasks.get(0).getTitle());
-		assertEquals(expectedTaskOne.getStartTime(), tasks.get(0).getStartTime());
-		assertEquals(expectedTaskOne.getEndTime(), tasks.get(0).getEndTime());
+		assertEquals(expectedTaskOne.getStartDate(), tasks.get(0).getStartDate());
+		assertEquals(expectedTaskOne.getEndDate(), tasks.get(0).getEndDate());
 		assertEquals(expectedTaskOne.getRepeatFrequency(), tasks.get(0).getRepeatFrequency());
 		assertEquals(expectedTaskOne.getPlace(), tasks.get(0).getPlace());
 		assertEquals(expectedTaskOne.getCategory(), tasks.get(0).getCategory());
 		assertEquals(expectedTaskOne.getNotes(), tasks.get(0).getNotes());
 		
 		assertEquals(expectedTaskTwo.getTitle(), tasks.get(1).getTitle());
-		assertEquals(expectedTaskTwo.getStartTime(), tasks.get(1).getStartTime());
-		assertEquals(expectedTaskTwo.getEndTime(), tasks.get(1).getEndTime());
+		assertEquals(expectedTaskTwo.getStartDate(), tasks.get(1).getStartDate());
+		assertEquals(expectedTaskTwo.getEndDate(), tasks.get(1).getEndDate());
 		assertEquals(expectedTaskTwo.getRepeatFrequency(), tasks.get(1).getRepeatFrequency());
 		assertEquals(expectedTaskTwo.getPlace(), tasks.get(1).getPlace());
 		assertEquals(expectedTaskTwo.getCategory().getName(), tasks.get(1).getCategory().getName());
@@ -187,8 +192,8 @@ public class ConverterTest {
 		ITask taskFromJson = converter.convertJsonToTask(originalTaskInJson);
 				
 		assertEquals(taskOne.getTitle(), taskFromJson.getTitle());
-		assertEquals(taskOne.getStartTime(), taskFromJson.getStartTime());
-		assertEquals(taskOne.getEndTime(), taskFromJson.getEndTime());
+		assertEquals(taskOne.getStartDate(), taskFromJson.getStartDate());
+		assertEquals(taskOne.getEndDate(), taskFromJson.getEndDate());
 		assertEquals(taskOne.getRepeatFrequency(), taskFromJson.getRepeatFrequency());
 		assertEquals(taskOne.getPlace(), taskFromJson.getPlace());
 		assertEquals(taskOne.getCategory(), taskFromJson.getCategory());
@@ -225,11 +230,11 @@ public class ConverterTest {
 	private void prepareTask() throws InvalidDateException {
 		taskOne = new Task();
 		taskOne.setTitle(TASK_1_TITLE)
-			.setEndTime(new Date(1, 1, 2014))
+			.setEndDate(new Date(1, 1, 2014))
 			.setNotes(TASK_1_NOTES);
 		taskTwo = new Task();
 		taskTwo.setTitle(TASK_2_TITLE)
-			.setStartTime(new Date(2, 1, 2014))
+			.setStartDate(new Date(2, 1, 2014))
 			.setCategory(new Category().setName(TASK_2_CATEGORY))
 			.setRepeatFrequency(RepeatFrequency.DAILY);	
 		taskThree = new Task();

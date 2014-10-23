@@ -7,20 +7,15 @@ import java.util.List;
  * 
  * @author andhieka, michael, shotaro
  */
-interface IUserInterface {
-    class DisplayFullException extends Exception { };
-    
-    
-    void displayNewTaskOrDate(ITask task) throws DisplayFullException;
+interface IUserInterface { 
     
     void displayTaskDetail(ITask task);
     
-    void displayCategories(List<ICategory> categories);
-    
-    boolean isFull();
-
-    void clearAll();
-    
+    void display(String pageTitle, List<ITask> tasks);
+        
     void clearDisplay();
     
+    void prepareForUserInput();
+    
+    void displayMessageToUser(String message);
 }

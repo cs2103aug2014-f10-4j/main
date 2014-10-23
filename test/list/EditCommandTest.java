@@ -1,6 +1,12 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
+import list.AddCommand;
+import list.Date;
+import list.EditCommand;
+import list.ICategory;
+import list.ITask;
+import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
@@ -37,56 +43,39 @@ public class EditCommandTest {
 	}
 	
 	@Test(expected = InvalidTaskNumberException.class)
-	public void shouldHandleInvalidTaskNumberSmallerThanOne() throws InvalidTaskNumberException {
+	public void shouldHandleInvalidTaskNumberSmallerThanOne() throws Exception {
 		int numberSmallerThanOne = 0;
 		
-		EditCommand editCommand = new EditCommand(numberSmallerThanOne, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null);
+		EditCommand editCommand = new EditCommand().setTaskNumber(numberSmallerThanOne);
 		editCommand.execute();
 	}
 	
 	@Test(expected = InvalidTaskNumberException.class)
 	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
-			throws InvalidTaskNumberException {
+			throws Exception {
 		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
 		
-		EditCommand editCommand = new EditCommand(numberGreaterThanTotalNumberOfTasks, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null);
+		EditCommand editCommand = new EditCommand().
+		        setTaskNumber(numberGreaterThanTotalNumberOfTasks);
 		editCommand.execute();
 	}
 	
 	@Test
-	public void shouldOnlyEditTheTitle() throws InvalidTaskNumberException {
+	public void shouldOnlyEditTheTitle() throws Exception {
 		int taskNumber = 1;
 		String newTitle = "play";
 		
-		EditCommand editCommand = new EditCommand(taskNumber, 
-												  newTitle, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null);
+		EditCommand editCommand = new EditCommand().
+		        setTaskNumber(taskNumber).
+		        setTitle(newTitle);
+		
 		editCommand.execute();
 						
 		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(newTitle, modifiedTask.getTitle());
-		assertEquals(START_TIME, modifiedTask.getStartTime());
-		assertEquals(END_TIME, modifiedTask.getEndTime());
+		assertEquals(START_TIME, modifiedTask.getStartDate());
+		assertEquals(END_TIME, modifiedTask.getEndDate());
 		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
 		assertEquals(PLACE, modifiedTask.getPlace());
 		assertEquals(CATEGORY, modifiedTask.getCategory());
@@ -94,25 +83,20 @@ public class EditCommandTest {
 	}
 	
 	@Test
-	public void shouldOnlyEditTheStartTime() throws InvalidTaskNumberException, InvalidDateException {
+	public void shouldOnlyEditTheStartTime() throws Exception {
 		int taskNumber = 1;
-		Date newStartTime = new Date(1,1,2014);
+		Date newStartDate = new Date(1,1,2014);
 		
-		EditCommand editCommand = new EditCommand(taskNumber, 
-												  null, 
-												  newStartTime, 
-												  null, 
-												  null, 
-												  null, 
-												  null, 
-												  null);
+		EditCommand editCommand = new EditCommand().
+		        setTaskNumber(taskNumber).
+		        setStartDate(newStartDate);
 		editCommand.execute();
 		
 		ITask modifiedTask = taskManager.getTask(taskNumber);
 		
 		assertEquals(TITLE, modifiedTask.getTitle());
-		assertEquals(newStartTime, modifiedTask.getStartTime());
-		assertEquals(END_TIME, modifiedTask.getEndTime());
+		assertEquals(newStartDate, modifiedTask.getStartDate());
+		assertEquals(END_TIME, modifiedTask.getEndDate());
 		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
 		assertEquals(PLACE, modifiedTask.getPlace());
 		assertEquals(CATEGORY, modifiedTask.getCategory());
@@ -120,24 +104,20 @@ public class EditCommandTest {
 	}
 	
 	@Test
-	public void shouldMaintainListOfTasksSortedAfterEditingTask() 
-			throws InvalidTaskNumberException, InvalidDateException {
-		AddCommand addCommand = new AddCommand("task 1", null, new Date(2,1,2014), 
-											   null, null, 
-										   	   null, null);
+	public void shouldMaintainListOfTasksSortedAfterEditingTask() throws Exception {
+		AddCommand addCommand = new AddCommand().
+		        setTitle("task 1").
+		        setEndDate(new Date(2,1,2014));
+		
 		addCommand.execute();
 				
 		int taskNumber = 2;
-		EditCommand editCommand = new EditCommand(taskNumber, 
-												  null, 
-												  null, 
-												  new Date(2,1,2013), 
-												  null, 
-												  null, 
-												  null, 
-												  null);
+		EditCommand editCommand = new EditCommand().
+		        setTaskNumber(taskNumber).
+		        setEndDate(new Date(2,1,2013));
+		
 		editCommand.execute();
 				
-		assertEquals(true, taskManager.isListOfTasksSorted());
+		assertEquals(true, Utilities.isSorted(taskManager.getAllTasks()));
 	}
 }
