@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.ITask.TaskStatus;
 
 /**
  * An example implementation of ICommand.
@@ -78,6 +79,10 @@ public class AddCommand implements ICommand {
 	    return this;
 	}
 	
+	/**
+	 * This method will create a new Task object, complete with its attributes
+	 * (e.g. title, startDate, endDate, etc.). A task object should always have title. 
+	 */
 	@Override
 	public String execute() throws CommandExecutionException, IOException {
 	    //enforce required conditions
@@ -92,7 +97,8 @@ public class AddCommand implements ICommand {
 			.setRepeatFrequency(this.repeatFrequency)
 			.setPlace(this.place)
 			.setCategory(this.category)
-			.setNotes(this.notes);
+			.setNotes(this.notes)
+			.setStatus(TaskStatus.PENDING);
 		
 		taskManager.addTask(task);
 		taskManager.saveTasks();

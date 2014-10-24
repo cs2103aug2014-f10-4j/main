@@ -1,6 +1,8 @@
 package list;
 
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
+import java.util.List;
 
 import org.json.JSONException;
 
@@ -24,14 +26,15 @@ public class Controller {
 	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT = "Data is not in a valid JSON format ." + 
 																	"Please ensure the JSON format is " + 
 																	"valid and relaunch the program.";
-	private static final String MESSAGE_ERROR_SAVING_DATA = null;
+	private static final String MESSAGE_ERROR_SAVING = "Error saving data";
 	
 	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
 	private static IUserInterface userInterface = UserInterface.getInstance();
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
-	private static DisplayMode displayMode = DisplayMode.ALL;
+	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
+	private static List<ITask> displayedTasks = null;
 	
 	public static void main(String[] args) {
 		loadInitialData();
@@ -51,7 +54,7 @@ public class Controller {
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
         } catch (IOException e) {
-        	reply = MESSAGE_ERROR_SAVING_DATA;
+        	reply = MESSAGE_ERROR_SAVING;
         } catch (Exception e) {
             reply = MESSAGE_UNKNOWN_ERROR;
             e.printStackTrace();
@@ -59,6 +62,15 @@ public class Controller {
 		return reply;
 	}
 
+	public static ITask getTask(int taskNumber) {
+	    int taskId = taskNumber - 1;
+		return displayedTasks.get(taskId);
+	}
+	
+	public static boolean hasTaskWithNumber(int taskNumber) {
+		return (taskNumber > 0 && taskNumber <= displayedTasks.size());		
+	}
+	
 	//UI FUNCTIONS
     public static void setDisplayMode(DisplayMode displayMode) {
         Controller.displayMode = displayMode; 
@@ -69,19 +81,24 @@ public class Controller {
 	}
 	
 	public static void refreshUi() {
+		List<ITask> tasksToDisplay = null;
 	    switch (Controller.displayMode) {
-	    case ALL:
-	        userInterface.display(TITLE_ALL_TASKS, taskManager.getAllTasks());
-	        break;
-	    case TODAY:
-	        userInterface.display(TITLE_TODAY_TASKS, taskManager.getTodayTasks());
-	        break;
-	    case FLOATING:
-	        userInterface.display(TITLE_FLOATING_TASKS, taskManager.getFloatingTasks());
-	        break;
-	    case CUSTOM:
-	        //do something, or possibly do nothing
+		    case ALL:
+		    	tasksToDisplay = taskManager.getAllTasks();
+		        userInterface.display(TITLE_ALL_TASKS, tasksToDisplay);
+		        break;
+		    case TODAY:
+		    	tasksToDisplay = taskManager.getTodayTasks();
+		        userInterface.display(TITLE_TODAY_TASKS, tasksToDisplay);
+		        break;
+		    case FLOATING:
+		    	tasksToDisplay = taskManager.getFloatingTasks();
+		        userInterface.display(TITLE_FLOATING_TASKS, tasksToDisplay);
+		        break;
+		    case CUSTOM:
+		        //do something, or possibly do nothing
 	    }
+	    Controller.displayedTasks = tasksToDisplay;
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {

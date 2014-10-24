@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import list.Converter.CorruptedJsonObjectException;
 import list.Date.InvalidDateException;
+import list.ITask.TaskStatus;
 
 import org.json.JSONException;
 
@@ -118,6 +119,14 @@ public class TaskManager {
         }
     }
     
+    void markTaskAsDone(ITask task) {
+    	task.setStatus(TaskStatus.DONE);
+    }
+    
+    void unmarkTask(ITask task) {
+    	task.setStatus(TaskStatus.PENDING);
+    }
+    
     @Deprecated
     ITask getTask(Integer taskNumberShownOnScreen) {
         return tasks.get(getTaskId(taskNumberShownOnScreen));
@@ -126,6 +135,15 @@ public class TaskManager {
     @Deprecated
     void deleteTask(Integer taskNumberShownOnScreen) {
         ITask task = getTask(taskNumberShownOnScreen);
+        if (hasDeadline(task)) {
+            tasks.remove(task);
+        } else {
+            floatingTasks.remove(task);
+        }
+        deletedTasks.push(task);
+    }
+
+    void deleteTask(ITask task) {
         if (hasDeadline(task)) {
             tasks.remove(task);
         } else {
@@ -150,13 +168,17 @@ public class TaskManager {
         deletedTasks.clear();
     }
     
+    // SAVING AND LOADING
+    
     void loadTasks() throws IOException, JSONException {
-    	List<ITask> listOfTasks = readerWriter.loadFromFile();
-    	tasks = listOfTasks;
+    	List<ITask> tasks = readerWriter.loadFromFile();
+    	for (ITask task: tasks) {
+    	    this.addTask(task);
+    	}
 	}   
     
     void saveTasks() throws IOException {
-    	readerWriter.saveToFile(getAllTasks());
+    	readerWriter.saveToFile(this.getAllTasks());
     }
     
     @Deprecated

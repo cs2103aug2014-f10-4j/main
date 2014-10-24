@@ -13,7 +13,8 @@ import list.CommandBuilder.RepeatFrequency;
  */
 public class EditCommand implements ICommand {
 		
-	private static final String MESSAGE_SUCCESS = "Task is successfully edited";
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
+    private static final String MESSAGE_SUCCESS = "Task is successfully edited";
     private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
     private TaskManager taskManager = TaskManager.getInstance(); 
 	private Integer taskNumber;
@@ -86,17 +87,16 @@ public class EditCommand implements ICommand {
 	}
 
 	@Override
-	public String execute() throws InvalidTaskNumberException,
-	                               CommandExecutionException, 
+	public String execute() throws CommandExecutionException, 
 	                               IOException {
 		if (this.taskNumber == null) {
 		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
 		}
-		if (!taskManager.hasTaskWithNumber(taskNumber)) {
-			throw new InvalidTaskNumberException();
+		if (!Controller.hasTaskWithNumber(taskNumber)) {
+			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 		
-		ITask taskToEdit = taskManager.getTask(taskNumber);
+		ITask taskToEdit = Controller.getTask(taskNumber);
 				
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	

@@ -1,6 +1,7 @@
 package list;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -15,10 +16,14 @@ import javax.swing.text.BadLocationException;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
+import java.awt.font.TextAttribute;
 import java.util.List;
 
+import list.ITask.TaskStatus;
+
 public class UserInterface implements IUserInterface {
+    private static final Color COLOR_FOR_DATE = Color.BLACK;
+
     private static UserInterface singletonInstance = null;
     
 	private static JFrame mainFrame = new JFrame("List");
@@ -38,9 +43,10 @@ public class UserInterface implements IUserInterface {
 	private static ArrayList<JLabel> arrayListOfJLabel = new ArrayList<JLabel>();
 	private static Font fontForDate = new Font("American Typewriter", Font.BOLD, 36);
 	private static Font fontForTask = new Font("American Typewriter", Font.PLAIN, 36);
+	private static Font fontForDoneTask = null;
 	private static Font fontForConsole = new Font("American Typewriter", Font.PLAIN, 12);
-	private static Date previousDate = null;
-	private static boolean isFull = false;
+	private Date previousDate = null;
+	private boolean hasFloatingTask = false;
 	private static int numberOfLines = 0;
 	private static int numberOfTasks = 0;
 
@@ -49,6 +55,10 @@ public class UserInterface implements IUserInterface {
 	 * Use getInstance() get the UserInterface object.
 	 */
 	private UserInterface() {
+	    Map fontAttributes = fontForTask.getAttributes();
+	    fontAttributes.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+	    fontForDoneTask = new Font(fontAttributes);
+	    
 	    
 		// set the size of the frame
 		mainFrame.setSize(MAINFRAMEWIDTH, MAINFRAMEHEIGHT);
@@ -76,15 +86,19 @@ public class UserInterface implements IUserInterface {
 	    return UserInterface.singletonInstance;
 	}
 
-	public void clearAll() {
+	@Override
+	public void clearDisplay() {
 		for (int i = 0; i <  arrayListOfJLabel.size(); i++) {		
 			mainFrame.getContentPane().remove(arrayListOfJLabel.get(i));
 		}
 		mainFrame.repaint();
 		arrayListOfJLabel = new ArrayList<JLabel>();
+		
 		numberOfLines = 0;
 		numberOfTasks = 0;
-		previousDate = null;
+		
+		this.previousDate = null;
+		this.hasFloatingTask = false;
 	}
 
 	@Deprecated
@@ -95,10 +109,10 @@ public class UserInterface implements IUserInterface {
 		// check whether the date is the same with the date of the previous task
 		// if it's not the same, display the new date
 		// if it's the same, display the task
-		if (!checkDateIsAppeared(task)) {
-			displayNewDate(task);
-		} else {
+		if (checkDateIsAppeared(task) || this.hasFloatingTask) {
 			displayNewTask(task);
+		} else {
+			displayNewDate(task);
 		}
 		
 	}
@@ -111,7 +125,7 @@ public class UserInterface implements IUserInterface {
 
 		//**********display the place**********//
 		// display the place of the task
-		displayNewLine("Place: " + task.getPlace(), fontForTask, Color.BLACK);
+		displayNewLine("Place: " + task.getPlace(), fontForTask, COLOR_FOR_DATE);
 
 		//**********display the start time**********//
 		// string for the start time
@@ -122,7 +136,7 @@ public class UserInterface implements IUserInterface {
 
 		// display the start time of the task
 		if (startDateToDisplay != null) {
-		    displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		    displayNewLine(stringForStartTime + startDateToDisplay.getPrettyFormat(), fontForTask, COLOR_FOR_DATE);
 		}
 
 		//**********display the end time**********//
@@ -133,11 +147,11 @@ public class UserInterface implements IUserInterface {
 		Date endDateToDisplay = task.getEndDate();
 
 		// display the end time of the task
-		displayNewLine(stringForEndTime + endDateToDisplay.getPrettyFormat(), fontForTask, Color.BLACK);
+		displayNewLine(stringForEndTime + endDateToDisplay.getPrettyFormat(), fontForTask, COLOR_FOR_DATE);
 
 		//**********display the notes**********//
 		// display the notes of the task
-		displayNewLine("Notes: " + task.getNotes(), fontForTask, Color.BLACK);
+		displayNewLine("Notes: " + task.getNotes(), fontForTask, COLOR_FOR_DATE);
 	}
 
 	/**
@@ -164,7 +178,12 @@ public class UserInterface implements IUserInterface {
 		Date dateToDisplay = task.getEndDate();
 
 		// display the contents to the window
-		displayNewLine(dateToDisplay.getPrettyFormat(), fontForDate, getCategoryColor(task));
+		if (dateToDisplay != null) {
+		    displayNewLine(dateToDisplay.getPrettyFormat(), fontForDate, COLOR_FOR_DATE);
+		} else {
+		    displayNewLine("FLOATING", fontForDate, COLOR_FOR_DATE);
+		    this.hasFloatingTask = true;
+		}
 
 		// display the task as well
 		displayNewTask(task);
@@ -183,7 +202,11 @@ public class UserInterface implements IUserInterface {
 		stringOfTaskToDisplay += task.getTitle();
 		
 		// display the contents to the window
-		displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
+		if (task.getStatus() == TaskStatus.DONE) {
+	        displayNewLine(stringOfTaskToDisplay, fontForDoneTask, getCategoryColor(task));
+		} else {
+	        displayNewLine(stringOfTaskToDisplay, fontForTask, getCategoryColor(task));
+		}
 	}
 	
 	/**
@@ -228,9 +251,6 @@ public class UserInterface implements IUserInterface {
 
 		// increment the number of the lines already displayed, and if it is maximum, isFull = true
 		numberOfLines++;
-		if (numberOfLines == NUMBER_OF_LINES_ALLOWED - 1) {
-		    isFull = true;
-		}
 	}
 
 	public void setUpConsole() {
@@ -326,13 +346,11 @@ public class UserInterface implements IUserInterface {
 
     @Override
     public void display(String pageTitle, List<ITask> tasks) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void clearDisplay() {
-        // TODO Auto-generated method stub
+        // TODO: display page title
+        clearDisplay();
+        for (ITask task: tasks) {
+            displayNewTaskOrDate(task);
+        }
         
     }
 

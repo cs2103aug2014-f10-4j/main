@@ -3,6 +3,7 @@
 ###Our own file###
 *.txt
 tasks
+list_tasks.json
 
 ### Java ###
 *.class

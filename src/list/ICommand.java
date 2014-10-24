@@ -15,7 +15,8 @@ import org.json.JSONException;
  * @author andhieka, michael
  *
  */
-interface ICommand {	
+interface ICommand {
+    @Deprecated
 	@SuppressWarnings("serial")
     class InvalidTaskNumberException extends Exception { };
 		
