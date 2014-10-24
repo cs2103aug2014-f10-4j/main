@@ -2,6 +2,7 @@ package list;
 
 import static org.junit.Assert.*;
 import list.Date;
+import list.Date.InvalidDateException;
 
 import org.junit.Test;
 
@@ -24,6 +25,11 @@ public class DateTest {
         Date anotherDate = new Date("25-12-2014");
         assertTrue(anotherDate.compareTo(someDate) > 0);
         assertTrue(someDate.compareTo(anotherDate) < 0);
+    }
+    
+    @Test(expected = InvalidDateException.class)
+    public void expectingAnError() throws Exception {
+        Date invalidDate = new Date("34-10-2014");
     }
     
 }

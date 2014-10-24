@@ -15,7 +15,7 @@ interface IUserInterface {
         
     void clearDisplay();
     
-    void prepareForUserInput();
+    void prepareForUserInput(); //TODO: Remove this method
     
     void displayMessageToUser(String message);
 }
