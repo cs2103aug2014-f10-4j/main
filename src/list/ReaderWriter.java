@@ -21,7 +21,7 @@ public class ReaderWriter implements IStorage {
 	
 	//TODO: Better naming for messages
 	private static final String MESSAGE_IO_ERROR = "IO Error!";
-	private static final String TEXTFILE_NAME = "tasks";
+	private static final String TEXTFILE_NAME = "list_tasks.json";
 	private static final int INDENTATION_FACTOR = 4;	
 	
 	private Converter jsonConverter = null;

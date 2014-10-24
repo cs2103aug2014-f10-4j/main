@@ -3,6 +3,11 @@ package list;
 import list.CommandBuilder.RepeatFrequency;
 
 interface ITask extends Comparable<ITask> {
+	
+	public static enum TaskStatus {
+		DONE, PENDING
+	}
+	
 	public String getTitle();
 
 	public ITask setTitle(String title);
@@ -30,4 +35,8 @@ interface ITask extends Comparable<ITask> {
 	public String getNotes();
 
 	public ITask setNotes(String notes);
+	
+	public TaskStatus getStatus();
+
+	public void setStatus(TaskStatus status);
 }
