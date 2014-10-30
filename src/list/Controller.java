@@ -1,16 +1,25 @@
 package list;
 
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
 import java.util.List;
 import java.util.Stack;
 
-import org.json.JSONException;
-
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
+import list.view.MainController;
 
-public class Controller {
+import org.json.JSONException;
+
+public class Controller extends Application {
+	private static final String APPLICATION_NAME = "LIST";	
+	private Stage primaryStage;
+	private StackPane mainLayout;
+	
     private static final String TITLE_FLOATING_TASKS = "Floating Tasks";
     private static final String TITLE_TODAY_TASKS = "Today's Tasks";
     private static final String TITLE_ALL_TASKS = "All Tasks";
@@ -29,7 +38,7 @@ public class Controller {
 	
 	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
-	private static IUserInterface userInterface = UserInterface.getInstance();
+	private static IUserInterface userInterface = new MainController();
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
@@ -40,9 +49,42 @@ public class Controller {
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static boolean isUndoRedoOperation = false;
 	
-	public static void main(String[] args) {
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		this.primaryStage = primaryStage;
+		this.primaryStage.setTitle(APPLICATION_NAME);
+	
+		initializeMainLayout();
+		
 		loadInitialData();
-		userInterface.prepareForUserInput();
+		
+		refreshUi();
+	}
+		
+	@Override
+	public void stop() {
+		System.out.println("Exiting...");
+		return;
+	}
+	
+	private void initializeMainLayout() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApplication.class.getResource("view/asdf.fxml"));
+			
+            mainLayout = (StackPane) loader.load();
+
+            // Show the scene containing the root layout.
+            Scene scene = new Scene(mainLayout);
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+            
+            //refreshUi();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+		} 
 	}
 	
 	public static String processUserInput(String userInput) {
@@ -135,7 +177,6 @@ public class Controller {
 	public static void loadInitialData() {
 		try {
 			taskManager.loadTasks();
-			refreshUi();
 		} catch (IOException e) {
 			userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {

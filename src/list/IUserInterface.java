@@ -14,9 +14,7 @@ public interface IUserInterface {
     void display(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
-    
-    void prepareForUserInput(); //TODO: Remove this method
-    
+        
     void displayMessageToUser(String message);
     
     void back();

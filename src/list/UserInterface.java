@@ -284,7 +284,6 @@ public class UserInterface implements IUserInterface {
 		mainFrame.getContentPane().add(scrollPanel);
 	}
 
-	@Override
 	public void prepareForUserInput() {
 		// append the letter that appears at the first place
 		showInConsole("\n");

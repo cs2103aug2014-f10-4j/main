@@ -220,7 +220,7 @@
               </items>
             </SplitPane>
          </center></BorderPane>
-      <BorderPane fx:id="taskDetailPane" prefHeight="200.0" prefWidth="200.0">
+      <BorderPane fx:id="taskDetailPane" prefHeight="200.0" prefWidth="200.0" visible="false">
          <center>
             <AnchorPane maxHeight="200.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #333333;" BorderPane.alignment="CENTER">
                <children>
