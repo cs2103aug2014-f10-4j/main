@@ -12,6 +12,12 @@ import list.IUserInterface;
 
 public class MainController implements IUserInterface{
 
+	private static final int MAX_NUMBER_OF_TASKS_PER_PAGE = 10;
+	private static final int MIN_NUMBER_OF_PAGE = 0;
+	private int totalPages = 0;
+	private int currentPageDisplayed = 0;
+	private List<ITask> tasksList = null;
+	
 	@FXML
 	private TextField console;
 	
@@ -79,18 +85,6 @@ public class MainController implements IUserInterface{
 	 */
 	public MainController() {
 	}
-
-	public void prepareData(List<ITask> tasks) {
-		assert (tasks.size() == 10);
-		for (int i = 0; i < tasks.size(); i++) {
-			String taskTitle = tasks.get(i).getTitle();
-			taskLabels[i].setText(taskTitle);
-		
-		}
-		
-		//TODO: Update ImageView
-	}
-	
 	
 	/**
 	 * Initializes this controller class
@@ -117,6 +111,34 @@ public class MainController implements IUserInterface{
 		console.promptTextProperty();
 	}
 
+	private void prepareData(List<ITask> tasks) {
+		this.tasksList = tasks;
+		this.totalPages = calculateNumberOfPages(tasks.size());
+	}
+	
+	private int calculateNumberOfPages(int taskSize) {
+		if (taskSize % MAX_NUMBER_OF_TASKS_PER_PAGE == 0) {
+			return taskSize / MAX_NUMBER_OF_TASKS_PER_PAGE;
+		} else {
+			return (taskSize / MAX_NUMBER_OF_TASKS_PER_PAGE) + 1;
+		}
+	}
+	
+	private void displayTasksFrom(int pageNumber) {
+		assert (pageNumber > 0 && pageNumber <= totalPages);
+		this.currentPageDisplayed = pageNumber;
+		int startIndex = (pageNumber - 1) * MAX_NUMBER_OF_TASKS_PER_PAGE; 
+		int index = 0;
+		for (int i = startIndex; i < startIndex + MAX_NUMBER_OF_TASKS_PER_PAGE; i++) {
+			if (i < totalPages) {
+				String taskTitle = tasksList.get(i).getTitle();
+				taskLabels[index].setText(i + ". " + taskTitle);
+			} 
+			
+			index++;
+		}
+	}
+	
 	@Override
 	public void displayTaskDetail(ITask task) {
 		// TODO Auto-generated method stub
@@ -125,8 +147,8 @@ public class MainController implements IUserInterface{
 
 	@Override
 	public void display(String pageTitle, List<ITask> tasks) {
-		// TODO Auto-generated method stub
-		
+		prepareData(tasks);
+		displayTasksFrom(1);
 	}
 
 	@Override
@@ -136,15 +158,27 @@ public class MainController implements IUserInterface{
 	}
 
 	@Override
-	public void prepareForUserInput() {
+	public void displayMessageToUser(String message) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void displayMessageToUser(String message) {
-		// TODO Auto-generated method stub
-		
+	public void back() {
+		if (currentPageDisplayed - 1 < MIN_NUMBER_OF_PAGE) {
+			//Do nothing or tell user?
+		} else {
+			displayTasksFrom(currentPageDisplayed - 1);
+		}
+	}
+
+	@Override
+	public void next() {
+		if (currentPageDisplayed + 1 > totalPages) {
+			//Do nothing or tell user?
+		} else {
+			displayTasksFrom(currentPageDisplayed  + 1); 
+		}
 	}
 	
 	

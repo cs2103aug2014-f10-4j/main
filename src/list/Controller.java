@@ -42,7 +42,6 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		loadInitialData();
-		userInterface.prepareForUserInput();
 	}
 	
 	public static String processUserInput(String userInput) {
