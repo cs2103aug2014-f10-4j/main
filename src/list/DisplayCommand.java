@@ -15,8 +15,8 @@ public class DisplayCommand implements ICommand {
 
 	public DisplayCommand() { };
 	
-	public DisplayCommand(Integer taskNumber) {
-		this.task = Controller.getTaskWithNumber(taskNumber);
+	public DisplayCommand(ITask task) {
+		this.task = task;
 	}
     
     public DisplayCommand setTask(ITask task) {

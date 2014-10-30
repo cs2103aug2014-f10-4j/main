@@ -12,8 +12,8 @@ public class MarkCommand implements ICommand {
 	private TaskManager taskManager = TaskManager.getInstance();	
 	private ITask task;
 	
-	MarkCommand(Integer taskNumber) {
-		this.task= Controller.getTaskWithNumber(taskNumber);
+	MarkCommand(ITask task) {
+		this.task = task;
 	}
     
     public MarkCommand setTask(ITask task) {

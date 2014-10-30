@@ -33,6 +33,7 @@ public class Controller {
 	private static TaskManager taskManager = TaskManager.getInstance();
 	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	private static List<ITask> displayedTasks = null;
+	private static ITask displayedTaskDetail = null;
 	
 	public static void main(String[] args) {
 		loadInitialData();
@@ -67,12 +68,17 @@ public class Controller {
 		return (taskNumber > 0 && taskNumber <= displayedTasks.size());		
 	}
 	
+	public static ITask getLastDisplayedTaskDetail() {
+	    return displayedTaskDetail;
+	}
+	
 	//UI FUNCTIONS
     public static void setDisplayMode(DisplayMode displayMode) {
         Controller.displayMode = displayMode; 
     }
     
 	public static void displayTaskDetail(ITask selectedTask) {
+	    Controller.displayedTaskDetail = selectedTask;
 		userInterface.displayTaskDetail(selectedTask);
 	}
 	

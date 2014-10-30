@@ -33,7 +33,7 @@ public class UnmarkCommandTest {
 	public void shouldChangeTaskStatusToPending() throws Exception {
 		int taskNumber = 1;
 		ITask taskToUnmark = Controller.getTaskWithNumber(taskNumber);
-		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
+		UnmarkCommand unmarkCommand = new UnmarkCommand(taskToUnmark);
 		
 		unmarkCommand.execute();
 				
@@ -44,26 +44,11 @@ public class UnmarkCommandTest {
 	public void shouldReturnSuccessMessageUponSuccessfulOperation() 
 			throws Exception {
 		int taskNumber = 1;
-		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
+		UnmarkCommand unmarkCommand = new UnmarkCommand(Controller.getTaskWithNumber(taskNumber));
 		
 		String reply = unmarkCommand.execute();
 				
 		assertEquals("Task is unmarked successfully.", reply);
 	}
-		
-	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsNull() throws Exception {
-		Integer taskNumber = null;		
-		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
-		
-		unmarkCommand.execute();
-	}
 	
-	@Test(expected = CommandExecutionException.class)
-	public void shouldThrowExceptionWhenTaskNumberIsInvalid() throws Exception {
-		int taskNumber = 3;
-		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
-		
-		unmarkCommand.execute();		
-	}
 }

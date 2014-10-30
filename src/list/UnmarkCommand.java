@@ -10,8 +10,8 @@ public class UnmarkCommand implements ICommand {
 	private TaskManager taskManager = TaskManager.getInstance();
 	private ITask task;
 	
-	public UnmarkCommand(Integer taskNumber) {
-		this.task = Controller.getTaskWithNumber(taskNumber);
+	public UnmarkCommand(ITask task) {
+		this.task = task;
 	}
     
     public UnmarkCommand setTask(ITask task) {

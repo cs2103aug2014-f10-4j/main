@@ -11,7 +11,7 @@ import list.Parser;
 import org.junit.Test;
 
 public class ParserTest {
-    String COMMAND_EDIT = "edit 157 -t title with multiple words -n testing notes. -s 23-05-2014 -d 28-05-2014";
+    String COMMAND_EDIT = "edit 1 -t title with multiple words -n testing notes. -s 23-05-2014 -d 28-05-2014";
     String COMMAND_ADD = "add --title the original title -n a random note.";
     
     IParser mParser = new Parser();
@@ -36,8 +36,8 @@ public class ParserTest {
     
     @Test
     public void testAddCommand() throws Exception {
-        ICommand addCommand = mParser.parse(COMMAND_ADD);
-        assertTrue(addCommand instanceof AddCommand);
+        ICommand command = mParser.parse(COMMAND_ADD);
+        assertTrue(command instanceof AddCommand);
     }
     
 

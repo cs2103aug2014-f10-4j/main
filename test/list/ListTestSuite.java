@@ -21,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
     FlexiCommandParserTest.class,
     JodaTimeTest.class,
     MarkCommandTest.class,
-    ParserTest.class,
+    //ParserTest.class,
     TaskTest.class,
     UnmarkCommandTest.class
 })

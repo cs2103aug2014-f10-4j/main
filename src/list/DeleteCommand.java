@@ -20,8 +20,8 @@ public class DeleteCommand implements ICommand {
 
 	public DeleteCommand() { };
 	
-	public DeleteCommand(Integer taskNumber) {
-		this.task = Controller.getTaskWithNumber(taskNumber);
+	public DeleteCommand(ITask task) {
+		this.task = task;
 	}
     
     public DeleteCommand setTask(ITask task) {

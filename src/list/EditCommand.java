@@ -29,7 +29,7 @@ public class EditCommand implements ICommand {
 
     public EditCommand() { };
     
-	public EditCommand(Integer taskNumber,
+	public EditCommand(ITask task,
 					   String title,
 			           Date startDate,
 			           Date endDate,
@@ -37,7 +37,7 @@ public class EditCommand implements ICommand {
 			           String place,
 			           ICategory category,
 			           String notes) {
-		this.task = Controller.getTaskWithNumber(taskNumber);
+		this.task = task;
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -129,9 +129,6 @@ public class EditCommand implements ICommand {
 		return MESSAGE_SUCCESS;
 	}
 	
-	public Integer getTaskNumber() {
-	    return this.taskNumber;
-	}
 	
 	public String getTitle() {
 	    return this.title;

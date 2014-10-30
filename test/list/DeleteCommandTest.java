@@ -1,6 +1,9 @@
 package list;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import list.AddCommand;
 import list.Date;
 import list.DeleteCommand;
@@ -36,40 +39,23 @@ public class DeleteCommandTest {
 		addCommand.execute();		
 	}
 	
-	@Test(expected = CommandExecutionException.class)
-	public void shouldHandleInvalidTaskNumberSmallerThanOne() 
-			throws Exception {
-		int numberSmallerThanOne = 0;
-		
-		DeleteCommand deleteCommand = new DeleteCommand(numberSmallerThanOne);
-		deleteCommand.execute();
-	}
-	
-	@Test(expected = CommandExecutionException.class)
-	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
-			throws Exception {
-		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
-		
-		DeleteCommand deleteCommand = new DeleteCommand(numberGreaterThanTotalNumberOfTasks);
-		deleteCommand.execute();
-	}
-	 
 	@Test
 	public void shouldDecreaseNumberOfTasksByOne() throws Exception {
-		int initialNumberOfTasks = taskManager.getNumberOfTasks();
+	    List<ITask> tasks = taskManager.getAllTasks();
+		int initialNumberOfTasks = tasks.size();
 		
-		DeleteCommand deleteCommand = new DeleteCommand(1);
+		DeleteCommand deleteCommand = new DeleteCommand(tasks.get(0));
 		deleteCommand.execute();
-				
-		assertEquals(initialNumberOfTasks - 1, taskManager.getNumberOfTasks());
+
+		assertEquals(initialNumberOfTasks - 1, taskManager.getAllTasks().size());
 	}
 	
 	@Test
 	public void deletedTaskShouldNotExistAnymore() throws Exception {
 		int taskNumber = 1;
-		ITask task = taskManager.getTask(taskNumber);
+		ITask task = Controller.getTaskWithNumber(taskNumber);
 		
-		DeleteCommand deleteCommand = new DeleteCommand(taskNumber);
+		DeleteCommand deleteCommand = new DeleteCommand(task);
 		deleteCommand.execute();
 		
 		assertEquals(false, taskManager.hasTask(task));

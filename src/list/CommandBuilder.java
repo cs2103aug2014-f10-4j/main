@@ -19,6 +19,7 @@ class CommandBuilder {
 	private ICategory mCategory = null;
 	private String mNotes = null;
 	private Integer mTaskNumber = null;
+	private ITask mTask = null;
 	
 	@SuppressWarnings("serial")
     class CommandTypeNotSetException extends Exception { };
@@ -81,7 +82,7 @@ class CommandBuilder {
 	}
 	
 	CommandBuilder setTaskNumber(Integer taskNumber) {
-	    mTaskNumber = taskNumber;
+	    this.mTask = Controller.getTaskWithNumber(taskNumber);
 	    return this;
 	}
 
@@ -102,23 +103,23 @@ class CommandBuilder {
 			            mRepeatFrequency, mPlace, mCategory, mNotes);
 			    break;
 			case EDIT:
-			    command = new EditCommand(mTaskNumber, mTitle, mStartDate, mEndTime,
+			    command = new EditCommand(mTask, mTitle, mStartDate, mEndTime,
 			            mRepeatFrequency, mPlace, mCategory, mNotes);
 			    break;
 			case DISPLAY:
-				command = new DisplayCommand(mTaskNumber);
+				command = new DisplayCommand(mTask);
 				break;
 			case DELETE:
-				command = new DeleteCommand(mTaskNumber);
+				command = new DeleteCommand(mTask);
 				break;
 			case CLOSE:
 				command = new CloseCommand();
 				break;
 			case MARK:
-				command = new MarkCommand(mTaskNumber);
+				command = new MarkCommand(mTask);
 				break;
 			case UNMARK:
-			    command = new UnmarkCommand(mTaskNumber);
+			    command = new UnmarkCommand(mTask);
 			    break;
 		    default:
 			    throw new CommandTypeNotSetException();    

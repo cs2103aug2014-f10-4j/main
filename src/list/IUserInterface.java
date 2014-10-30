@@ -18,4 +18,8 @@ interface IUserInterface {
     void prepareForUserInput(); //TODO: Remove this method
     
     void displayMessageToUser(String message);
+    
+    void back();
+    
+    void next();
 }
