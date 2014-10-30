@@ -26,6 +26,8 @@ public class AddCommand implements ICommand {
 	private ICategory category = null;
 	private String notes = null;
 	
+	private ITask task;
+	
 	public AddCommand() { };
 	
 	public AddCommand(String title, 
@@ -100,12 +102,21 @@ public class AddCommand implements ICommand {
 			.setNotes(this.notes)
 			.setStatus(TaskStatus.PENDING);
 		
-		taskManager.addTask(task);
-		taskManager.saveTasks();
+		this.task = task;
 		
+		taskManager.addTask(task);
+		
+		taskManager.saveTasks();
 		Controller.refreshUi();
 		
 		return MESSAGE_TASK_ADDED_SUCCESFULLY;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        assert(this.task != null);
+        DeleteCommand deleteCommand = new DeleteCommand(this.task);
+        return deleteCommand;
+    }
 
 }

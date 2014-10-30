@@ -42,31 +42,13 @@ public class EditCommandTest {
 		addCommand.execute();
 	}
 	
-	@Test(expected = InvalidTaskNumberException.class)
-	public void shouldHandleInvalidTaskNumberSmallerThanOne() throws Exception {
-		int numberSmallerThanOne = 0;
-		
-		EditCommand editCommand = new EditCommand().setTaskNumber(numberSmallerThanOne);
-		editCommand.execute();
-	}
-	
-	@Test(expected = InvalidTaskNumberException.class)
-	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
-			throws Exception {
-		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;
-		
-		EditCommand editCommand = new EditCommand().
-		        setTaskNumber(numberGreaterThanTotalNumberOfTasks);
-		editCommand.execute();
-	}
-	
 	@Test
 	public void shouldOnlyEditTheTitle() throws Exception {
 		int taskNumber = 1;
 		String newTitle = "play";
 		
 		EditCommand editCommand = new EditCommand().
-		        setTaskNumber(taskNumber).
+		        setTask(Controller.getTaskWithNumber(taskNumber)).
 		        setTitle(newTitle);
 		
 		editCommand.execute();
@@ -88,7 +70,7 @@ public class EditCommandTest {
 		Date newStartDate = new Date(1,1,2014);
 		
 		EditCommand editCommand = new EditCommand().
-		        setTaskNumber(taskNumber).
+		        setTask(Controller.getTaskWithNumber(taskNumber)).
 		        setStartDate(newStartDate);
 		editCommand.execute();
 		
@@ -113,7 +95,7 @@ public class EditCommandTest {
 				
 		int taskNumber = 2;
 		EditCommand editCommand = new EditCommand().
-		        setTaskNumber(taskNumber).
+		        setTask(Controller.getTaskWithNumber(taskNumber)).
 		        setEndDate(new Date(2,1,2013));
 		
 		editCommand.execute();

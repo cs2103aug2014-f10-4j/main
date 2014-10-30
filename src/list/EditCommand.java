@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.ICommand.CommandExecutionException;
 
 /**
  * 
@@ -13,11 +14,11 @@ import list.CommandBuilder.RepeatFrequency;
  */
 public class EditCommand implements ICommand {
 		
-	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
     private static final String MESSAGE_SUCCESS = "Task is successfully edited";
-    private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+    
     private TaskManager taskManager = TaskManager.getInstance(); 
-	private Integer taskNumber;
+    private ITask task;
 	private String title;
 	private Date startDate;
 	private Date endDate;
@@ -25,10 +26,13 @@ public class EditCommand implements ICommand {
 	private String place;
 	private ICategory category;
 	private String notes;
+	
+	private ICommand inverseCommand;
+	private boolean isExecuted = false;
 
     public EditCommand() { };
     
-	public EditCommand(Integer taskNumber,
+	public EditCommand(ITask task,
 					   String title,
 			           Date startDate,
 			           Date endDate,
@@ -36,7 +40,7 @@ public class EditCommand implements ICommand {
 			           String place,
 			           ICategory category,
 			           String notes) {
-		this.taskNumber = taskNumber;
+		this.task = task;
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -46,11 +50,10 @@ public class EditCommand implements ICommand {
 		this.notes = notes;
 	}
 	
-	public EditCommand setTaskNumber(Integer taskNumber) {
-	    this.taskNumber = taskNumber;
+	public EditCommand setTask(ITask task) {
+	    this.task = task;
 	    return this;
 	}
-
 	public EditCommand setTitle(String title) {
 	    this.title = title;
 	    return this;
@@ -89,15 +92,18 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws CommandExecutionException, 
 	                               IOException {
-		if (this.taskNumber == null) {
-		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
-		}
-		if (!Controller.hasTaskWithNumber(taskNumber)) {
-			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
-		}
-		
-		ITask taskToEdit = Controller.getTask(taskNumber);
-				
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+	    
+	    if (isExecuted) {
+	        assert(false);
+	    }
+	    
+	    this.inverseCommand = createInverseCommand();
+        
+	    ITask taskToEdit = this.task;
+	    
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	
 		}
@@ -132,9 +138,6 @@ public class EditCommand implements ICommand {
 		return MESSAGE_SUCCESS;
 	}
 	
-	public Integer getTaskNumber() {
-	    return this.taskNumber;
-	}
 	
 	public String getTitle() {
 	    return this.title;
@@ -163,5 +166,42 @@ public class EditCommand implements ICommand {
 	public String getNotes() {
 	    return this.notes;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        if (this.inverseCommand == null) {
+            this.inverseCommand = createInverseCommand();
+        }
+        return this.inverseCommand;
+    }
+    
+    private ICommand createInverseCommand() {
+        EditCommand inverseCommand = new EditCommand();
+        inverseCommand.setTask(this.task);
+        
+        if (this.title != null) {
+            inverseCommand.setTitle(this.task.getTitle());
+        }
+        if (this.category != null) {
+            inverseCommand.setCategory(this.task.getCategory());
+        }
+        if (this.startDate != null) {
+            inverseCommand.setStartDate(this.task.getStartDate());
+        }
+        if (this.endDate != null) {
+            inverseCommand.setEndDate(this.task.getEndDate());
+        }
+        if (this.notes != null) {
+            inverseCommand.setNotes(this.task.getNotes());
+        }
+        if (this.place != null) {
+            inverseCommand.setPlace(this.task.getPlace());
+        }
+        if (this.repeatFrequency != null) {
+            inverseCommand.setRepeatFrequency(this.task.getRepeatFrequency());
+        }
+        
+        return inverseCommand;
+    }
 
 }

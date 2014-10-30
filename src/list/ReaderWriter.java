@@ -17,7 +17,8 @@ import org.json.JSONException;
 
 public class ReaderWriter implements IStorage {
 	
-	class CorruptedFileException extends Exception { };
+	@SuppressWarnings("serial")
+    class CorruptedFileException extends Exception { };
 	
 	//TODO: Better naming for messages
 	private static final String MESSAGE_IO_ERROR = "IO Error!";

@@ -5,34 +5,40 @@ import java.io.IOException;
 public class UnmarkCommand implements ICommand {
 	
 	private static final String MESSAGE_SUCCESS = "Task is unmarked successfully.";
-	private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
-	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
+	private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
 	
-	private Integer taskNumber;
 	private TaskManager taskManager = TaskManager.getInstance();
+	private ITask task;
 	
-	public UnmarkCommand(Integer taskNumber) {
-		this.taskNumber = taskNumber;
+	public UnmarkCommand(ITask task) {
+		this.task = task;
 	}
+    
+    public UnmarkCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
 	
 	@Override
 	public String execute() throws CommandExecutionException, IOException {
 		
-		if (taskNumber == null) {
-			throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
+		if (this.task == null) {
+			throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
 		}
 		
-		if (!Controller.hasTaskWithNumber(taskNumber)) {
-			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
-		}
-		
-		ITask taskToUnmark = Controller.getTask(taskNumber);
+		ITask taskToUnmark = this.task;
 		taskManager.unmarkTask(taskToUnmark);
+		
 		taskManager.saveTasks();
-        
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        ICommand inverseCommand = new MarkCommand(this.task);
+        return inverseCommand;
+    }
 
 }
