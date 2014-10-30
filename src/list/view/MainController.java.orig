@@ -1,26 +1,39 @@
 package list.view;
 
+<<<<<<< HEAD
+=======
 import java.util.List;
 
+>>>>>>> master
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+<<<<<<< HEAD
+import javafx.scene.layout.GridPane;
+import list.Controller;
+
+public class MainController {
+=======
 import javafx.scene.layout.BorderPane;
 import list.ITask;
 import list.IUserInterface;
 
 public class MainController implements IUserInterface{
+>>>>>>> master
 
 	@FXML
 	private TextField console;
 	
 	@FXML
+<<<<<<< HEAD
+	private GridPane gridPane;
+=======
 	private BorderPane mainPane;
 	
 	@FXML
 	private BorderPane taskDetailPane;
+>>>>>>> master
 	
 	@FXML
 	private Label labelTask1;
@@ -63,6 +76,8 @@ public class MainController implements IUserInterface{
 	private ImageView imageViewDate9;
 	@FXML
 	private ImageView imageViewDate10;
+<<<<<<< HEAD
+=======
 	
 	private Label[] taskLabels = { 
 		labelTask1, labelTask2, labelTask3, labelTask4, labelTask5, 
@@ -74,30 +89,15 @@ public class MainController implements IUserInterface{
 		imageViewDate5, imageViewDate6, imageViewDate7, imageViewDate8,
 		imageViewDate9, imageViewDate10
 	};
-	
-	// for task detail view*******From here*******
-	@FXML
-	private Label labelTaskTitle;
-	@FXML
-	private Label labelTaskCategory;
-	@FXML
-	private Label labelTaskDate;
-	@FXML
-	private Label labelTaskFrequency;
-	@FXML
-	private Label labelTaskPlace;
-	@FXML
-	private Label labelTaskNote;
-	@FXML
-	private Button buttonDone;
-		
-		// for task detail view*******To here*******
+>>>>>>> master
 		
 	/**
 	 * Constructor
 	 */
 	public MainController() {
 	}
+<<<<<<< HEAD
+=======
 
 	public void prepareData(List<ITask> tasks) {
 		assert (tasks.size() == 10);
@@ -110,13 +110,17 @@ public class MainController implements IUserInterface{
 		//TODO: Update ImageView
 	}
 	
+>>>>>>> master
 	
 	/**
 	 * Initializes this controller class
 	 */
 	@FXML
 	private void initialize() {
+<<<<<<< HEAD
+=======
 				
+>>>>>>> master
 		console.setOnAction((event) -> {
 			handleEnterAction();
 		});
@@ -129,21 +133,23 @@ public class MainController implements IUserInterface{
 	@FXML
 	private void handleEnterAction() {
 		String userInput = console.getText();
+<<<<<<< HEAD
+		Controller.processUserInput(userInput);
+=======
 		//Controller.processUserInput(userInput);
+>>>>>>> master
 		
 		labelTask1.requestFocus(); //set focus to something else
 		console.setText("");
 		console.promptTextProperty();
 	}
+<<<<<<< HEAD
+=======
 
 	@Override
 	public void displayTaskDetail(ITask task) {
-		labelTaskTitle.setText(task.getTitle());
-		labelTaskCategory.setText(task.getCategory().getName());
-		labelTaskDate.setText(task.getStartDate().getPrettyFormat() + "-" + task.getEndDate().getPrettyFormat());
-		labelTaskFrequency.setText(task.getRepeatFrequency().name());
-		labelTaskPlace.setText(task.getPlace());
-		labelTaskNote.setText(task.getNotes());
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -169,6 +175,11 @@ public class MainController implements IUserInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	
+	
+>>>>>>> master
 	
 	
 }

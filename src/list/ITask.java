@@ -2,7 +2,7 @@ package list;
 
 import list.CommandBuilder.RepeatFrequency;
 
-interface ITask extends Comparable<ITask> {
+public interface ITask extends Comparable<ITask> {
 	
 	public static enum TaskStatus {
 		DONE, PENDING

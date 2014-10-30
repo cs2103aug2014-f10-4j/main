@@ -22,7 +22,7 @@ class CommandBuilder {
 	
 	class CommandTypeNotSetException extends Exception { };
 			
-	static enum RepeatFrequency {
+	public static enum RepeatFrequency {
 		DAILY, WEEKLY, MONTHLY, NONE;
 	
 		static boolean isValidRepeatFrequencyType(String repeatFrequency) {
