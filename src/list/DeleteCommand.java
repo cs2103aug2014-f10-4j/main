@@ -2,6 +2,8 @@ package list;
 
 import java.io.IOException;
 
+import list.ICommand.CommandExecutionException;
+
 import org.json.JSONException;
 
 /**
@@ -10,31 +12,31 @@ import org.json.JSONException;
  *
  */
 public class DeleteCommand implements ICommand {
-	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
-    private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
     private static final String MESSAGE_SUCCESS = "Task is deleted successfully";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
 	
     private TaskManager taskManager = TaskManager.getInstance();
-	private Integer taskNumber = null;
+	private ITask task;
 
 	public DeleteCommand() { };
 	
 	public DeleteCommand(Integer taskNumber) {
-		this.taskNumber = taskNumber;
+		this.task = Controller.getTaskWithNumber(taskNumber);
 	}
+    
+    public DeleteCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
 	
 	@Override
 	public String execute() throws CommandExecutionException,  
 	                               IOException {
-		if (this.taskNumber == null) {
-		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
-		}
-	    if (!Controller.hasTaskWithNumber(taskNumber)) {
-			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
-		}
-	    
-		ITask task = Controller.getTaskWithNumber(taskNumber);
-		taskManager.deleteTask(task);
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+        
+        taskManager.deleteTask(this.task);
 		taskManager.saveTasks();
 		
 		Controller.refreshUi();

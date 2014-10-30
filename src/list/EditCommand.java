@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.ICommand.CommandExecutionException;
 
 /**
  * 
@@ -13,11 +14,11 @@ import list.CommandBuilder.RepeatFrequency;
  */
 public class EditCommand implements ICommand {
 		
-	private static final String MESSAGE_INVALID_TASK_NUMBER = "Invalid task number.";
     private static final String MESSAGE_SUCCESS = "Task is successfully edited";
-    private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+    
     private TaskManager taskManager = TaskManager.getInstance(); 
-	private Integer taskNumber;
+    private ITask task;
 	private String title;
 	private Date startDate;
 	private Date endDate;
@@ -36,7 +37,7 @@ public class EditCommand implements ICommand {
 			           String place,
 			           ICategory category,
 			           String notes) {
-		this.taskNumber = taskNumber;
+		this.task = Controller.getTaskWithNumber(taskNumber);
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -46,11 +47,10 @@ public class EditCommand implements ICommand {
 		this.notes = notes;
 	}
 	
-	public EditCommand setTaskNumber(Integer taskNumber) {
-	    this.taskNumber = taskNumber;
+	public EditCommand setTask(ITask task) {
+	    this.task = task;
 	    return this;
 	}
-
 	public EditCommand setTitle(String title) {
 	    this.title = title;
 	    return this;
@@ -89,15 +89,12 @@ public class EditCommand implements ICommand {
 	@Override
 	public String execute() throws CommandExecutionException, 
 	                               IOException {
-		if (this.taskNumber == null) {
-		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);
-		}
-		if (!Controller.hasTaskWithNumber(taskNumber)) {
-			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
-		}
-		
-		ITask taskToEdit = Controller.getTaskWithNumber(taskNumber);
-				
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+        
+	    ITask taskToEdit = this.task;
+	    
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	
 		}
