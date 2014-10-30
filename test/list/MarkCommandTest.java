@@ -33,7 +33,7 @@ public class MarkCommandTest {
 	@Test
 	public void shouldChangeTaskStatusToDone() throws Exception {
 		int taskNumber = 1;
-		ITask taskToMarkAsDone = Controller.getTask(taskNumber);
+		ITask taskToMarkAsDone = Controller.getTaskWithNumber(taskNumber);
 		MarkCommand markCommand = new MarkCommand(taskNumber);
 		
 		markCommand.execute();

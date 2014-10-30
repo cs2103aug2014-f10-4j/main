@@ -96,7 +96,7 @@ public class EditCommand implements ICommand {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 		
-		ITask taskToEdit = Controller.getTask(taskNumber);
+		ITask taskToEdit = Controller.getTaskWithNumber(taskNumber);
 				
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	

@@ -26,7 +26,7 @@ public class UnmarkCommand implements ICommand {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 		
-		ITask taskToUnmark = Controller.getTask(taskNumber);
+		ITask taskToUnmark = Controller.getTaskWithNumber(taskNumber);
 		taskManager.unmarkTask(taskToUnmark);
 		taskManager.saveTasks();
         

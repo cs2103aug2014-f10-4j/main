@@ -26,7 +26,7 @@ public class MarkCommand implements ICommand {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 		
-		ITask taskToMark = Controller.getTask(taskNumber);
+		ITask taskToMark = Controller.getTaskWithNumber(taskNumber);
 		taskManager.markTaskAsDone(taskToMark);
 		taskManager.saveTasks();
         

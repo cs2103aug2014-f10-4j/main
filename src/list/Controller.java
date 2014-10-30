@@ -62,7 +62,7 @@ public class Controller {
 		return reply;
 	}
 
-	public static ITask getTask(int taskNumber) {
+	public static ITask getTaskWithNumber(int taskNumber) {
 	    int taskId = taskNumber - 1;
 		return displayedTasks.get(taskId);
 	}

@@ -34,7 +34,7 @@ public class DeleteCommand implements ICommand {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);
 		}
 	    
-		ITask task = Controller.getTask(taskNumber);
+		ITask task = Controller.getTaskWithNumber(taskNumber);
 		taskManager.deleteTask(task);
 		taskManager.saveTasks();
 		

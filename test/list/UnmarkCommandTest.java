@@ -32,7 +32,7 @@ public class UnmarkCommandTest {
 	@Test
 	public void shouldChangeTaskStatusToPending() throws Exception {
 		int taskNumber = 1;
-		ITask taskToUnmark = Controller.getTask(taskNumber);
+		ITask taskToUnmark = Controller.getTaskWithNumber(taskNumber);
 		UnmarkCommand unmarkCommand = new UnmarkCommand(taskNumber);
 		
 		unmarkCommand.execute();

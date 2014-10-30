@@ -33,7 +33,7 @@ public class DisplayCommand implements ICommand {
 			throw new CommandExecutionException(MESSAGE_INVALID_TASK_NUMBER);	
 		} 
 		
-		ITask selectedTask = Controller.getTask(this.taskNumber);
+		ITask selectedTask = Controller.getTaskWithNumber(this.taskNumber);
 		
 		Controller.displayTaskDetail(selectedTask);
 		
