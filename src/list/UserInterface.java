@@ -354,4 +354,16 @@ public class UserInterface implements IUserInterface {
         
     }
 
+    @Override
+    public void back() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void next() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

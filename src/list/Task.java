@@ -3,6 +3,8 @@ package list;
 import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
+    private static TaskManager taskManager = TaskManager.getInstance();
+    
 	private String title;
 	private Date startDate;
 	private Date endDate;
@@ -11,6 +13,17 @@ public class Task implements ITask {
 	private ICategory category;
 	private String notes;
 	private TaskStatus status;
+	
+	public Task() {
+	    title = "";
+	    startDate = Date.getFloatingDate();
+	    endDate = Date.getFloatingDate();
+	    repeatFrequency = RepeatFrequency.NONE;
+	    place = "";
+	    category = Category.getDefaultCategory();
+	    notes = "";
+	    status = TaskStatus.PENDING;
+	}
 	
 	@Override
 	public int compareTo(ITask o) {
@@ -31,7 +44,9 @@ public class Task implements ITask {
 	}
 
 	public Task setTitle(String title) {
-		this.title = title;
+		if (title != null) {
+		    this.title = title;
+		}
 		return this;
 	}
 
@@ -40,7 +55,9 @@ public class Task implements ITask {
 	}
 
 	public Task setStartDate(Date startDate) {
-		this.startDate = startDate;
+	    if (startDate != null) {
+	        this.startDate = startDate;
+	    }
 		return this;
 	}
 
@@ -49,7 +66,9 @@ public class Task implements ITask {
 	}
 
 	public Task setEndDate(Date endDate) {
-		this.endDate = endDate;
+	    if (endDate != null) {
+	        this.endDate = endDate;
+	    }
 		return this;
 	}
 
@@ -58,7 +77,9 @@ public class Task implements ITask {
 	}
 
 	public Task setRepeatFrequency(RepeatFrequency repeatFrequency) {
-		this.repeatFrequency = repeatFrequency;
+	    if (repeatFrequency != null) {
+	        this.repeatFrequency = repeatFrequency;
+	    }
 		return this;
 	}
 
@@ -67,7 +88,9 @@ public class Task implements ITask {
 	}
 
 	public Task setPlace(String place) {
-		this.place = place;
+	    if (place != null) {
+	        this.place = place;
+	    }
 		return this;
 	}
 
@@ -76,7 +99,9 @@ public class Task implements ITask {
 	}
 
 	public Task setCategory(ICategory category) {
-		this.category = category;
+	    if (category != null) {
+	        this.category = category;
+	    }
 		return this;
 	}
 
@@ -85,7 +110,9 @@ public class Task implements ITask {
 	}
 
 	public Task setNotes(String notes) {
-		this.notes = notes;
+	    if (notes != null) {
+	        this.notes = notes;
+	    }
 		return this;
 	}
 
@@ -94,6 +121,8 @@ public class Task implements ITask {
 	}
 
 	public void setStatus(TaskStatus status) {
-		this.status = status;
+	    if (status != null) {
+	        this.status = status;
+	    }
 	}
 }

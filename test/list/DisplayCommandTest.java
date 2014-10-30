@@ -10,6 +10,7 @@ import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
 import list.ICommand.InvalidTaskNumberException;
+import list.ITask.TaskStatus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,15 +30,12 @@ public class DisplayCommandTest {
 	}
 	
 	@Test
-	public void shouldGetTheCorrectTask() throws Exception {
-		int taskNumber = 1;
-		DisplayCommand displayCommand = new DisplayCommand(taskNumber);
-		displayCommand.execute();
-		
-		ITask selectedTask = taskManager.getTask(taskNumber);
-		
-		assertEquals(TITLE, selectedTask.getTitle());
-		assertEquals(new Date("19-10-2014"), selectedTask.getEndDate());
+	public void test() throws Exception {
+	    ITask task = taskManager.getAllTasks().get(0);
+	    DisplayCommand dc = new DisplayCommand(task);
+	    dc.execute();
+	    
+	    assertEquals(task, Controller.getLastDisplayedTaskDetail());
 	}
-
+	
 }
