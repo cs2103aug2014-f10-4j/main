@@ -4,7 +4,10 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+<<<<<<< HEAD
 import javafx.scene.control.Button;
+=======
+>>>>>>> master
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -13,12 +16,6 @@ import list.IUserInterface;
 
 public class MainController implements IUserInterface{
 
-	private static final int MAX_NUMBER_OF_TASKS_PER_PAGE = 10;
-	private static final int MIN_NUMBER_OF_PAGE = 0;
-	private int totalPages = 0;
-	private int currentPageDisplayed = 0;
-	private List<ITask> tasksList = null;
-	
 	@FXML
 	private TextField console;
 	
@@ -80,6 +77,7 @@ public class MainController implements IUserInterface{
 		imageViewDate5, imageViewDate6, imageViewDate7, imageViewDate8,
 		imageViewDate9, imageViewDate10
 	};
+<<<<<<< HEAD
 	
 	// for task detail view*******From here*******
 	@FXML
@@ -98,12 +96,26 @@ public class MainController implements IUserInterface{
 	private Button buttonDone;
 		
 		// for task detail view*******To here*******
+=======
+>>>>>>> master
 		
 	/**
 	 * Constructor
 	 */
 	public MainController() {
 	}
+
+	public void prepareData(List<ITask> tasks) {
+		assert (tasks.size() == 10);
+		for (int i = 0; i < tasks.size(); i++) {
+			String taskTitle = tasks.get(i).getTitle();
+			taskLabels[i].setText(taskTitle);
+		
+		}
+		
+		//TODO: Update ImageView
+	}
+	
 	
 	/**
 	 * Initializes this controller class
@@ -113,10 +125,6 @@ public class MainController implements IUserInterface{
 				
 		console.setOnAction((event) -> {
 			handleEnterAction();
-		});
-		
-		buttonDone.setOnAction((event) -> {
-			doneAction();
 		});
 	}
 	
@@ -133,55 +141,26 @@ public class MainController implements IUserInterface{
 		console.setText("");
 		console.promptTextProperty();
 	}
-	
-	@FXML
-	private void doneAction() {
-		hideAndShowDetailView(false);
-	}
 
-	private void prepareData(List<ITask> tasks) {
-		this.tasksList = tasks;
-		this.totalPages = calculateNumberOfPages(tasks.size());
-	}
-	
-	private int calculateNumberOfPages(int taskSize) {
-		if (taskSize % MAX_NUMBER_OF_TASKS_PER_PAGE == 0) {
-			return taskSize / MAX_NUMBER_OF_TASKS_PER_PAGE;
-		} else {
-			return (taskSize / MAX_NUMBER_OF_TASKS_PER_PAGE) + 1;
-		}
-	}
-	
-	private void displayTasksFrom(int pageNumber) {
-		assert (pageNumber > 0 && pageNumber <= totalPages);
-		this.currentPageDisplayed = pageNumber;
-		int startIndex = (pageNumber - 1) * MAX_NUMBER_OF_TASKS_PER_PAGE; 
-		int index = 0;
-		for (int i = startIndex; i < startIndex + MAX_NUMBER_OF_TASKS_PER_PAGE; i++) {
-			if (i < totalPages) {
-				String taskTitle = tasksList.get(i).getTitle();
-				taskLabels[index].setText(i + ". " + taskTitle);
-			} 
-			
-			index++;
-		}
-	}
-	
 	@Override
 	public void displayTaskDetail(ITask task) {
+<<<<<<< HEAD
 		labelTaskTitle.setText(task.getTitle());
 		labelTaskCategory.setText(task.getCategory().getName());
 		labelTaskDate.setText(task.getStartDate().getPrettyFormat() + "-" + task.getEndDate().getPrettyFormat());
 		labelTaskFrequency.setText(task.getRepeatFrequency().name());
 		labelTaskPlace.setText(task.getPlace());
 		labelTaskNote.setText(task.getNotes());
-		hideAndShowDetailView(true);
+=======
+		// TODO Auto-generated method stub
+		
+>>>>>>> master
 	}
 
 	@Override
 	public void display(String pageTitle, List<ITask> tasks) {
-		prepareData(tasks);
-		displayTasksFrom(1);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -191,44 +170,23 @@ public class MainController implements IUserInterface{
 	}
 
 	@Override
+	public void prepareForUserInput() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void displayMessageToUser(String message) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void back() {
-		if (currentPageDisplayed - 1 < MIN_NUMBER_OF_PAGE) {
-			//Do nothing or tell user?
-		} else {
-			displayTasksFrom(currentPageDisplayed - 1);
-		}
-	}
-
-	@Override
-	public void next() {
-		if (currentPageDisplayed + 1 > totalPages) {
-			//Do nothing or tell user?
-		} else {
-			displayTasksFrom(currentPageDisplayed  + 1); 
-		}
-	}
-
-	@Override
-	public void back() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void next() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void hideAndShowDetailView(boolean isVisible) {
-		taskDetailPane.setVisible(isVisible);
-	}
 	
 	
+<<<<<<< HEAD
+=======
+	
+	
+	
+	
+>>>>>>> master
 }

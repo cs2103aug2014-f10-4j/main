@@ -220,41 +220,41 @@
               </items>
             </SplitPane>
          </center></BorderPane>
-      <BorderPane fx:id="taskDetailPane" prefHeight="200.0" prefWidth="200.0" visible="false">
+      <BorderPane fx:id="taskDetailPane" prefHeight="200.0" prefWidth="200.0">
          <center>
             <AnchorPane maxHeight="200.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #333333;" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="220.0" layoutY="163.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+                  <Button fx:id="buttonDone" layoutX="220.0" layoutY="163.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
                      <font>
                         <Font name="Helvetica Neue Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Label layoutX="17.0" layoutY="39.0" prefHeight="23.0" prefWidth="189.0" text="Meet Michael" textFill="#b5b5b5">
+                  <Label fx:id="labelTaskTitle" layoutX="17.0" layoutY="39.0" prefHeight="23.0" prefWidth="189.0" text="Meet Michael" textFill="#b5b5b5">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER_RIGHT" layoutX="175.0" layoutY="39.0" prefHeight="23.0" prefWidth="109.0" text="Friend" textFill="#fe642e">
+                  <Label fx:id="labelTaskCategory" alignment="CENTER_RIGHT" layoutX="175.0" layoutY="39.0" prefHeight="23.0" prefWidth="109.0" text="Friend" textFill="#fe642e">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="52.0" layoutY="62.0" prefHeight="23.0" prefWidth="246.0" text="25/12/2014" textFill="#b5b5b5">
+                  <Label fx:id="labelTaskDate" layoutX="52.0" layoutY="62.0" prefHeight="23.0" prefWidth="246.0" text="25/12/2014" textFill="#b5b5b5">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="21.0" layoutY="108.0" prefHeight="23.0" prefWidth="277.0" text="Marina Bay Sans Hotel" textFill="#b5b5b5">
+                  <Label fx:id="labelTaskPlace" layoutX="21.0" layoutY="108.0" prefHeight="23.0" prefWidth="277.0" text="Marina Bay Sans Hotel" textFill="#b5b5b5">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="52.0" layoutY="131.0" prefHeight="23.0" prefWidth="214.0" text="Dress code: requires tie" textFill="#b5b5b5">
+                  <Label fx:id="labelTaskNote" layoutX="52.0" layoutY="131.0" prefHeight="23.0" prefWidth="214.0" text="Dress code: requires tie" textFill="#b5b5b5">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
                   </Label>
-                  <Label layoutX="52.0" layoutY="85.0" prefHeight="23.0" prefWidth="214.0" text="repeated: monthly" textFill="#b5b5b5">
+                  <Label fx:id="labelTaskFrequency" layoutX="52.0" layoutY="85.0" prefHeight="23.0" prefWidth="214.0" text="repeated: monthly" textFill="#b5b5b5">
                      <font>
                         <Font name="Helvetica Neue Light" size="18.0" />
                      </font>
