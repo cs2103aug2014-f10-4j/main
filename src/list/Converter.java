@@ -164,7 +164,7 @@ public class Converter {
 			String startDate = taskDetailInJson.getString(KEY_START_TIME);
 						
 			try {
-				if (startDate != null) {
+				if (startDate != "") {
 					task.setStartDate(new Date(startDate));
 				}
 			} catch (InvalidDateException e) {
@@ -177,7 +177,7 @@ public class Converter {
 			String endTime = taskDetailInJson.getString(KEY_END_TIME);
 			
 			try {
-				if (endTime != null) {
+				if (endTime != "") {
 					task.setEndDate(new Date(endTime));
 				}
 			} catch (InvalidDateException e) {
@@ -190,7 +190,7 @@ public class Converter {
 			String categoryName = taskDetailInJson.getString(KEY_CATEGORY);
 			TaskManager taskManager = TaskManager.getInstance();
 			
-			if (categoryName != null) {
+			if (categoryName != "") {
 			    ICategory category = taskManager.getCategory(categoryName);
 			    task.setCategory(category);
 			}
@@ -224,7 +224,7 @@ public class Converter {
 		if (taskDetailInJson.has(KEY_PLACE)) {
 			String place = taskDetailInJson.getString(KEY_PLACE);
 			
-			if (place != null) {
+			if (place != "") {
 				task.setPlace(place);
 			}
 		}

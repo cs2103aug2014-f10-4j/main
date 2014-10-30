@@ -10,7 +10,8 @@ public class CloseCommand implements ICommand {
 	
 	@Override
 	public String execute() {
-	    System.exit(0);
+	    //Controller.stop();
+	    System.exit(0); //TODO
 	    return MESSAGE_EXIT;
 	}
 
