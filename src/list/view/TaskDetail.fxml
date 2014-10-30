@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #333333;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button layoutX="220.0" layoutY="163.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
          <font>
@@ -44,5 +43,6 @@
             <Font name="Helvetica Neue Light" size="18.0" />
          </font>
       </Label>
+      <StackPane layoutX="50.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
    </children>
 </AnchorPane>
