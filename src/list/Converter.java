@@ -10,11 +10,13 @@ import list.ITask.TaskStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import list.ITask.TaskStatus;
 
 public class Converter {
 	
-	class CorruptedJsonObjectException extends Exception { };
+	@SuppressWarnings("serial")
+    class CorruptedJsonObjectException extends Exception { };
 	
 	// Exception: user manually deletes title field -> corrupted	
 	private static final String KEY_TITLE = "title";

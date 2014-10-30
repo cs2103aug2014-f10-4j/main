@@ -10,7 +10,6 @@ public class DisplayCommand implements ICommand {
     private static final String MESSAGE_DISPLAYING = "Displaying ...";
     private static final String MESSAGE_NO_TASK_NUMBER = "Please specify task number.";
     
-	private TaskManager taskManager = TaskManager.getInstance();
 	private Integer taskNumber;
 
 	public DisplayCommand() { };

@@ -29,6 +29,7 @@ public class DateTest {
     
     @Test(expected = InvalidDateException.class)
     public void expectingAnError() throws Exception {
+        @SuppressWarnings("unused")
         Date invalidDate = new Date("34-10-2014");
     }
     

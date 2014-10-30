@@ -25,6 +25,7 @@ public class Date implements Comparable<Date> {
     
     private DateTime dateTime;
     
+    @SuppressWarnings("serial")
     public class InvalidDateException extends Exception { };
     
     /**

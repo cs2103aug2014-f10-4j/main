@@ -20,7 +20,8 @@ class CommandBuilder {
 	private String mNotes = null;
 	private Integer mTaskNumber = null;
 	
-	class CommandTypeNotSetException extends Exception { };
+	@SuppressWarnings("serial")
+    class CommandTypeNotSetException extends Exception { };
 			
 	static enum RepeatFrequency {
 		DAILY, WEEKLY, MONTHLY, NONE;

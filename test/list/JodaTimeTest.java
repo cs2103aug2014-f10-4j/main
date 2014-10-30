@@ -73,6 +73,7 @@ public class JodaTimeTest {
 	
 	@Test(expected = IllegalFieldValueException.class)
 	public void testInvalidDate() throws Exception {
-	    DateTime invalidDate = new DateTime(2014, 02, 29, 0, 0);
+	    @SuppressWarnings("unused")
+        DateTime invalidDate = new DateTime(2014, 02, 29, 0, 0);
 	}
 }

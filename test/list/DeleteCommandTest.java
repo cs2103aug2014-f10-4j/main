@@ -9,7 +9,7 @@ import list.ITask;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.Date.InvalidDateException;
-import list.ICommand.InvalidTaskNumberException;
+import list.ICommand.CommandExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class DeleteCommandTest {
 		addCommand.execute();		
 	}
 	
-	@Test(expected = InvalidTaskNumberException.class)
+	@Test(expected = CommandExecutionException.class)
 	public void shouldHandleInvalidTaskNumberSmallerThanOne() 
 			throws Exception {
 		int numberSmallerThanOne = 0;
@@ -45,7 +45,7 @@ public class DeleteCommandTest {
 		deleteCommand.execute();
 	}
 	
-	@Test(expected = InvalidTaskNumberException.class)
+	@Test(expected = CommandExecutionException.class)
 	public void shouldHandleInvalidTaskNumberGreaterThanTotalTasks() 
 			throws Exception {
 		int numberGreaterThanTotalNumberOfTasks = taskManager.getNumberOfTasks() + 1;

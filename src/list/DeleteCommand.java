@@ -24,8 +24,7 @@ public class DeleteCommand implements ICommand {
 	}
 	
 	@Override
-	public String execute() throws InvalidTaskNumberException,
-	                               CommandExecutionException,  
+	public String execute() throws CommandExecutionException,  
 	                               IOException {
 		if (this.taskNumber == null) {
 		    throw new CommandExecutionException(MESSAGE_NO_TASK_NUMBER);

@@ -7,7 +7,6 @@ import java.util.List;
 import org.json.JSONException;
 
 import list.ICommand.CommandExecutionException;
-import list.ICommand.InvalidTaskNumberException;
 import list.IParser.ParseException;
 
 public class Controller {
@@ -21,8 +20,7 @@ public class Controller {
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
     private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
-    private static final String MESSAGE_INVALID_TASK_NUMBER = "Task number entered is invalid.";
-    private static final String MESSAGE_ERROR_LOADING ="Error loading data";
+    private static final String MESSAGE_ERROR_LOADING = "Error loading data";
 	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT = "Data is not in a valid JSON format ." + 
 																	"Please ensure the JSON format is " + 
 																	"valid and relaunch the program.";
@@ -49,8 +47,6 @@ public class Controller {
             reply = commandMadeByParser.execute();
         } catch (ParseException e) {
             reply = MESSAGE_ERROR_PARSING_COMMAND;
-        } catch (InvalidTaskNumberException e) {
-            reply = MESSAGE_INVALID_TASK_NUMBER;
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
         } catch (IOException e) {
