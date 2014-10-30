@@ -32,8 +32,8 @@
                   <Font name="Helvetica Neue Bold" size="12.0" />
                </font>
             </Button>
-            <Region maxWidth="435.0" minWidth="61.0" prefHeight="28.0" prefWidth="93.0" />
-            <TextField prefHeight="26.0" prefWidth="154.0" promptText="Search tasks" style="-fx-background-color: #585858;">
+            <Region maxWidth="435.0" minWidth="61.0" prefHeight="28.0" prefWidth="97.0" />
+            <TextField prefHeight="26.0" prefWidth="150.0" promptText="Search tasks" style="-fx-background-color: #585858;">
                <font>
                   <Font name="Helvetica Neue Bold" size="13.0" />
                </font></TextField>
