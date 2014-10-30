@@ -26,6 +26,9 @@ public class EditCommand implements ICommand {
 	private String place;
 	private ICategory category;
 	private String notes;
+	
+	private ICommand inverseCommand;
+	private boolean isExecuted = false;
 
     public EditCommand() { };
     
@@ -92,6 +95,12 @@ public class EditCommand implements ICommand {
 	    if (this.task == null) {
             throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
         }
+	    
+	    if (isExecuted) {
+	        assert(false);
+	    }
+	    
+	    this.inverseCommand = createInverseCommand();
         
 	    ITask taskToEdit = this.task;
 	    
@@ -157,5 +166,42 @@ public class EditCommand implements ICommand {
 	public String getNotes() {
 	    return this.notes;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        if (this.inverseCommand == null) {
+            this.inverseCommand = createInverseCommand();
+        }
+        return this.inverseCommand;
+    }
+    
+    private ICommand createInverseCommand() {
+        EditCommand inverseCommand = new EditCommand();
+        inverseCommand.setTask(this.task);
+        
+        if (this.title != null) {
+            inverseCommand.setTitle(this.task.getTitle());
+        }
+        if (this.category != null) {
+            inverseCommand.setCategory(this.task.getCategory());
+        }
+        if (this.startDate != null) {
+            inverseCommand.setStartDate(this.task.getStartDate());
+        }
+        if (this.endDate != null) {
+            inverseCommand.setEndDate(this.task.getEndDate());
+        }
+        if (this.notes != null) {
+            inverseCommand.setNotes(this.task.getNotes());
+        }
+        if (this.place != null) {
+            inverseCommand.setPlace(this.task.getPlace());
+        }
+        if (this.repeatFrequency != null) {
+            inverseCommand.setRepeatFrequency(this.task.getRepeatFrequency());
+        }
+        
+        return inverseCommand;
+    }
 
 }

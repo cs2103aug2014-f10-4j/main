@@ -23,7 +23,8 @@ import org.junit.runners.Suite.SuiteClasses;
     MarkCommandTest.class,
     //ParserTest.class,
     TaskTest.class,
-    UnmarkCommandTest.class
+    UnmarkCommandTest.class,
+    UndoRedoTest.class
 })
 public class ListTestSuite {
     

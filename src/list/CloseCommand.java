@@ -14,4 +14,9 @@ public class CloseCommand implements ICommand {
 	    return MESSAGE_EXIT;
 	}
 
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
 }

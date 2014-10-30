@@ -7,6 +7,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class Date implements Comparable<Date> {
+    private static final String DAY_FLOATING_PRETTY = "";
+    private static final String DAY_FLOATING = "";
+    
     private static final int MINUTE_VALUE = 0;
     private static final int HOUR_VALUE = 0;
     private static final String FORMAT_STRING_PRETTY = "E, d MMM y"; //Wed, 15 Oct 2014 
@@ -23,7 +26,10 @@ public class Date implements Comparable<Date> {
     
     private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
     
+    private static Date DATE_FLOATING = null;
+    
     private DateTime dateTime;
+    private boolean isFloating = false;
     
     @SuppressWarnings("serial")
     public class InvalidDateException extends Exception { };
@@ -46,11 +52,22 @@ public class Date implements Comparable<Date> {
     
     Date(String dateString) throws InvalidDateException {
         try {
+            if (dateString == DAY_FLOATING) {
+                this.isFloating = true;
+            }
             this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new InvalidDateException();
         }
+    }
+    
+    static Date getFloatingDate() {
+        if (DATE_FLOATING == null) {
+            DATE_FLOATING = new Date();
+            DATE_FLOATING.isFloating = true;
+        }
+        return DATE_FLOATING;
     }
     
     public int getDay() {
@@ -79,6 +96,9 @@ public class Date implements Comparable<Date> {
      * @return
      */
     public String getPrettyFormat() {
+        if (this.isFloating) {
+            return DAY_FLOATING_PRETTY;
+        }
         DateTime today = new DateTime();
         DateTime tomorrow = today.plusDays(1);
     	if (DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
@@ -91,6 +111,11 @@ public class Date implements Comparable<Date> {
     
     @Override
     public int compareTo(Date o) {
+        if (this.isFloating && !o.isFloating) {
+            return 1;
+        } else if (!this.isFloating && o.isFloating) {
+            return -1;
+        }
         return DATE_ONLY_COMPARATOR.compare(this.dateTime, o.dateTime);
     }
     
@@ -110,6 +135,9 @@ public class Date implements Comparable<Date> {
      */
     @Override
     public String toString() {
+        if (this.isFloating) {
+            return DAY_FLOATING;
+        }
         return FORMATTER_STANDARD.print(this.dateTime);
     }
 }

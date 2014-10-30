@@ -37,4 +37,9 @@ public class DisplayCommand implements ICommand {
 		return MESSAGE_DISPLAYING;
 	}
 
+    @Override
+    public ICommand getInverseCommand() {
+        return null; // cannot be undone
+    }
+
 }

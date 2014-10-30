@@ -28,11 +28,17 @@ public class UnmarkCommand implements ICommand {
 		
 		ITask taskToUnmark = this.task;
 		taskManager.unmarkTask(taskToUnmark);
+		
 		taskManager.saveTasks();
-        
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        ICommand inverseCommand = new MarkCommand(this.task);
+        return inverseCommand;
+    }
 
 }

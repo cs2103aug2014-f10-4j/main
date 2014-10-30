@@ -19,7 +19,7 @@ class CommandBuilder {
 	private ICategory mCategory = null;
 	private String mNotes = null;
 	private Integer mTaskNumber = null;
-	private ITask mTask = null;
+	private ITask task = null;
 	
 	@SuppressWarnings("serial")
     class CommandTypeNotSetException extends Exception { };
@@ -38,7 +38,7 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK
+		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK, UNDO, REDO
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -82,7 +82,9 @@ class CommandBuilder {
 	}
 	
 	CommandBuilder setTaskNumber(Integer taskNumber) {
-	    this.mTask = Controller.getTaskWithNumber(taskNumber);
+	    if (taskNumber != null) {
+	        this.task = Controller.getTaskWithNumber(taskNumber);
+	    }
 	    return this;
 	}
 
@@ -103,23 +105,29 @@ class CommandBuilder {
 			            mRepeatFrequency, mPlace, mCategory, mNotes);
 			    break;
 			case EDIT:
-			    command = new EditCommand(mTask, mTitle, mStartDate, mEndTime,
+			    command = new EditCommand(task, mTitle, mStartDate, mEndTime,
 			            mRepeatFrequency, mPlace, mCategory, mNotes);
 			    break;
 			case DISPLAY:
-				command = new DisplayCommand(mTask);
+				command = new DisplayCommand(task);
 				break;
 			case DELETE:
-				command = new DeleteCommand(mTask);
+				command = new DeleteCommand(task);
 				break;
 			case CLOSE:
 				command = new CloseCommand();
 				break;
 			case MARK:
-				command = new MarkCommand(mTask);
+				command = new MarkCommand(task);
 				break;
 			case UNMARK:
-			    command = new UnmarkCommand(mTask);
+			    command = new UnmarkCommand(task);
+			    break;
+			case UNDO:
+			    command = new UndoCommand();
+			    break;
+			case REDO:
+			    command = new RedoCommand();
 			    break;
 		    default:
 			    throw new CommandTypeNotSetException();    

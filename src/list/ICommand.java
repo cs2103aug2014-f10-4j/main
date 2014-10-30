@@ -43,6 +43,6 @@ interface ICommand {
 	 * Returns the ICommand object necessary to undo the operation.
 	 * @return ICommand
 	 */
-	//ICommand getInverseCommand();
+	ICommand getInverseCommand();
 	
 }

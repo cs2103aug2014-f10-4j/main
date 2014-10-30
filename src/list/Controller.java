@@ -3,6 +3,7 @@ package list;
 import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
 import java.util.List;
+import java.util.Stack;
 
 import org.json.JSONException;
 
@@ -35,17 +36,28 @@ public class Controller {
 	private static List<ITask> displayedTasks = null;
 	private static ITask displayedTaskDetail = null;
 	
+	private static Stack<ICommand> undoStack = new Stack<ICommand>();
+	private static Stack<ICommand> redoStack = new Stack<ICommand>();
+	private static boolean isUndoRedoOperation = false;
+	
 	public static void main(String[] args) {
 		loadInitialData();
 		userInterface.prepareForUserInput();
 	}
 	
 	public static String processUserInput(String userInput) {
-	    ICommand commandMadeByParser;
 	    String reply;
         try {
-            commandMadeByParser = parser.parse(userInput);
+            isUndoRedoOperation = false;
+            ICommand commandMadeByParser = parser.parse(userInput);
             reply = commandMadeByParser.execute();
+            ICommand inverseCommand = commandMadeByParser.getInverseCommand();
+            if (inverseCommand != null) {
+                undoStack.add(inverseCommand);
+            }
+            if (!isUndoRedoOperation) {
+                redoStack.clear();
+            }
         } catch (ParseException e) {
             reply = MESSAGE_ERROR_PARSING_COMMAND;
         } catch (CommandExecutionException e) {
@@ -105,6 +117,18 @@ public class Controller {
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
 		userInterface.displayTaskDetail(selectedTask);
+	}
+	
+	static Stack<ICommand> getUndoStack() {
+	    return undoStack;
+	}
+	
+	static Stack<ICommand> getRedoStack() {
+	    return redoStack;
+	}
+	
+	static void reportUndoRedoOperation() {
+	    isUndoRedoOperation = true;
 	}
 	
 	//TODO: Error with UI when loading

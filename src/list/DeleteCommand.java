@@ -37,12 +37,18 @@ public class DeleteCommand implements ICommand {
         }
         
         taskManager.deleteTask(this.task);
+        
 		taskManager.saveTasks();
-		
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        UndeleteCommand undeleteCommand = new UndeleteCommand(this.task);
+        return undeleteCommand;
+    }
 	
 	
 
