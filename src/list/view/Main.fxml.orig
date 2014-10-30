@@ -8,8 +8,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<<<<<<< HEAD
 <StackPane>
 <BorderPane maxHeight="-Infinity" maxWidth="800.0" minHeight="-Infinity" minWidth="386.0" prefHeight="386.0" prefWidth="386.0" style="-fx-background-color: #2E2E2E;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+=======
+
+<BorderPane maxHeight="-Infinity" maxWidth="800.0" minHeight="-Infinity" minWidth="386.0" prefHeight="386.0" prefWidth="386.0" style="-fx-background-color: #2E2E2E;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.MainController">
+>>>>>>> master
    <top>
       <ToolBar maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #2E2E2E;" BorderPane.alignment="CENTER">
         <items>

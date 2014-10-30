@@ -44,4 +44,9 @@ public class MainApplication extends Application {
 		launch(args);
 	}
 
+<<<<<<< HEAD
+=======
+	
+
+>>>>>>> master
 }

@@ -2,7 +2,7 @@ package list;
 
 import java.awt.Color;
 
-interface ICategory {
+public interface ICategory {
     
     Color getColor();
     
