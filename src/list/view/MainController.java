@@ -120,6 +120,10 @@ public class MainController implements IUserInterface{
 		console.setOnAction((event) -> {
 			handleEnterAction();
 		});
+		
+		buttonDone.setOnAction((event) -> {
+			doneAction();
+		});
 	}
 	
 	/**
@@ -135,6 +139,11 @@ public class MainController implements IUserInterface{
 		console.setText("");
 		console.promptTextProperty();
 	}
+	
+	@FXML
+	private void doneAction() {
+		hideAndShowDetailView(false);
+	}
 
 	@Override
 	public void displayTaskDetail(ITask task) {
@@ -144,6 +153,7 @@ public class MainController implements IUserInterface{
 		labelTaskFrequency.setText(task.getRepeatFrequency().name());
 		labelTaskPlace.setText(task.getPlace());
 		labelTaskNote.setText(task.getNotes());
+		hideAndShowDetailView(true);
 	}
 
 	@Override
@@ -168,6 +178,22 @@ public class MainController implements IUserInterface{
 	public void displayMessageToUser(String message) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void back() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void next() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void hideAndShowDetailView(boolean isVisible) {
+		taskDetailPane.setVisible(isVisible);
 	}
 	
 	

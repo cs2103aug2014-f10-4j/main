@@ -21,22 +21,12 @@ public class MainApplication extends Application {
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
 		initializeMainLayout();
-<<<<<<< HEAD
-		
-	}
-	
-	private void initializeMainLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("view/Main.fxml"));
-=======
 	}
 		
 	private void initializeMainLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MainApplication.class.getResource("view/asdf.fxml"));
->>>>>>> master
             mainLayout = (StackPane) loader.load();
 
             // Show the scene containing the root layout.
