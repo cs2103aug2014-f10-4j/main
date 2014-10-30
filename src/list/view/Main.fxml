@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="800.0" minHeight="-Infinity" minWidth="386.0" prefHeight="386.0" prefWidth="386.0" style="-fx-background-color: #2E2E2E;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <ToolBar maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #2E2E2E;" BorderPane.alignment="CENTER">
+        <items>
+          <Button maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: #585858;" text="C">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="12.0" />
+               </font></Button>
+            <Button maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: #585858;" text="B">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: #585858;" text="F">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: #585858;" text="H">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="12.0" />
+               </font>
+            </Button>
+            <Region maxWidth="435.0" minWidth="61.0" prefHeight="28.0" prefWidth="93.0" />
+            <TextField prefHeight="26.0" prefWidth="154.0" promptText="Search tasks" style="-fx-background-color: #585858;">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="13.0" />
+               </font></TextField>
+        </items>
+      </ToolBar>
+   </top>
+   <bottom>
+      <VBox style="-fx-background-color: #2E2E2E;">
+         <children>
+            <TextField promptText="Enter command here" style="-fx-background-color: #585858;">
+               <font>
+                  <Font name="Helvetica Neue Bold" size="13.0" />
+               </font></TextField>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </VBox>
+   </bottom>
+   <center>
+      <GridPane prefHeight="169.0" prefWidth="527.0" style="-fx-background-color: #424242;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="29.4" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="357.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <children>
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="5" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="6" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="7" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="8" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="9" />
+            <Label prefHeight="23.0" prefWidth="349.0" text="1. Meet Prof. Damith" textFill="#cc2efa" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="2. Do laundry" textFill="#2eccfa" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="3. Buy chocolate" textFill="#2eccfa" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="4. DATING with Elizabeth!!!" textFill="#fe2e2e" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="5. Play soccer" textFill="#64fe2e" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="6. Programming contest" textFill="#a4a4a4" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="7. DATING with Michelle!!!" textFill="#fe2e2e" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="8. Meet Michael" textFill="#fe642e" GridPane.columnIndex="1" GridPane.rowIndex="7">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="9. Part time job" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+            <Label prefHeight="23.0" prefWidth="349.0" text="10. Swimming club" textFill="#64fe2e" GridPane.columnIndex="1" GridPane.rowIndex="9">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>
