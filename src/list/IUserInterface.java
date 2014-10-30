@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * @author andhieka, michael, shotaro
  */
-interface IUserInterface { 
+public interface IUserInterface { 
     
     void displayTaskDetail(ITask task);
     

@@ -5,14 +5,14 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
 
 	private static final String APPLICATION_NAME = "LIST";	
 	private Stage primaryStage;
-	private BorderPane mainLayout;
+	private StackPane mainLayout;
 	
 	
 	@Override
@@ -21,14 +21,13 @@ public class MainApplication extends Application {
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
 		initializeMainLayout();
-		
 	}
-	
+		
 	private void initializeMainLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("view/Main.fxml"));
-            mainLayout = (BorderPane) loader.load();
+			loader.setLocation(MainApplication.class.getResource("view/asdf.fxml"));
+            mainLayout = (StackPane) loader.load();
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(mainLayout);
@@ -44,5 +43,7 @@ public class MainApplication extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+	
 
 }

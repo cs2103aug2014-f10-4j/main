@@ -1,19 +1,25 @@
 package list.view;
 
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import list.Controller;
+import javafx.scene.layout.BorderPane;
+import list.ITask;
+import list.IUserInterface;
 
-public class MainController {
+public class MainController implements IUserInterface{
 
 	@FXML
 	private TextField console;
 	
 	@FXML
-	private GridPane gridPane;
+	private BorderPane mainPane;
+	
+	@FXML
+	private BorderPane taskDetailPane;
 	
 	@FXML
 	private Label labelTask1;
@@ -56,21 +62,44 @@ public class MainController {
 	private ImageView imageViewDate9;
 	@FXML
 	private ImageView imageViewDate10;
+	
+	private Label[] taskLabels = { 
+		labelTask1, labelTask2, labelTask3, labelTask4, labelTask5, 
+		labelTask6, labelTask7, labelTask8, labelTask9, labelTask10 
+	};
+	
+	private ImageView[] dateImageViews = {
+		imageViewDate1, imageViewDate2, imageViewDate3, imageViewDate4,
+		imageViewDate5, imageViewDate6, imageViewDate7, imageViewDate8,
+		imageViewDate9, imageViewDate10
+	};
 		
 	/**
 	 * Constructor
 	 */
 	public MainController() {
 	}
+
+	public void prepareData(List<ITask> tasks) {
+		assert (tasks.size() == 10);
+		for (int i = 0; i < tasks.size(); i++) {
+			String taskTitle = tasks.get(i).getTitle();
+			taskLabels[i].setText(taskTitle);
+		
+		}
+		
+		//TODO: Update ImageView
+	}
+	
 	
 	/**
 	 * Initializes this controller class
 	 */
 	@FXML
 	private void initialize() {
+				
 		console.setOnAction((event) -> {
-		
-			//gridPane.requestFocus();
+			handleEnterAction();
 		});
 	}
 	
@@ -81,12 +110,46 @@ public class MainController {
 	@FXML
 	private void handleEnterAction() {
 		String userInput = console.getText();
-		Controller.processUserInput(userInput);
+		//Controller.processUserInput(userInput);
 		
 		labelTask1.requestFocus(); //set focus to something else
 		console.setText("");
 		console.promptTextProperty();
 	}
+
+	@Override
+	public void displayTaskDetail(ITask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void display(String pageTitle, List<ITask> tasks) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearDisplay() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void prepareForUserInput() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void displayMessageToUser(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	
 	
 	
 }
