@@ -11,8 +11,8 @@ public class NextCommand implements ICommand {
     @Override
     public String execute() throws CommandExecutionException, IOException,
             InvalidTaskNumberException {
-        userInterface.next();
-        return "Next page displayed";
+        boolean success = userInterface.next();
+        return success ? "Next page displayed" : "End of list";
     }
 
     @Override
