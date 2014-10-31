@@ -52,10 +52,12 @@ public class Date implements Comparable<Date> {
     
     Date(String dateString) throws InvalidDateException {
         try {
-            if (dateString == DAY_FLOATING) {
+            if (dateString.equals(DAY_FLOATING)) {
                 this.isFloating = true;
+                this.dateTime = new DateTime().withTimeAtStartOfDay();
+            } else {
+                this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
             }
-            this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new InvalidDateException();

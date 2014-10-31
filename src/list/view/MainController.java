@@ -89,6 +89,8 @@ public class MainController implements IUserInterface {
 	private Label labelTaskNote;
 	@FXML
 	private Button buttonDone;
+	
+	private static MainController singletonInstance = null;
 		
 		// for task detail view*******To here*******
 		
@@ -96,7 +98,11 @@ public class MainController implements IUserInterface {
 	 * Constructor
 	 */
 	public MainController() {
-		setUpTaskLabels();
+		singletonInstance = this;
+	}
+	
+	public static MainController getInstance() {
+	    return singletonInstance;
 	}
 	
 	/**
@@ -166,10 +172,15 @@ public class MainController implements IUserInterface {
 		this.currentPageDisplayed = pageNumber;
 		int startIndex = (pageNumber - 1) * MAX_NUMBER_OF_TASKS_PER_PAGE; 
 		int index = 0;
+		
+		for (Label label: taskLabels) {
+		    label.setText("");
+		}
+		
 		for (int i = startIndex; i < startIndex + MAX_NUMBER_OF_TASKS_PER_PAGE; i++) {
 			if (i < tasksList.size()) {
 				String taskTitle = tasksList.get(i).getTitle();
-				taskLabels[index].setText(". " + taskTitle);
+				taskLabels[index].setText((i + 1) + ". " + taskTitle);
 			} else {
 				break;
 			}
