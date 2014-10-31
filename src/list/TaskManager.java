@@ -68,6 +68,14 @@ public class TaskManager {
     	}
     }
     
+    List<ICategory> getAllCategories() {
+        List<ICategory> categoryList = new ArrayList<ICategory>();
+        for (ICategory category: this.categories.values()) {
+            categoryList.add(category);
+        }
+        return categoryList;
+    }
+    
     //TASK GETTERS
     
     /**

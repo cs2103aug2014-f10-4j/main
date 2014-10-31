@@ -17,7 +17,7 @@ public interface IUserInterface {
         
     void displayMessageToUser(String message);
     
-    void back();
+    boolean back();
     
-    void next();
+    boolean next();
 }
