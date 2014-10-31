@@ -71,7 +71,9 @@ public class TaskManager {
     List<ICategory> getAllCategories() {
         List<ICategory> categoryList = new ArrayList<ICategory>();
         for (ICategory category: this.categories.values()) {
-            categoryList.add(category);
+            if (!category.equals(Category.getDefaultCategory())) {
+                categoryList.add(category);
+            }
         }
         return categoryList;
     }
