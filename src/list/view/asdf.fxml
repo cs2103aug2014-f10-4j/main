@@ -61,52 +61,52 @@
                      <children>
                         <GridPane gridLinesVisible="true" maxHeight="310.0" maxWidth="150.0" prefHeight="310.0" prefWidth="150.0" style="-fx-background-color: #424242;">
                            <children>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="All Tasks" textAlignment="JUSTIFY" textFill="#cdcdcd">
+                              <Label fx:id="labelAllTasks" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="All Tasks" textAlignment="JUSTIFY" textFill="#cdcdcd">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Floating Tasks" textAlignment="JUSTIFY" textFill="#cdcdcd" GridPane.rowIndex="1">
+                              <Label fx:id="labelFloatingTasks" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Floating Tasks" textAlignment="JUSTIFY" textFill="#cdcdcd" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="School" textAlignment="JUSTIFY" textFill="#cc2efa" GridPane.rowIndex="2">
+                              <Label fx:id="labelCategory1" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#cc2efa" GridPane.rowIndex="2">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Work" textAlignment="JUSTIFY" textFill="WHITE" GridPane.rowIndex="3">
+                              <Label fx:id="labelCategory2" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="WHITE" GridPane.rowIndex="3">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Friend" textAlignment="JUSTIFY" textFill="#fe642e" GridPane.rowIndex="4">
+                              <Label fx:id="labelCategory3" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#fe642e" GridPane.rowIndex="4">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Dating" textAlignment="JUSTIFY" textFill="#fe2e2e" GridPane.rowIndex="5">
+                              <Label fx:id="labelCategory4" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#fe2e2e" GridPane.rowIndex="5">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Grocery" textAlignment="JUSTIFY" textFill="#2eccfa" GridPane.rowIndex="6">
+                              <Label fx:id="labelCategory5" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#2eccfa" GridPane.rowIndex="6">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Sport" textAlignment="JUSTIFY" textFill="#64fe2e" GridPane.rowIndex="7">
+                              <Label fx:id="labelCategory6" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#64fe2e" GridPane.rowIndex="7">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Computer" textAlignment="JUSTIFY" textFill="#a4a4a4" GridPane.rowIndex="8">
+                              <Label fx:id="labelCategory7" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#a4a4a4" GridPane.rowIndex="8">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#a4a4a4" GridPane.rowIndex="9">
+                              <Label fx:id="labelCategory8" alignment="CENTER" prefHeight="31.0" prefWidth="150.0" textAlignment="JUSTIFY" textFill="#cc00ff" GridPane.rowIndex="9">
                                  <font>
                                     <Font name="Helvetica Neue Light" size="18.0" />
                                  </font>
