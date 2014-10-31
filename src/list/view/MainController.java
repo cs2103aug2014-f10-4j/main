@@ -16,7 +16,7 @@ import list.IUserInterface;
 public class MainController implements IUserInterface {
 
 	private static final int MAX_NUMBER_OF_TASKS_PER_PAGE = 10;
-	private static final int MIN_NUMBER_OF_PAGE = 0;
+	private static final int MIN_PAGE_NUMBER = 1;
 	private int totalPages = 0;
 	private int currentPageDisplayed = 0;
 	private List<ITask> tasksList = null;
@@ -243,8 +243,9 @@ public class MainController implements IUserInterface {
 
 	@Override
 	public void clearDisplay() {
-		// TODO Auto-generated method stub
-		
+		for (Label label: taskLabels) {
+		    label.setText("");
+		}
 	}
 
 	@Override
@@ -253,20 +254,22 @@ public class MainController implements IUserInterface {
 	}
 
 	@Override
-	public void back() {
-		if (currentPageDisplayed - 1 < MIN_NUMBER_OF_PAGE) {
-			//Do nothing or tell user?
+	public boolean back() {
+		if (currentPageDisplayed == MIN_PAGE_NUMBER ) {
+			return false;
 		} else {
 			displayTasksFrom(currentPageDisplayed - 1);
+			return true;
 		}
 	}
 
 	@Override
-	public void next() {
+	public boolean next() {
 		if (currentPageDisplayed + 1 > totalPages) {
-			//Do nothing or tell user?
+			return false;
 		} else {
 			displayTasksFrom(currentPageDisplayed  + 1); 
+			return true;
 		}
 	}
 	
@@ -277,7 +280,7 @@ public class MainController implements IUserInterface {
 	@Override
 	public void updateCategory(List<ICategory> categories) {
 		for(int i = 0; i < categories.size(); i++) {
-			if(i < 8) {
+			if(i < 8 && !categories.get(i).getName().equals("")) {
 				categoryLabels[i].setText(categories.get(i).getName());
 			}
 		}

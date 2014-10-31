@@ -11,8 +11,8 @@ public class PrevCommand implements ICommand {
     @Override
     public String execute() throws CommandExecutionException, IOException,
             InvalidTaskNumberException {
-        userInterface.back();
-        return "Displayed previous page";
+        boolean success = userInterface.back();
+        return success ? "Previous page displayed" : "End of list";
     }
 
     @Override

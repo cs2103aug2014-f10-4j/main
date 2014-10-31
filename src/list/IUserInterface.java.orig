@@ -18,6 +18,11 @@ public interface IUserInterface {
     void displayMessageToUser(String message);
     
     void updateCategory(List<ICategory> categories);
+<<<<<<< HEAD
+    
+    void back();
+=======
+>>>>>>> master
     
     boolean back();
     
