@@ -38,7 +38,8 @@ class CommandBuilder {
 	}
 	
 	static enum CommandType {
-		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK, UNDO, REDO
+		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
+		UNDO, REDO, PREV, NEXT
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -129,6 +130,12 @@ class CommandBuilder {
 			case REDO:
 			    command = new RedoCommand();
 			    break;
+			case PREV:
+			    command = new PrevCommand();
+			    break;
+			case NEXT:
+			    command = new NextCommand();
+		        break;
 		    default:
 			    throw new CommandTypeNotSetException();    
 		}
