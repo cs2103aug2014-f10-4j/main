@@ -58,6 +58,8 @@ public class Controller extends Application {
 		
 		loadInitialData();
 		
+		refreshUi();
+		
 	}
 		
 	@Override
@@ -78,8 +80,6 @@ public class Controller extends Application {
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();
-            
-            //refreshUi();
             
         } catch (IOException e) {
             e.printStackTrace();
