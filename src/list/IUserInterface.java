@@ -17,6 +17,8 @@ public interface IUserInterface {
         
     void displayMessageToUser(String message);
     
+    void updateCategory(List<ICategory> categories);
+    
     void back();
     
     void next();

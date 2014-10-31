@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import list.Controller;
+import list.ICategory;
 import list.ITask;
 import list.IUserInterface;
 
@@ -93,6 +94,7 @@ public class MainController implements IUserInterface {
 	private Label labelCategory8;
 	
 	private Label[] taskLabels = new Label[10];
+	private Label[] categoryLabels = new Label[8];
 	private ImageView[] dateImageViews = new ImageView[10];
 	
 	// for task detail view*******From here*******
@@ -140,6 +142,7 @@ public class MainController implements IUserInterface {
 		});
 		
 		setUpTaskLabels();
+		setUpCategoryLabels();
 	}
 	
 	private void setUpTaskLabels() {
@@ -153,6 +156,17 @@ public class MainController implements IUserInterface {
 		taskLabels[7] = labelTask8;
 		taskLabels[8] = labelTask9;
 		taskLabels[9] = labelTask10;
+	}
+	
+	private void setUpCategoryLabels() {
+		categoryLabels[0] = labelCategory1;
+		categoryLabels[1] = labelCategory2;
+		categoryLabels[2] = labelCategory3;
+		categoryLabels[3] = labelCategory4;
+		categoryLabels[4] = labelCategory5;
+		categoryLabels[5] = labelCategory6;
+		categoryLabels[6] = labelCategory7;
+		categoryLabels[7] = labelCategory8;
 	}
 	
 	/**
@@ -259,6 +273,14 @@ public class MainController implements IUserInterface {
 	private void hideAndShowDetailView(boolean isVisible) {
 		taskDetailPane.setVisible(isVisible);
 	}
-	
-	
+
+	@Override
+	public void updateCategory(List<ICategory> categories) {
+		for(int i = 0; i < categories.size(); i++) {
+			if(i < 8) {
+				categoryLabels[i].setText(categories.get(i).getName());
+			}
+		}
+		
+	}
 }
