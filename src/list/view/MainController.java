@@ -28,7 +28,7 @@ public class MainController implements IUserInterface {
 	
 	@FXML
 	private BorderPane taskDetailPane;
-	
+		
 	@FXML
 	private Label labelTask1;
 	@FXML
@@ -70,6 +70,27 @@ public class MainController implements IUserInterface {
 	private ImageView imageViewDate9;
 	@FXML
 	private ImageView imageViewDate10;
+	
+	@FXML
+	private Label labelAllTasks;
+	@FXML
+	private Label labelFloatingTasks;
+	@FXML
+	private Label labelCategory1;
+	@FXML
+	private Label labelCategory2;
+	@FXML
+	private Label labelCategory3;
+	@FXML
+	private Label labelCategory4;
+	@FXML
+	private Label labelCategory5;
+	@FXML
+	private Label labelCategory6;
+	@FXML
+	private Label labelCategory7;
+	@FXML
+	private Label labelCategory8;
 	
 	private Label[] taskLabels = new Label[10];
 	private ImageView[] dateImageViews = new ImageView[10];
