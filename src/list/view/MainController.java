@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import list.Controller;
+import list.ICategory;
 import list.ITask;
 import list.IUserInterface;
 
@@ -262,6 +263,12 @@ public class MainController implements IUserInterface {
 	private void hideAndShowDetailView(boolean isVisible) {
 		taskDetailPane.setVisible(isVisible);
 	}
+
+    @Override
+    public void updateCategory(List<ICategory> categories) {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	
 }

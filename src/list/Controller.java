@@ -157,6 +157,10 @@ public class Controller extends Application {
 		        //do something, or possibly do nothing
 	    }
 	    Controller.displayedTasks = tasksToDisplay;
+	    
+	    //update category sidebar
+	    List<ICategory> categories = taskManager.getAllCategories();
+	    userInterface.updateCategory(categories);
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
