@@ -38,7 +38,7 @@ public class Controller extends Application {
 	
 	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
-	private static IUserInterface userInterface = new MainController();
+	private static IUserInterface userInterface = null;
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
@@ -58,7 +58,6 @@ public class Controller extends Application {
 		
 		loadInitialData();
 		
-		refreshUi();
 	}
 		
 	@Override
@@ -138,6 +137,9 @@ public class Controller extends Application {
 	
 	public static void refreshUi() {
 		List<ITask> tasksToDisplay = null;
+		if (userInterface == null) {
+		    userInterface = MainController.getInstance();
+		}
 	    switch (Controller.displayMode) {
 		    case ALL:
 		    	tasksToDisplay = taskManager.getAllTasks();
@@ -178,9 +180,9 @@ public class Controller extends Application {
 		try {
 			taskManager.loadTasks();
 		} catch (IOException e) {
-			userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
+			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {
-			userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+			//userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
 			System.exit(1);
 		}
 	}
