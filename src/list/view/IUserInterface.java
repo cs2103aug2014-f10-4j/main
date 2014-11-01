@@ -1,6 +1,9 @@
-package list;
+package list.view;
 
 import java.util.List;
+
+import list.model.ICategory;
+import list.model.ITask;
 
 /**
  * 

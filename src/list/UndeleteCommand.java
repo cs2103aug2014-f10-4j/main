@@ -2,6 +2,8 @@ package list;
 
 import java.io.IOException;
 
+import list.model.ITask;
+
 public class UndeleteCommand implements ICommand {
 
     private String MESSAGE_SUCCESS = "Task successfully undeleted.";

@@ -2,6 +2,8 @@ package list;
 
 import java.io.IOException;
 
+import list.model.ITask;
+
 public class UnmarkCommand implements ICommand {
 	
 	private static final String MESSAGE_SUCCESS = "Task is unmarked successfully.";

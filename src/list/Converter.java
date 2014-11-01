@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import list.CommandBuilder.RepeatFrequency;
-import list.Date.InvalidDateException;
-import list.ITask.TaskStatus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import list.ITask.TaskStatus;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.Task;
+import list.model.Date.InvalidDateException;
+import list.model.ITask.TaskStatus;
 
 public class Converter {
 	

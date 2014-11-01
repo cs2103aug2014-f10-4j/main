@@ -2,16 +2,10 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import list.AddCommand;
-import list.Date;
 import list.DisplayCommand;
-import list.ICategory;
-import list.ITask;
 import list.TaskManager;
-import list.CommandBuilder.RepeatFrequency;
-import list.Date.InvalidDateException;
-import list.ICommand.InvalidTaskNumberException;
-import list.ITask.TaskStatus;
-
+import list.model.Date;
+import list.model.ITask;
 import org.junit.Before;
 import org.junit.Test;
 

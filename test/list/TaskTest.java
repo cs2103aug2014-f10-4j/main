@@ -1,7 +1,7 @@
 package list;
 
 import static org.junit.Assert.*;
-import list.Task;
+import list.model.Task;
 
 import org.junit.Test;
 

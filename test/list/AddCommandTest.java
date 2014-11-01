@@ -1,14 +1,14 @@
 package list;
 
 import static org.junit.Assert.*;
-
 import list.AddCommand;
-import list.Category;
-import list.Date;
-import list.ICategory;
-import list.ITask;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
+import list.model.Category;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.util.Utilities;
 
 import org.junit.Before;
 import org.junit.Test;

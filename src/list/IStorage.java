@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import list.Converter.CorruptedJsonObjectException;
-import list.Date.InvalidDateException;
+import list.model.ITask;
+import list.model.Date.InvalidDateException;
 
 import org.json.JSONException;
 

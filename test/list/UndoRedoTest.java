@@ -2,15 +2,15 @@ package list;
 
 import static org.junit.Assert.*;
 
-import java.util.Stack;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import list.AddCommand;
 import list.CommandBuilder.RepeatFrequency;
-import list.ITask.TaskStatus;
+import list.model.Date;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
 
 public class UndoRedoTest {
     private static TaskManager taskManager = TaskManager.getInstance();

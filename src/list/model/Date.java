@@ -1,4 +1,4 @@
-package list;
+package list.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
@@ -37,11 +37,11 @@ public class Date implements Comparable<Date> {
     /**
      * Returns today's date
      */
-    Date() {
+    public Date() {
         this.dateTime = new DateTime().withTimeAtStartOfDay();
     }
     
-    Date(int day, int month, int year) throws InvalidDateException {
+    public Date(int day, int month, int year) throws InvalidDateException {
         try {
             this.dateTime = new DateTime(year, month, day, HOUR_VALUE, MINUTE_VALUE);
         } catch (IllegalFieldValueException e) {
@@ -50,7 +50,7 @@ public class Date implements Comparable<Date> {
         }
     }
     
-    Date(String dateString) throws InvalidDateException {
+    public Date(String dateString) throws InvalidDateException {
         try {
             if (dateString.equals(DAY_FLOATING)) {
                 this.isFloating = true;
@@ -64,7 +64,7 @@ public class Date implements Comparable<Date> {
         }
     }
     
-    static Date getFloatingDate() {
+    public static Date getFloatingDate() {
         if (DATE_FLOATING == null) {
             DATE_FLOATING = new Date();
             DATE_FLOATING.isFloating = true;

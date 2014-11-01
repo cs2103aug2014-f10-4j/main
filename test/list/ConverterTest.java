@@ -5,14 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import list.Category;
 import list.Converter;
-import list.Date;
-import list.ITask;
-import list.Task;
 import list.CommandBuilder.RepeatFrequency;
 import list.Converter.CorruptedJsonObjectException;
-import list.Date.InvalidDateException;
+import list.model.Category;
+import list.model.Date;
+import list.model.ITask;
+import list.model.Task;
+import list.model.Date.InvalidDateException;
 
 import org.json.JSONArray;
 import org.json.JSONException;

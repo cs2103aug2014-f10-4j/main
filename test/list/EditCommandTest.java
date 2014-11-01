@@ -2,14 +2,13 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import list.AddCommand;
-import list.Date;
 import list.EditCommand;
-import list.ICategory;
-import list.ITask;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
-import list.Date.InvalidDateException;
-import list.ICommand.InvalidTaskNumberException;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.util.Utilities;
 
 import org.junit.Before;
 import org.junit.Test;

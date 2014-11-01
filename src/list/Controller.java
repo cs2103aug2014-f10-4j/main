@@ -11,6 +11,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
+import list.model.ICategory;
+import list.model.ITask;
+import list.view.IUserInterface;
 import list.view.MainController;
 
 import org.json.JSONException;
@@ -48,9 +51,16 @@ public class Controller extends Application {
 	private static Stack<ICommand> undoStack = new Stack<ICommand>();
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static boolean isUndoRedoOperation = false;
+	private static Controller singletonInstance = null;
+	
+	public static Controller getInstance() {
+		return singletonInstance;
+	}
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		singletonInstance = this;
+		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
@@ -60,12 +70,6 @@ public class Controller extends Application {
 		
 		refreshUi();
 		
-	}
-		
-	@Override
-	public void stop() {
-		System.out.println("Exiting...");
-		return;
 	}
 	
 	private void initializeMainLayout() {
@@ -184,11 +188,17 @@ public class Controller extends Application {
 		try {
 			taskManager.loadTasks();
 		} catch (IOException e) {
+		    e.printStackTrace();
 			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {
 			//userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+		    e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
+	public static void main(String[] args) {
+	    launch(args);
+	}
+	
 }

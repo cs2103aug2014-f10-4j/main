@@ -1,8 +1,8 @@
 package list;
 
 import static org.junit.Assert.*;
-import list.Date;
-import list.Date.InvalidDateException;
+import list.model.Date;
+import list.model.Date.InvalidDateException;
 
 import org.junit.Test;
 
