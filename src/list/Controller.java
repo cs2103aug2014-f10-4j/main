@@ -187,11 +187,17 @@ public class Controller extends Application {
 		try {
 			taskManager.loadTasks();
 		} catch (IOException e) {
+		    e.printStackTrace();
 			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {
 			//userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+		    e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
+	public static void main(String[] args) {
+	    launch(args);
+	}
+	
 }
