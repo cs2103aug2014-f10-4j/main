@@ -75,7 +75,7 @@ public class Controller extends Application {
 	private void initializeMainLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("view/asdf.fxml"));
+			loader.setLocation(Controller.class.getResource("view/asdf.fxml"));
 			
             mainLayout = (StackPane) loader.load();
 
