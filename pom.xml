@@ -25,4 +25,11 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+        <groupId>com.rubiconproject.oss</groupId>
+        <artifactId>jchronic</artifactId>
+        <version>0.2.6</version>
+    </dependency>
+  </dependencies>
 </project>
