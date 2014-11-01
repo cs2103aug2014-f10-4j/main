@@ -13,6 +13,7 @@ import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
+import list.view.IUserInterface;
 import list.view.MainController;
 
 import org.json.JSONException;

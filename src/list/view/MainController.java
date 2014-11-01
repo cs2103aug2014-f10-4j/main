@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import list.Controller;
-import list.IUserInterface;
 import list.model.ICategory;
 import list.model.ITask;
 

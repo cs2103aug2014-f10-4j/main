@@ -2,8 +2,6 @@ package list;
 
 import java.io.IOException;
 
-import org.json.JSONException;
-
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;

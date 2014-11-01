@@ -1,4 +1,4 @@
-package list;
+package list.view;
 
 import java.util.List;
 

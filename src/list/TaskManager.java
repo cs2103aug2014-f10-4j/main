@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import list.Converter.CorruptedJsonObjectException;
 import list.model.Category;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
-import list.model.Date.InvalidDateException;
 import list.model.ITask.TaskStatus;
 
 import org.json.JSONException;

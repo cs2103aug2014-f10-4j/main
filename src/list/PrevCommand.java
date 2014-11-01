@@ -2,6 +2,7 @@ package list;
 
 import java.io.IOException;
 
+import list.view.IUserInterface;
 import list.view.MainController;
 
 public class PrevCommand implements ICommand {

@@ -2,7 +2,6 @@ package list;
 
 import java.io.IOException;
 
-import list.ICommand.CommandExecutionException;
 import list.model.ITask;
 
 public class MarkCommand implements ICommand {

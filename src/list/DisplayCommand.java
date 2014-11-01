@@ -1,6 +1,5 @@
 package list;
 
-import list.ICommand.CommandExecutionException;
 import list.model.ITask;
 
 /**
