@@ -3,7 +3,7 @@ package list;
 import java.io.IOException;
 
 import list.Converter.CorruptedJsonObjectException;
-import list.Date.InvalidDateException;
+import list.model.Date.InvalidDateException;
 
 import org.json.JSONException;
 

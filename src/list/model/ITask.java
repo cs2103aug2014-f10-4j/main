@@ -1,4 +1,4 @@
-package list;
+package list.model;
 
 import list.CommandBuilder.RepeatFrequency;
 

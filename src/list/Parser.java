@@ -7,7 +7,9 @@ import java.util.regex.Matcher;
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
 import list.CommandBuilder.RepeatFrequency;
-import list.Date.InvalidDateException;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.Date.InvalidDateException;
 
 /**
  * A simple implementation of IParser using Regex. 

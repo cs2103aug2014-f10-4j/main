@@ -1,11 +1,9 @@
-package list;
+package list.model;
 
 import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
-    private static TaskManager taskManager = TaskManager.getInstance();
-    
-	private String title;
+    private String title;
 	private Date startDate;
 	private Date endDate;
 	private RepeatFrequency repeatFrequency;

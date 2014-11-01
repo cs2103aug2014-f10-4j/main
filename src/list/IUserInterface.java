@@ -2,6 +2,9 @@ package list;
 
 import java.util.List;
 
+import list.model.ICategory;
+import list.model.ITask;
+
 /**
  * 
  * 

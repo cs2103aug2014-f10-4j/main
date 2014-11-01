@@ -3,7 +3,9 @@ package list;
 import static org.junit.Assert.*;
 import list.ICommand.CommandExecutionException;
 import list.ICommand.InvalidTaskNumberException;
-import list.ITask.TaskStatus;
+import list.model.ITask;
+import list.model.Task;
+import list.model.ITask.TaskStatus;
 
 import org.junit.Before;
 import org.junit.Test;

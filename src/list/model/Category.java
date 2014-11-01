@@ -1,4 +1,4 @@
-package list;
+package list.model;
 
 import java.awt.Color;
 
@@ -16,7 +16,7 @@ public class Category implements ICategory {
 	 * Use <code>TaskManager.getCategory(categoryName)</code> to prevent this 
 	 * potentially incorrect behavior.
 	 */
-	Category() {
+	public Category() {
 	    this.name = DEFAULT_NAME;
 	    this.color = DEFAULT_COLOR;
 	}
@@ -50,6 +50,4 @@ public class Category implements ICategory {
 	    return defaultCategory;
 	}
 
-	
-	
 }

@@ -1,6 +1,8 @@
 package list;
 
-import junit.extensions.RepeatedTest;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
 
 /**
  * A builder class for generating various command objects
@@ -9,7 +11,7 @@ import junit.extensions.RepeatedTest;
  * 
  * @author andhieka, michael
  */
-class CommandBuilder {
+public class CommandBuilder {
 	private CommandType mCommandType = null;
 	private String mTitle = null;
 	private Date mStartDate = null;
@@ -18,7 +20,6 @@ class CommandBuilder {
 	private String mPlace = null;
 	private ICategory mCategory = null;
 	private String mNotes = null;
-	private Integer mTaskNumber = null;
 	private ITask task = null;
 	
 	@SuppressWarnings("serial")
