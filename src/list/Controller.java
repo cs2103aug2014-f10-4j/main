@@ -51,9 +51,16 @@ public class Controller extends Application {
 	private static Stack<ICommand> undoStack = new Stack<ICommand>();
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static boolean isUndoRedoOperation = false;
+	private static Controller singletonInstance = null;
+	
+	public static Controller getInstance() {
+		return singletonInstance;
+	}
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		singletonInstance = this;
+		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
@@ -63,12 +70,6 @@ public class Controller extends Application {
 		
 		refreshUi();
 		
-	}
-		
-	@Override
-	public void stop() {
-		System.out.println("Exiting...");
-		return;
 	}
 	
 	private void initializeMainLayout() {

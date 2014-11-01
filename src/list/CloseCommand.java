@@ -1,5 +1,7 @@
 package list;
 
+import javafx.application.Platform;
+
 /**
  * A command to close the program.
  * @author andhieka
@@ -10,11 +12,10 @@ public class CloseCommand implements ICommand {
 	
 	@Override
 	public String execute() {
-	    //Controller.stop();
-	    System.exit(0); //TODO
+		Platform.exit();
 	    return MESSAGE_EXIT;
 	}
-
+	
     @Override
     public ICommand getInverseCommand() {
         return null; //cannot be undone
