@@ -10,6 +10,7 @@ import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
 import list.model.Date.InvalidDateException;
+import list.util.Utilities;
 
 import org.junit.Before;
 import org.junit.Test;

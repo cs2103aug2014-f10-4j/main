@@ -8,6 +8,7 @@ import list.model.Category;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
+import list.util.Utilities;
 
 import org.junit.Before;
 import org.junit.Test;
