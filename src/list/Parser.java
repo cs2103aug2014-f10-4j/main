@@ -52,7 +52,7 @@ public class Parser implements IParser {
             commandBuilder.setPlace(getPlace(input));
             commandBuilder.setCategory(getCategory(input));
             commandBuilder.setRepeatFrequency(getRepeatFrequency(input));
-            commandBuilder.setTaskNumber(getTaskNumber(input));
+            commandBuilder.setObjectNumber(getTaskNumber(input));
             
             ICommand command = getCommandObject(commandBuilder);
             return command;

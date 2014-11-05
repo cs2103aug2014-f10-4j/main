@@ -1,10 +1,15 @@
 package list.model;
 
+import java.util.Calendar;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.joda.time.IllegalFieldValueException;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import com.mdimension.jchronic.Chronic;
+import com.mdimension.jchronic.utils.Span;
 
 public class Date implements Comparable<Date> {
     private static final String DAY_FLOATING_PRETTY = "";
@@ -61,6 +66,26 @@ public class Date implements Comparable<Date> {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new InvalidDateException();
+        }
+    }
+    
+    public Date(Calendar calendar) {
+        this.dateTime = new DateTime(calendar);
+    }
+    
+    /**
+     * This method tries to parse the given string into a date.
+     * If the given string is invalid, it will return null but
+     * will not throw an exception.
+     * @param userInput
+     * @return a Date object
+     */
+    public static Date tryParse(String userInput) {
+        try {
+            Span time = Chronic.parse(userInput);
+            return new Date(time.getEndCalendar());
+        } catch (Exception e) {
+            return null;
         }
     }
     
