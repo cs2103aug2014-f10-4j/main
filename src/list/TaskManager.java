@@ -42,6 +42,7 @@ public class TaskManager {
     	if (taskManagerInstance == null) {
     		taskManagerInstance = new TaskManager();
     	}	
+    
     	return taskManagerInstance;
     }
     
@@ -66,6 +67,7 @@ public class TaskManager {
     		ICategory category = new Category();
     		category.setName(categoryName);
     		categories.put(categoryName, category);
+    
     		return category;
     	}
     }
@@ -194,14 +196,14 @@ public class TaskManager {
     // SAVING AND LOADING
     
     void loadTasks() throws IOException, JSONException {
-    	List<ITask> tasks = readerWriter.loadFromFile();
+    	List<ITask> tasks = readerWriter.loadTasksFromFile();
     	for (ITask task: tasks) {
     	    this.addTask(task);
     	}
 	}   
     
     void saveTasks() throws IOException {
-    	readerWriter.saveToFile(this.getAllTasks());
+    	readerWriter.saveTasksToFile(this.getAllTasks());
     }
     
     @Deprecated

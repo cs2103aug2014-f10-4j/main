@@ -1,27 +1,29 @@
 package list;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.model.Category;
+import list.model.Date;
+import list.model.Date.InvalidDateException;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.model.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import list.model.Date;
-import list.model.ICategory;
-import list.model.ITask;
-import list.model.Task;
-import list.model.Date.InvalidDateException;
-import list.model.ITask.TaskStatus;
 
 public class Converter {
 	
 	@SuppressWarnings("serial")
     class CorruptedJsonObjectException extends Exception { };
 	
-	// Exception: user manually deletes title field -> corrupted	
+	// Keys used to identify attributes of a task in JSON	
 	private static final String KEY_TITLE = "title";
 	private static final String KEY_DETAILS = "details";
 	private static final String KEY_START_TIME = "start_time";
@@ -32,13 +34,18 @@ public class Converter {
 	private static final String KEY_NOTES = "notes";
 	private static final String KEY_STATUS = "status";
 		
-	private int numOfCorruptedProperties = 0;
-	private int numOfCorruptedJsonObjects = 0;
+	// Keys used to identify attributes of a category in JSON
+	private static final String KEY_CAT_NAME = "name";
+	private static final String KEY_CAT_COLOR = "color";
+	
+	private int numOfCorruptedTaskProperties = 0;
+	private int numOfCorruptedJsonTaskObjects = 0;
+	private int numOfCorruptedJsonCategoryObjects = 0;
 	
 	//TODO: Check JsonException 
 	List<ITask> convertJsonToTasksList(JSONArray jsonArray) {
 		
-		resetCorruptedJSONObjectCounter();
+		resetCorruptedJSONTaskObjectCounter();
 		
 		List<ITask> listOfTasks = new ArrayList<ITask>();
 		
@@ -49,7 +56,7 @@ public class Converter {
 				listOfTasks.add(task);
 								
 			} catch (CorruptedJsonObjectException e) {
-				numOfCorruptedJsonObjects++;
+				numOfCorruptedJsonTaskObjects++;
 			} catch (JSONException e) {
 				assert (false): e.getMessage();
 			}
@@ -74,12 +81,51 @@ public class Converter {
 		return tasksListInJson;
 	}
 	
-	int getNumberOfCorruptedProperties() {
-		return numOfCorruptedProperties;
+	HashMap<String, ICategory> convertJsonToCategoryList(JSONArray jsonArray) {
+		
+		resetCorruptedJSONCategoryObjectCounter();
+		
+		HashMap<String, ICategory> categories = new HashMap<String, ICategory>();
+		
+		System.out.println("JSONArray Length: " + jsonArray.length());
+		
+		for (int i = 0; i < jsonArray.length(); i++) {
+			try {
+				JSONObject categoryInJson = jsonArray.getJSONObject(i);
+				
+				ICategory category = convertJsonToCategory(categoryInJson);
+				
+				System.out.println(category.getName());
+				System.out.println(Integer.toHexString(category.getColor().getRGB()));
+				
+				if (category != null) {
+					categories.put(category.getName(), category);
+				}
+				
+			} catch (CorruptedJsonObjectException e) {
+				numOfCorruptedJsonCategoryObjects++;
+			} catch (JSONException e) {
+				assert (false): e.getMessage();
+			}
+		}
+		
+		return categories;
 	}
 	
-	int getNumerOfCorruptedJsonObjects() {
-		return numOfCorruptedJsonObjects;
+	JSONArray convertCategoryListToJson(List<ICategory> categories) {
+		JSONArray categoryListInJson = new JSONArray();	
+		
+		for (ICategory category: categories) {
+			try {
+				JSONObject taskInJson = convertCategoryToJson(category);
+				categoryListInJson.put(taskInJson);
+			} catch (JSONException e) {
+				assert (false): e.getMessage();
+			}
+			
+		}
+		
+		return categoryListInJson;		
 	}
 	
 	//TODO: make this private here and remove in JUnitTest
@@ -97,6 +143,18 @@ public class Converter {
 		
 		return task;
 		
+	}
+	
+	int getNumberOfCorruptedTaskProperties() {
+		return numOfCorruptedTaskProperties;
+	}
+	
+	int getNumberOfCorruptedJsonTaskObjects() {
+		return numOfCorruptedJsonTaskObjects;
+	}
+	
+	int getNumOfCorruptedJsonCategoryObjects() {
+		return numOfCorruptedJsonCategoryObjects;
 	}
 	
 	private void setTaskDetail(JSONObject jsonObject, ITask task)
@@ -161,7 +219,7 @@ public class Converter {
 	
 	private void extractTaskDetailFromJson(ITask task, JSONObject taskDetailInJson) 
 			throws JSONException {	
-		resetCorruptedPropertyCounter();
+		resetCorruptedTaskPropertiesCounter();
 	
 		if (taskDetailInJson.has(KEY_START_TIME)) {
 			String startDate = taskDetailInJson.getString(KEY_START_TIME);
@@ -171,7 +229,7 @@ public class Converter {
 					task.setStartDate(new Date(startDate));
 				}
 			} catch (InvalidDateException e) {
-				numOfCorruptedProperties++;
+				numOfCorruptedTaskProperties++;
 			}
 			
 		}
@@ -184,7 +242,7 @@ public class Converter {
 					task.setEndDate(new Date(endTime));
 				}
 			} catch (InvalidDateException e) {
-				numOfCorruptedProperties++;
+				numOfCorruptedTaskProperties++;
 			}
 			
 		}
@@ -241,13 +299,76 @@ public class Converter {
 		}
 	}
 	
-	private void resetCorruptedPropertyCounter() {
-		numOfCorruptedProperties = 0;
+	private void resetCorruptedTaskPropertiesCounter() {
+		numOfCorruptedTaskProperties = 0;
 	}
 	
-	private void resetCorruptedJSONObjectCounter() {
-		numOfCorruptedJsonObjects = 0;
+	private void resetCorruptedJSONTaskObjectCounter() {
+		numOfCorruptedJsonTaskObjects = 0;
 	}
 	
+	private void resetCorruptedJSONCategoryObjectCounter() {
+		numOfCorruptedJsonCategoryObjects = 0;
+	}
+		
+	private JSONObject convertCategoryToJson(ICategory category) throws JSONException {
+		JSONObject categoryInJson = new JSONObject();
+		
+		if (category.getName() != null && !category.getName().equals("")) {
+			categoryInJson.put(KEY_CAT_NAME, category.getName());
+		} 
+		
+		if (category.getColor() != null) {
+			String colorInRGBA = Integer.toHexString(category.getColor().getRGB());
+			categoryInJson.put(KEY_CAT_COLOR, colorInRGBA.substring(2, colorInRGBA.length()));
+		}
+				
+		return categoryInJson;
+	}
 	
+	private ICategory convertJsonToCategory(JSONObject jsonObject) 
+			throws CorruptedJsonObjectException, JSONException {
+		if (hasNoCategoryName(jsonObject)) {
+			throw new CorruptedJsonObjectException();
+		}
+		
+		String categoryName = jsonObject.getString(KEY_CAT_NAME);
+		if (categoryName.equals(Category.getDefaultName())) {
+			return null;
+		}
+		
+		ICategory category = new Category();
+		category.setName(categoryName);
+			
+		Color categoryColor = extractCategoryColor(jsonObject);
+		category.setColor(categoryColor);
+		
+		return category;
+		
+	}
+	
+	private Color extractCategoryColor(JSONObject jsonObject) throws JSONException {
+		if (hasNoCategoryColor(jsonObject)) {
+			return Category.getDefaultColor();
+		} else {
+			String colorInHexString = jsonObject.getString(KEY_CAT_COLOR);
+			Color categoryColor;
+			try {
+				int colorInRGB = Integer.parseInt(colorInHexString, 16);
+				categoryColor = new Color(colorInRGB);
+			} catch (NumberFormatException e) {
+				categoryColor = Category.getDefaultColor();
+			}
+			
+			return categoryColor;
+		}
+	}
+
+	private boolean hasNoCategoryName(JSONObject jsonObject) {
+		return !jsonObject.has(KEY_CAT_NAME);
+	}
+	
+	private boolean hasNoCategoryColor(JSONObject jsonObject) {
+		return !jsonObject.has(KEY_CAT_COLOR);
+	}	
 }
