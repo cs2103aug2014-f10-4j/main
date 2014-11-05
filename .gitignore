@@ -4,6 +4,7 @@
 *.txt
 tasks
 list_tasks.json
+list_categories.json
 
 ### Java ###
 *.class
