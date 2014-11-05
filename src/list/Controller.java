@@ -186,7 +186,7 @@ public class Controller extends Application {
 	//TODO: Error with UI when loading
 	public static void loadInitialData() {
 		try {
-			taskManager.loadTasks();
+			taskManager.loadData();
 		} catch (IOException e) {
 		    e.printStackTrace();
 			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);

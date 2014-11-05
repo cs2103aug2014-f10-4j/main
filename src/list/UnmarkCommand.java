@@ -31,7 +31,7 @@ public class UnmarkCommand implements ICommand {
 		ITask taskToUnmark = this.task;
 		taskManager.unmarkTask(taskToUnmark);
 		
-		taskManager.saveTasks();
+		taskManager.saveData();
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;

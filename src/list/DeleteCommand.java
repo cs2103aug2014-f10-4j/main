@@ -36,7 +36,7 @@ public class DeleteCommand implements ICommand {
         
         taskManager.deleteTask(this.task);
         
-		taskManager.saveTasks();
+		taskManager.saveData();
 		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;

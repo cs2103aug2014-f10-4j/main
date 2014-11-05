@@ -86,17 +86,12 @@ public class Converter {
 		resetCorruptedJSONCategoryObjectCounter();
 		
 		HashMap<String, ICategory> categories = new HashMap<String, ICategory>();
-		
-		System.out.println("JSONArray Length: " + jsonArray.length());
-		
+				
 		for (int i = 0; i < jsonArray.length(); i++) {
 			try {
 				JSONObject categoryInJson = jsonArray.getJSONObject(i);
 				
 				ICategory category = convertJsonToCategory(categoryInJson);
-				
-				System.out.println(category.getName());
-				System.out.println(Integer.toHexString(category.getColor().getRGB()));
 				
 				if (category != null) {
 					categories.put(category.getName(), category);

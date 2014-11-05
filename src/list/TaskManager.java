@@ -193,16 +193,34 @@ public class TaskManager {
         deletedTasks.clear();
     }
     
-    // SAVING AND LOADING
+    // SAVING AND LOADING  
+    void loadData() throws IOException, JSONException {
+    	loadCategories();
+    	loadTasks();
+    }
     
-    void loadTasks() throws IOException, JSONException {
+    void saveData() throws IOException {
+    	saveCategories();
+    	saveTasks();
+    }
+    
+    private void loadCategories() throws IOException, JSONException {
+    	HashMap<String, ICategory> categories = readerWriter.loadCategoriesFromFile();
+    	this.categories = categories;
+    }
+    
+    private void saveCategories() throws IOException {
+    	readerWriter.saveCategoriesToFile(getAllCategories());
+    }
+    
+    private void loadTasks() throws IOException, JSONException {
     	List<ITask> tasks = readerWriter.loadTasksFromFile();
     	for (ITask task: tasks) {
     	    this.addTask(task);
     	}
 	}   
     
-    void saveTasks() throws IOException {
+    private void saveTasks() throws IOException {
     	readerWriter.saveTasksToFile(this.getAllTasks());
     }
     
@@ -229,5 +247,4 @@ public class TaskManager {
     private static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
     }
-     
 }

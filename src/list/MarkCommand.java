@@ -30,7 +30,7 @@ public class MarkCommand implements ICommand {
         
 		ITask taskToMark = this.task;
 		taskManager.markTaskAsDone(taskToMark);
-		taskManager.saveTasks();
+		taskManager.saveData();
         
 		Controller.refreshUi();
 		
