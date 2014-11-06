@@ -11,7 +11,7 @@ import list.model.ITask;
  * which implements ICommand. This class should only be used by 
  * Parser.
  * 
- * @author andhieka, michael
+ * @author andhieka, michael, shotaro
  */
 public class CommandBuilder {
 	private CommandType commandType = null;
@@ -44,7 +44,7 @@ public class CommandBuilder {
 	static enum CommandType {
 		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
 		UNDO, REDO, PREV, NEXT,
-		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE
+		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -121,6 +121,9 @@ public class CommandBuilder {
 			    break;
 			case DISPLAY:
 				command = new DisplayCommand(task);
+				break;
+			case CATEGORY_DISPLAY:
+				command = new DisplayCategoryCommand();
 				break;
 			case DELETE:
 				command = new DeleteCommand(task);
