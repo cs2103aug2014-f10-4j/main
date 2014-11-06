@@ -1,11 +1,11 @@
 package list;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
-import list.Converter.CorruptedJsonObjectException;
+import list.model.ICategory;
 import list.model.ITask;
-import list.model.Date.InvalidDateException;
 
 import org.json.JSONException;
 
@@ -18,24 +18,36 @@ interface IStorage {
     
     /**
      * Loads a text file and creates a list of tasks.
-     * @param filename file name of the saved file.
+     * 
      * @return List of tasks.
      * @throws IOException 
      * @throws JSONException 
-     * @throws InvalidDateException 
-     * @throws CorruptedJsonObjectException 
      */
-    List<ITask> loadFromFile() throws IOException, JSONException;
+    List<ITask> loadTasksFromFile() throws IOException, JSONException;
     
     
     /**
-     * Save tasks in the given list into the file with specified filename.
+     * Save tasks in the given list into a text file.
      * 
      * @param tasks list of tasks.
-     * @param filename name of file.
-     * @throws JSONException 
      * @throws IOException 
      */
-    void saveToFile(List<ITask> tasks) throws IOException;
+    void saveTasksToFile(List<ITask> tasks) throws IOException;
     
+    /**
+     * Loads a text file and creates a list of categories
+     * 
+     * @return List of categories
+     * @throws IOException 
+     * @throws JSONException 
+     */
+    HashMap<String, ICategory> loadCategoriesFromFile() throws IOException, JSONException;
+    
+    /**
+     * Save categories in the given list into a text file
+     * 
+     * @param categories list of categories
+     * @throws IOException 
+     */
+    void saveCategoriesToFile(List<ICategory> categories) throws IOException;
 }

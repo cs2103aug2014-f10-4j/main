@@ -7,15 +7,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import list.Converter.CorruptedJsonObjectException;
+import list.model.ICategory;
 import list.model.ITask;
-import list.model.Date.InvalidDateException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+/**
+ * 
+ * @author Michael
+ *
+ */
 public class ReaderWriter implements IStorage {
 	
 	@SuppressWarnings("serial")
@@ -23,12 +28,15 @@ public class ReaderWriter implements IStorage {
 	
 	//TODO: Better naming for messages
 	private static final String MESSAGE_IO_ERROR = "IO Error!";
-	private static final String TEXTFILE_NAME = "list_tasks.json";
+	private static final String TEXTFILE_NAME_TASKS = "list_tasks.json";
+	private static final String TEXTFILE_NAME_CATEGORIES = "list_categories.json";
 	private static final int INDENTATION_FACTOR = 4;	
 	
 	private Converter jsonConverter = null;
-	private BufferedWriter writer = null;
-	private BufferedReader reader = null;
+	private BufferedWriter taskWriter = null;
+	private BufferedReader taskReader = null;
+	private BufferedWriter categoryWriter = null;
+	private BufferedReader categoryReader = null;
 	
 	//TODO: Better error handling, and how to give message to UI?
 	ReaderWriter() {
@@ -42,21 +50,62 @@ public class ReaderWriter implements IStorage {
 	 * @throws IOException 
 	 */
 	void closeWriter() throws IOException {
-		writer.close();
+		taskWriter.close();
 	}
 	
 	@Override
-	public List<ITask> loadFromFile() throws IOException, JSONException {
+	public HashMap<String,ICategory> loadCategoriesFromFile() throws IOException, JSONException {
+		File categoryStorageInTextFile = new File(TEXTFILE_NAME_CATEGORIES);
 		
-		File taskStorageInTextFile = new File(TEXTFILE_NAME);
-		
-		if (taskStorageInTextFile.exists()) {
-			setUpBufferedReader();
+		if (categoryStorageInTextFile.exists()) {
+			setUpCategoryBufferedReader();
 			
 			StringBuilder sb = new StringBuilder();
 			
-			while (reader.ready()) {
-				sb.append(new Character((char) reader.read()).toString());
+			while (categoryReader.ready()) {
+				sb.append(new Character((char) categoryReader.read()).toString());
+			}
+			
+			JSONArray jsonArray = new JSONArray(sb.toString());
+
+			HashMap<String, ICategory> categories = jsonConverter.convertJsonToCategoryList(jsonArray);
+			
+			return categories;
+			
+		} else {
+			return new HashMap<String, ICategory>();
+		}
+	}
+
+	@Override
+	public void saveCategoriesToFile(List<ICategory> categories) throws IOException {
+		JSONArray categoryListInJson = jsonConverter.convertCategoryListToJson(categories);
+		setUpCategoryBufferedWriter();
+		
+		try {
+			categoryWriter.write(categoryListInJson.toString(INDENTATION_FACTOR));
+			categoryWriter.flush();
+		} catch (JSONException e) {
+			// JSONException is thrown when indentFactor is not valid,
+			// but INDENTATION_FACTOR is indeed a valid number, so this
+			// should be impossible
+			assert (false): e.getMessage();
+		}
+		
+	}
+	
+	@Override
+	public List<ITask> loadTasksFromFile() throws IOException, JSONException {
+		
+		File taskStorageInTextFile = new File(TEXTFILE_NAME_TASKS);
+		
+		if (taskStorageInTextFile.exists()) {
+			setUpTaskBufferedReader();
+			
+			StringBuilder sb = new StringBuilder();
+			
+			while (taskReader.ready()) {
+				sb.append(new Character((char) taskReader.read()).toString());
 			}
 			
 			JSONArray jsonArray = new JSONArray(sb.toString());
@@ -71,13 +120,13 @@ public class ReaderWriter implements IStorage {
 	}
 
 	@Override
-	public void saveToFile(List<ITask> tasks) throws IOException {
+	public void saveTasksToFile(List<ITask> tasks) throws IOException {
 		JSONArray tasksListInJson = jsonConverter.convertTasksListToJson(tasks);
-		setUpBufferedWriter();
+		setUpTaskBufferedWriter();
 		
 		try {
-			writer.write(tasksListInJson.toString(INDENTATION_FACTOR));
-			writer.flush();
+			taskWriter.write(tasksListInJson.toString(INDENTATION_FACTOR));
+			taskWriter.flush();
 
 		} catch (JSONException e) { 
 			// JSONException is thrown when indentFactor is not valid,
@@ -88,27 +137,36 @@ public class ReaderWriter implements IStorage {
 				
 	}
 	
-	private void setUpBufferedWriter() {
+	private void setUpTaskBufferedWriter() {
 		try {
-			writer = new BufferedWriter(new FileWriter(TEXTFILE_NAME));
+			taskWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_TASKS));
 		} catch (IOException e) {
 			System.out.println(MESSAGE_IO_ERROR);
 		}
 	}
 	
-	private void setUpBufferedReader() {
+	private void setUpCategoryBufferedWriter() {
 		try {
-			reader = new BufferedReader(new FileReader(TEXTFILE_NAME));
+			categoryWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_CATEGORIES));
 		} catch (IOException e) {
 			System.out.println(MESSAGE_IO_ERROR);
 		}
 	}
 	
-	public static void main(String[] args) throws IOException, JSONException, CorruptedJsonObjectException, InvalidDateException {
-		ReaderWriter rw = new ReaderWriter();
-		rw.loadFromFile();
+	private void setUpTaskBufferedReader() {
+		try {
+			taskReader = new BufferedReader(new FileReader(TEXTFILE_NAME_TASKS));
+		} catch (IOException e) {
+			System.out.println(MESSAGE_IO_ERROR);
+		}
 	}
-	
 
+	private void setUpCategoryBufferedReader() {
+		try {
+			categoryReader = new BufferedReader(new FileReader(TEXTFILE_NAME_CATEGORIES));
+		} catch (IOException e) {
+			System.out.println(MESSAGE_IO_ERROR);
+		}
+	}
 	
 }

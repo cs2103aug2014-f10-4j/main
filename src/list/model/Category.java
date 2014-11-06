@@ -43,6 +43,14 @@ public class Category implements ICategory {
 		return this;
 	}
 	
+	public static Color getDefaultColor() {
+		return DEFAULT_COLOR;
+	}
+	
+	public static String getDefaultName() {
+		return DEFAULT_NAME;
+	}
+	
 	public static ICategory getDefaultCategory() {
 	    if (defaultCategory == null) {
 	        defaultCategory = new Category().setName(DEFAULT_NAME).setColor(DEFAULT_COLOR);

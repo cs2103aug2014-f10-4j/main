@@ -100,6 +100,7 @@ public class Task implements ITask {
 	    if (category != null) {
 	        this.category = category;
 	    }
+	    
 		return this;
 	}
 
