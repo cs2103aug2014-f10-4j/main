@@ -3,11 +3,13 @@ package list.view;
 import java.io.IOException;
 import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
@@ -22,6 +24,7 @@ public class RootWindowController implements IUserInterface {
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
+	
 	
     @Override
     public void displayTaskDetail(ITask task) {
@@ -52,8 +55,15 @@ public class RootWindowController implements IUserInterface {
 
     @Override
     public void displayMessageToUser(String message) {
-        // TODO Auto-generated method stub
+        /*FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), labelFeedback);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(0.75);
+        fadeIn.setAutoReverse(true);
+        fadeIn.setCycleCount(1);*/
         
+        labelFeedback.setText(message);
+        labelFeedback.setOpacity(70.0);
+        labelFeedback.setVisible(true);
     }
 
     @Override
@@ -92,6 +102,7 @@ public class RootWindowController implements IUserInterface {
         console.setOnAction((event) -> {
             handleEnterAction();
         });        
+        
     }
     
     private void showTaskDetailLayout() {

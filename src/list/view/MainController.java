@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
@@ -286,15 +287,16 @@ public class MainController implements IUserInterface {
 		
 	}
 
-	@Override
-	public void hideTaskDetail() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void hideCategories() {
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    public void hideTaskDetail(Pane pane) {
+        // TODO Auto-generated method stub
+        
+    }
 }

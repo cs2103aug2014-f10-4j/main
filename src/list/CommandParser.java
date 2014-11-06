@@ -201,8 +201,12 @@ public class CommandParser implements IParser {
         }
     }
 
-    private void setCommandType(CommandBuilder commandBuilder) {
-        commandBuilder.setCommandType(CommandType.valueOf(this.action.toUpperCase()));
+    private void setCommandType(CommandBuilder commandBuilder) throws ParseException {
+        try {
+            commandBuilder.setCommandType(CommandType.valueOf(this.action.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(ERROR_AMBIGUOUS_COMMAND_TYPE);
+        }
     }
 
     private void updateActionName() {

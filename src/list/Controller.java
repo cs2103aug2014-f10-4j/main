@@ -69,6 +69,7 @@ public class Controller extends Application {
 		loadInitialData();
 		
 		displayCurrentTasks();
+		
 	}
 	
     private void initializeMainLayout() {
