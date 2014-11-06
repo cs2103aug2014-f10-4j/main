@@ -72,9 +72,6 @@ public class RootController implements IUserInterface {
         });
         
     }
-
-
-
     
     private void showTaskOverviewLayout() {
         try {
