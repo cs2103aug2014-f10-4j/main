@@ -182,6 +182,10 @@ public class TaskManager {
      * @return the tasks list of a certain category
      */
     List<ITask> getTasksInCategory(ICategory category) {
+    	if (categoryLists.get(category) == null) {
+    		categoryLists.put(category, new ArrayList<ITask>());
+    	}
+    	
 		return categoryLists.get(category); 
     } 
     
