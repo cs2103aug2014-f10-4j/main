@@ -7,7 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import list.Controller;
 
-public class RootLayoutController {
+public class RootController {
 	@FXML
 	private Pane container;
 	

@@ -68,7 +68,7 @@ public class Controller extends Application {
 		initializeMainLayout();
 		showTaskOverviewLayout();
 		
-		//loadInitialData();		
+		loadInitialData();		
 	}
 	
 	private void initializeMainLayout() {
@@ -208,6 +208,16 @@ public class Controller extends Application {
 			System.exit(1);
 		}
 	}
+
+    @SuppressWarnings("deprecation")
+    private static void showError(String title, String errorMessage) {
+        Dialogs.create()
+            .title("LIST")
+            .masthead(title)
+            .message(errorMessage)
+            .styleClass(Dialog.STYLE_CLASS_UNDECORATED)
+            .showError();
+    }
 	
 	public static void main(String[] args) {
 	    launch(args);
