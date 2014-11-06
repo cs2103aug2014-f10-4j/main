@@ -142,7 +142,7 @@ public class Controller extends Application {
 	    displayCategories();
 	}
 
-    private static void displayCategories() {
+    public static void displayCategories() {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
 

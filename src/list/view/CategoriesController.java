@@ -1,6 +1,5 @@
 package list.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.fxml.FXML;
@@ -11,7 +10,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 
-import list.model.ITask;
 import list.model.ICategory;
 
 /**
@@ -49,9 +47,7 @@ public class CategoriesController {
     private static final String stringForButtonOverDueTask = "Overdue Task";
     
     // lists to hold the value of tasks and categories to keep on track them
-    private List<ITask> tasks;
-    private List<ICategory> categoryListCalculated = new ArrayList<ICategory>();
-    private List<ICategory> categoryListAppeared = new ArrayList<ICategory>();
+    private List<ICategory> categories;
     
     // position to start displaying the categories made by user
     private double positonToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFALUT_BUTTON;
@@ -63,30 +59,11 @@ public class CategoriesController {
     // Pane to hold the buttons and labels
     Pane categoriesContainer = new Pane();
     
-    public CategoriesController(List<ITask> tasks) {
+    public CategoriesController(List<ICategory> categories) {
     	
     	// assign the value of list of the tasks
-    	this.tasks = tasks;
-    	
-    	// calculate the height of the pane according to the number of other categories
-    	PANE_HEIGHT = calculatePaneHeight();
-    }
-    
-    public double calculatePaneHeight() {
-    	
-    	// number of other categories to be set to zero
-    	double numberOfOtherCategories = 0.0d;
-    	
-    	// plus one the number of other categories if the new category was presented
-    	for(int i = 0; i < tasks.size(); i++) {
-			if(!(categoryListCalculated.contains(tasks.get(i).getCategory()))) {
-				numberOfOtherCategories++;
-				categoryListCalculated.add(tasks.get(i).getCategory());
-			}
-    	}
-    	
-    	// return the height of the Pane
-    	return LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFALUT_BUTTON + numberOfOtherCategories);
+    	this.categories = categories;
+    	PANE_HEIGHT = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFALUT_BUTTON + categories.size());
     }
     
     public void setUpView() {
@@ -165,12 +142,10 @@ public class CategoriesController {
 		int currentPosition = 0;
 		
 		// check whether the category is already added
-		for(int i = 0; i < tasks.size(); i++) {
-			if(!(categoryListAppeared.contains(tasks.get(i).getCategory()))) {
-				
+		for(int i = 0; i < categories.size(); i++) {				
 				// set up the button according to the title, layout, and size
 				Button button = new Button();
-		        button.setText(tasks.get(i).getCategory().getName());
+		        button.setText(categories.get(i).getName());
 		        button.setLayoutX(BUTTON_X);
 		        button.setLayoutY(positonToDisplayOthers + BUTTON_HEIGHT * currentPosition);
 		        button.setPrefHeight(BUTTON_HEIGHT);
@@ -178,12 +153,9 @@ public class CategoriesController {
 		        button.setStyle("-fx-background-color: #333333;");
 		        button.setFont(Font.font("Helvetica", 18.0d));
 		        
-		        // put the category to the list to keep on track
-		        categoryListAppeared.add(tasks.get(i).getCategory());
-		        
 		        // add the button on the Pane
 		        categoriesContainer.getChildren().add(button);
-			}
+			
 		}
     }
 }

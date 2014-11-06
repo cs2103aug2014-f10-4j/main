@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import list.Controller;
@@ -19,9 +20,12 @@ public class RootWindowController implements IUserInterface {
     private TextField console;
 	@FXML
 	private Label labelFeedback;
+	
+	Pane paneForCategories;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
+	private CategoriesController categoriesController;
 	
     @Override
     public void displayTaskDetail(ITask task) {
@@ -36,6 +40,18 @@ public class RootWindowController implements IUserInterface {
 	public void hideTaskDetail(Pane pane) {
 		rootPane.getChildren().remove(pane);
 		console.requestFocus();
+	}
+    
+    @Override
+    public void displayCategories(List<ICategory> categories) {
+    	categoriesController = new CategoriesController(categories);
+    	showCategoriesLayout();
+    	categoriesController.setUpView();
+    }
+    
+    @Override
+	public void hideCategories() {
+    	rootPane.getChildren().remove(paneForCategories);
 	}
 
     @Override
@@ -55,18 +71,6 @@ public class RootWindowController implements IUserInterface {
         // TODO Auto-generated method stub
         
     }
-
-    @Override
-    public void displayCategories(List<ICategory> categories) {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-	public void hideCategories() {
-		// TODO Auto-generated method stub
-		
-	}
 
     @Override
     public boolean back() {
@@ -92,6 +96,25 @@ public class RootWindowController implements IUserInterface {
         console.setOnAction((event) -> {
             handleEnterAction();
         });        
+    }
+    
+    private void showCategoriesLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Categories.fxml"));
+            
+            paneForCategories = (Pane) loader.load();
+            
+            System.out.println("afafafafafa");
+            categoriesController = loader.getController();
+
+            paneForCategories.setLayoutX(0);
+            paneForCategories.setLayoutY(42);
+            rootPane.getChildren().add(paneForCategories);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
     }
     
     private void showTaskDetailLayout() {
