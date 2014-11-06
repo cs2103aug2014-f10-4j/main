@@ -42,7 +42,7 @@ public class Controller extends Application {
 	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
 	private static IUserInterface userInterface = null;
-	private static IParser parser = new FlexiCommandParser();
+	private static IParser parser = new CommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
 	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	private static List<ITask> displayedTasks = null;
@@ -104,7 +104,7 @@ public class Controller extends Application {
                 redoStack.clear();
             }
         } catch (ParseException e) {
-            reply = MESSAGE_ERROR_PARSING_COMMAND;
+            reply = e.getMessage();
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
         } catch (IOException e) {

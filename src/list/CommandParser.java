@@ -334,7 +334,12 @@ public class CommandParser implements IParser {
         //end date
         if (this.parameters.containsKey(MARKER_END_DATE)) {
             String str = this.parameters.get(MARKER_END_DATE).toString();
-            Date endDate = Date.tryParse(str);
+            Date endDate;
+            if (str.isEmpty()) {
+                endDate = Date.getFloatingDate();
+            } else {
+                endDate = Date.tryParse(str);
+            }
             if (endDate == null) {
                 throw new ParseException(ERROR_CANNOT_PARSE_END_DATE);
             } else {
@@ -350,7 +355,12 @@ public class CommandParser implements IParser {
         //start date
         if (this.parameters.containsKey(MARKER_START_DATE)) {
             String str = this.parameters.get(MARKER_START_DATE).toString();
-            Date startDate = Date.tryParse(str);
+            Date startDate;
+            if (str.isEmpty()) {
+                startDate = Date.getFloatingDate();
+            } else {
+                startDate = Date.tryParse(str);
+            }
             if (startDate == null) {
                 throw new ParseException(ERROR_CANNOT_PARSE_START_DATE);
             } else {
@@ -358,7 +368,7 @@ public class CommandParser implements IParser {
                 this.startDate = startDate;
             }
             //if there is start time, there must be end time
-            if (!this.parameters.containsKey(MARKER_END_DATE)) {
+            if (!this.parameters.containsKey(MARKER_END_DATE) && this.action.equalsIgnoreCase("ADD")) {
                 throw new ParseException(ERROR_END_DATE_NOT_SPECIFIED);
             }
         }
