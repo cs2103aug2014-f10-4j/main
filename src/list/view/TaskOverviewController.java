@@ -1,10 +1,10 @@
 package list.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import list.model.ITask;
 
-public class TaskOverviewController implements ListChangeListener<ITask> {
+public class TaskOverviewController {
     private static final double LABEL_WIDTH = 550.0d;
     private static final double LABEL_HEIGHT = 37.5d;
     private static final double TIMELINE_WIDTH = 37.5d;
@@ -22,50 +22,60 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
     
     @FXML
     Pane tasksContainer;
-    @FXML
-    private Label labelFeedback;
     
     
-    private ObservableList<ITask> tasks;
-    private Integer firstDisplayedTaskIndex = -1;
-    private List<Label> displayedTaskLabels = new ArrayList<Label>();
+    private List<ITask> allTasks;
+    private Integer beginIndex = 0;
+    private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();
+    private List<ITask> oldDisplayedTasks;
     
-    public void displayTasks(ObservableList<ITask> newTasks) {
-        if (this.tasks != null) {
-            this.tasks.removeListener(this);
-        }
-        this.tasks = newTasks;
+    public void displayTasks(List<ITask> newTasks) {
+        this.allTasks = newTasks;
         refresh();
-        this.tasks.addListener(this);
     }
 
-    private void refresh() {
-        for (int i = 0; i < Math.min(MAX_NO_OF_TASKS, this.tasks.size()); i++) {
-            displayTaskAtPosition(this.tasks.get(i), i);
+    void refresh() {
+        List<ITask> newDisplayedTasks = getDisplayTasks();
+        for (int newPositionIndex = 0; newPositionIndex < newDisplayedTasks.size(); newPositionIndex++) {
+            ITask task = newDisplayedTasks.get(newPositionIndex);
+            displayTaskAtPosition(task, newPositionIndex);
         }
-    }
-    
-    @Override
-    public void onChanged(Change<? extends ITask> change) {
-        while (change.next()) {
-            if (change.wasAdded()) {
-                Integer addedIndex = change.getFrom();
-                assert (change.getFrom() == change.getTo());
-                if (addedIndex < firstDisplayedTaskIndex + MAX_NO_OF_TASKS) {
-                    ITask task = tasks.get(addedIndex);
-                    displayTaskAtPosition(task, addedIndex - firstDisplayedTaskIndex);
+        if (oldDisplayedTasks != null) {
+            for (ITask oldTask: oldDisplayedTasks) {
+                if (!newDisplayedTasks.contains(oldTask)) {
+                    undisplayTask(oldTask);
                 }
-            } else  if (change.wasRemoved()) {
-                
-            } else if (change.wasPermutated()) {
-                
             }
         }
+        oldDisplayedTasks = newDisplayedTasks;
+    }
+    
+    private List<ITask> getDisplayTasks() {
+        int stopIndex = Math.min(allTasks.size(), beginIndex + MAX_NO_OF_TASKS);
+        ArrayList<ITask> result = new ArrayList<ITask>();
+        for (int i = beginIndex; i < stopIndex; i++) {
+            result.add(allTasks.get(i));
+        }
+        return result;
     }
 
     private void displayTaskAtPosition(ITask task, int positionIndex) {
-        deleteLastLabelWhenFull();
-        shiftDownLabelsBelow(positionIndex);
+        Label label;
+        if (taskLabels.containsKey(task)) { //if task is already displayed now
+            label = taskLabels.get(task);
+            animateMoveLabel(label, positionIndex);
+        } else { //if task is not displayed yet
+            label = createTaskLabel(task, positionIndex);
+            taskLabels.put(task, label);
+            tasksContainer.getChildren().add(label);
+        }
+    }
+
+    private void animateMoveLabel(Label label, int positionIndex) {
+        label.setLayoutY(positionIndex * LABEL_HEIGHT);
+    }
+
+    private Label createTaskLabel(ITask task, int positionIndex) {
         Label label = new Label();
         label.setText(task.getTitle());
         label.setLayoutX(TIMELINE_WIDTH);
@@ -74,22 +84,15 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
         label.setPrefWidth(LABEL_WIDTH);
         label.setStyle("-fx-background-color: red;");
         label.setFont(Font.font("Helvetica", 18.0d));
-        tasksContainer.getChildren().add(label);
+        return label;
     }
-
-    private void deleteLastLabelWhenFull() {
-        if (this.displayedTaskLabels.size() == MAX_NO_OF_TASKS) {
-            Label lastLabel = this.displayedTaskLabels.get(MAX_NO_OF_TASKS - 1);
-            tasksContainer.getChildren().remove(lastLabel);
+    
+    private void undisplayTask(ITask task) {
+        if (taskLabels.containsKey(task)) {
+            Label label = taskLabels.get(task);
+            tasksContainer.getChildren().remove(label);
+            taskLabels.remove(task);
         }
     }
-
-    private void shiftDownLabelsBelow(int positionIndex) {
-        for (int i = positionIndex; i < displayedTaskLabels.size(); i++) {
-            Label label = displayedTaskLabels.get(i);
-            Double currentY = label.getLayoutY();
-            label.setLayoutY(currentY + LABEL_HEIGHT);
-        }
-    }
-
+    
 }

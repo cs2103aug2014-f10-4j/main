@@ -2,12 +2,12 @@ package list;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import list.model.Category;
 import list.model.Date;
@@ -29,11 +29,11 @@ import org.json.JSONException;
  */
 public class TaskManager {
 
-	private ObservableList<ITask> floatingTasks = FXCollections.observableArrayList();
-	private ObservableList<ITask> currentTasks = FXCollections.observableArrayList();
-	private ObservableList<ITask> overdueTasks = FXCollections.observableArrayList();
+	private List<ITask> floatingTasks = new ArrayList<ITask>();
+	private List<ITask> currentTasks = new ArrayList<ITask>();
+	private List<ITask> overdueTasks = new ArrayList<ITask>();
 	
-	private Map<String, ObservableList<ITask>> categoryLists = new HashMap<String, ObservableList<ITask>>();
+	private Map<String, List<ITask>> categoryLists = new HashMap<String, List<ITask>>();
 	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
 	
     //private List<ITask> floatingTasks = new ArrayList<ITask>();
@@ -69,7 +69,8 @@ public class TaskManager {
     	
 		ICategory category = new Category();
 		category.setName(categoryName);
-		ObservableList<ITask> newCategoryList = FXCollections.observableArrayList();
+		
+		List<ITask> newCategoryList = new ArrayList<ITask>();
 		categoryLists.put(categoryName, newCategoryList);
 		categories.put(categoryName, category);
 		
@@ -156,20 +157,20 @@ public class TaskManager {
         return allTasks;
     }
     
-    ObservableList<ITask> getFloatingTasks() {
-        FXCollections.sort(this.floatingTasks);
+    List<ITask> getFloatingTasks() {
+        Collections.sort(this.floatingTasks);
         
         return this.floatingTasks;
     }
     
-    ObservableList<ITask> getCurrentTasks() {
-        FXCollections.sort(this.currentTasks);
+    List<ITask> getCurrentTasks() {
+        Collections.sort(this.currentTasks);
         
         return this.currentTasks;
     }
     
-    ObservableList<ITask> getOverdueTasks() {
-        FXCollections.sort(this.overdueTasks);
+    List<ITask> getOverdueTasks() {
+        Collections.sort(this.overdueTasks);
         
         return this.overdueTasks;
     }
@@ -181,7 +182,7 @@ public class TaskManager {
      * @param categoryName
      * @return the tasks list of a certain category
      */
-    ObservableList<ITask> getTasksInCategory(String categoryName) {
+    List<ITask> getTasksInCategory(String categoryName) {
     	if (categoryName == null || categoryName.isEmpty()) {
     		return null;
     	}
@@ -199,35 +200,32 @@ public class TaskManager {
         if (hasDeadline(task)) {
             if (isOverdue(task)) {
             	overdueTasks.add(task);
+            	Collections.sort(overdueTasks);
             } else {
             	currentTasks.add(task);
+            	Collections.sort(currentTasks);
             }
         } else {
             floatingTasks.add(task);
+            Collections.sort(floatingTasks);
         }
         
-        if (hasCategory(task)) {
-        	String categoryName = task.getCategory().getName();
-        	ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
-        	
-        	if (tasksListInCategory != null) {
-        		tasksListInCategory.add(task);
-        	}
-        }
+        addToCategoryList(task);
     }
     
     public void addToCategoryList(ITask task) {
     	if (hasCategory(task)) {
     		String categoryName = task.getCategory().getName(); 
-    		ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+    		List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
         	tasksListInCategory.add(task);
+        	Collections.sort(tasksListInCategory);
     	}
     }
     
     public void removeFromCategoryList(ITask task) {
     	if (hasCategory(task)) {
     		String categoryName = task.getCategory().getName();
-    		ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+    		List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
     		tasksListInCategory.remove(task);
     	}
     }
@@ -269,7 +267,7 @@ public class TaskManager {
         
         if (hasCategory(task)) {
         	String categoryName = task.getCategory().getName();
-        	ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+        	List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
         	
         	if (tasksListInCategory != null) {
         		tasksListInCategory.remove(task);
@@ -283,7 +281,7 @@ public class TaskManager {
         if (deletedTasks.contains(task)) {
         	addTask(task);
             deletedTasks.remove(task);
-        }   
+        }
     }
     
     @Deprecated
@@ -301,6 +299,9 @@ public class TaskManager {
         currentTasks.clear();
         overdueTasks.clear();
         deletedTasks.clear();
+        for (List<ITask> list: this.categoryLists.values()) {
+            list.clear();
+        }
     }
     
     // SAVING AND LOADING  

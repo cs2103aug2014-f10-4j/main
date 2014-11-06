@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -105,6 +104,7 @@ public class Controller extends Application {
             if (!isUndoRedoOperation) {
                 redoStack.clear();
             }
+            userInterface.refresh();
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {
@@ -137,7 +137,7 @@ public class Controller extends Application {
 		Controller.displayedTaskDetail = selectedTask;
 	}
 
-	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
+	public static void displayTasks(String pageTitle, List<ITask> tasks) {
 		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	    displayCategories();
@@ -147,7 +147,7 @@ public class Controller extends Application {
         userInterface.updateCategory(taskManager.getAllCategories());
     }
 
-    private static void rememberDisplayedTasks(ObservableList<ITask> tasks) {
+    private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
     }
 	 

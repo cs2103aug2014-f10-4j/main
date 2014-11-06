@@ -15,13 +15,15 @@ public interface IUserInterface {
     
     void displayTaskDetail(ITask task);
     
-    void display(String pageTitle, ObservableList<ITask> tasks);
+    void display(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
         
     void displayMessageToUser(String message);
     
     void updateCategory(List<ICategory> categories);
+    
+    void refresh();
     
     boolean back();
     
