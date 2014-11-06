@@ -1,8 +1,11 @@
 package list;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
+
+import javax.swing.JOptionPane;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -17,23 +20,27 @@ import list.model.ITask;
 import list.view.IUserInterface;
 import list.view.MainController;
 
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 public class Controller extends Application {
-	private static final String APPLICATION_NAME = "LIST";	
+	private static final String SAVE_FILE_NAME = "tasks_list.json";
+    private static final String LOAD_ERROR_MASTHEAD = "LOADING FAILED";
+    private static final String APPLICATION_NAME = "LIST";	
 	private Stage primaryStage;
 	private StackPane mainLayout;
 	
-    private static final String TITLE_FLOATING_TASKS = "Floating Tasks";
-    private static final String TITLE_TODAY_TASKS = "Today's Tasks";
-    private static final String TITLE_ALL_TASKS = "All Tasks";
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
-    private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
-    private static final String MESSAGE_ERROR_LOADING = "Error loading data";
-	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT = "Data is not in a valid JSON format ." + 
-																	"Please ensure the JSON format is " + 
-																	"valid and relaunch the program.";
+    private static final String MESSAGE_ERROR_LOADING = "There is unknown error when loading data.";
+	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT;
+	static {
+	    File saveFile = new File(SAVE_FILE_NAME);
+	    MESSAGE_ERROR_INVALID_JSON_FORMAT = String.format(
+	            "Data is not in a valid JSON format. Please repair the save file to a valid JSON format " + 
+	            "and then relaunch LIST. Path to file:\n\n%s", saveFile.getAbsolutePath());
+	}
 	private static final String MESSAGE_ERROR_SAVING = "Error saving data";
     
 	private static IUserInterface userInterface = null;
@@ -53,14 +60,15 @@ public class Controller extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		singletonInstance = this;
+		
+	    singletonInstance = this;
 		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
 		initializeMainLayout();
 		
-		loadInitialData();		
+		loadInitialData();
 	}
 	
 	private void initializeMainLayout() {
@@ -122,24 +130,35 @@ public class Controller extends Application {
 	
 	//UI FUNCTIONS
 	public static void displayTaskDetail(ITask selectedTask) {
-	    Controller.displayedTaskDetail = selectedTask;
+	    if (userInterface == null) {
+            userInterface = MainController.getInstance();
+        }
 		userInterface.displayTaskDetail(selectedTask);
+		Controller.displayedTaskDetail = selectedTask;
 	}
 
-	public static void displayTask(String pageTitle, ObservableList<ITask> tasks) {
+	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
 		if (userInterface == null) {
 		    userInterface = MainController.getInstance();
-		    userInterface.display(pageTitle, tasks);
 		}
-		
-		displayedTasks = tasks;
-		
-		List<ICategory> categories = taskManager.getAllCategories();
-	    userInterface.updateCategory(categories);
+        userInterface.display(pageTitle, tasks);
+		rememberDisplayedTasks(tasks);
+	    displayCategories();
 	}
+
+    private static void displayCategories() {
+        if (userInterface == null) {
+            userInterface = MainController.getInstance();
+        }
+        userInterface.updateCategory(taskManager.getAllCategories());
+    }
+
+    private static void rememberDisplayedTasks(ObservableList<ITask> tasks) {
+        displayedTasks = tasks;
+    }
 	 
 	public static void displayCurrentTasks() {
-		displayTask("CURRENT TASK", taskManager.getCurrentTasks());
+		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
@@ -164,12 +183,22 @@ public class Controller extends Application {
 			taskManager.loadData();
 		} catch (IOException e) {
 		    e.printStackTrace();
-			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {
-			//userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_INVALID_JSON_FORMAT);
 		    e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	@SuppressWarnings("deprecation")
+    private static void showError(String title, String errorMessage) {
+	    Dialogs.create()
+	        .title("LIST")
+	        .masthead(title)
+	        .message(errorMessage)
+	        .styleClass(Dialog.STYLE_CLASS_UNDECORATED)
+	        .showError();
 	}
 
 	public static void main(String[] args) {

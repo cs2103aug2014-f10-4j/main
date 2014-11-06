@@ -145,20 +145,12 @@ public class ReaderWriter implements IStorage {
 		}
 	}
 	
-	private void setUpCategoryBufferedWriter() {
-		try {
-			categoryWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_CATEGORIES));
-		} catch (IOException e) {
-			System.out.println(MESSAGE_IO_ERROR);
-		}
+	private void setUpCategoryBufferedWriter() throws IOException {
+		categoryWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_CATEGORIES));
 	}
 	
-	private void setUpTaskBufferedReader() {
-		try {
-			taskReader = new BufferedReader(new FileReader(TEXTFILE_NAME_TASKS));
-		} catch (IOException e) {
-			System.out.println(MESSAGE_IO_ERROR);
-		}
+	private void setUpTaskBufferedReader() throws IOException {
+		taskReader = new BufferedReader(new FileReader(TEXTFILE_NAME_TASKS));
 	}
 
 	private void setUpCategoryBufferedReader() {
