@@ -13,6 +13,7 @@ import list.model.ICategory;
 import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
+	private Pane taskDetail;
 	@FXML
 	private Pane rootPane;
 	@FXML
@@ -33,8 +34,8 @@ public class RootWindowController implements IUserInterface {
     }
     
     @Override
-	public void hideTaskDetail(Pane pane) {
-		rootPane.getChildren().remove(pane);
+	public void hideTaskDetail() {
+		rootPane.getChildren().remove(taskDetail);
 		console.requestFocus();
 	}
 
@@ -70,18 +71,12 @@ public class RootWindowController implements IUserInterface {
 
     @Override
     public boolean back() {
-        // TODO Auto-generated method stub
-        return false;
+        return taskOverviewController.back();
     }
 
     @Override
     public boolean next() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-	
-    public void setEnabledConsole(boolean bool) {
-    	console.setDisable(!bool);
+        return taskOverviewController.next();
     }
 
     @FXML
@@ -99,7 +94,7 @@ public class RootWindowController implements IUserInterface {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Controller.class.getResource("view/TaskDetail.fxml"));
             
-            Pane taskDetail = (Pane) loader.load();
+            taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
             

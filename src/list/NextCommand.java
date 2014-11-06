@@ -4,15 +4,14 @@ import java.io.IOException;
 
 import list.view.IUserInterface;
 import list.view.MainController;
+import list.view.RootWindowController;
 
 public class NextCommand implements ICommand {
-
-    private IUserInterface userInterface = MainController.getInstance();
     
     @Override
     public String execute() throws CommandExecutionException, IOException,
             InvalidTaskNumberException {
-        boolean success = userInterface.next();
+        boolean success = Controller.next();
         return success ? "Next page displayed" : "End of list";
     }
 

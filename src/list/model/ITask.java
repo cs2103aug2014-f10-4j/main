@@ -19,6 +19,8 @@ public interface ITask extends Comparable<ITask> {
 	public Date getEndDate();
 
 	public ITask setEndDate(Date endTime);
+	
+	public Date getTimelineDate();
 
 	public RepeatFrequency getRepeatFrequency();
 

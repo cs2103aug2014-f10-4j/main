@@ -150,6 +150,14 @@ public class Controller extends Application {
         displayedTasks = tasks;
     }
 	 
+    public static boolean next() {
+    	return userInterface.next();
+    }
+    
+    public static boolean back() {
+    	return userInterface.back();
+    }
+    
 	public static void displayCurrentTasks() {
 		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}
