@@ -14,7 +14,7 @@ import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
 
-public class RootController implements IUserInterface {
+public class RootWindowController implements IUserInterface {
 	@FXML
 	private Pane rootPane;
 	@FXML
