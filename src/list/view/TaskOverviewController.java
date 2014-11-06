@@ -8,14 +8,17 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import list.model.ITask;
 
 public class TaskOverviewController implements ListChangeListener<ITask> {
-    private static final int LABEL_HEIGHT = 30;
-    private static final int MAX_NO_OF_TASKS = 10;
-    private static final int TOOLBAR_HEIGHT = 40;
-    private static final int TIMELINE_WIDTH = 50;
+    private static final double LABEL_WIDTH = 550.0d;
+    private static final double LABEL_HEIGHT = 37.5d;
+    private static final double TIMELINE_WIDTH = 37.5d;
+    
+    private static final int MAX_NO_OF_TASKS = 8;
     
     @FXML
     Pane tasksContainer;
@@ -66,7 +69,11 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
         Label label = new Label();
         label.setText(task.getTitle());
         label.setLayoutX(TIMELINE_WIDTH);
-        label.setLayoutY(TOOLBAR_HEIGHT + positionIndex * LABEL_HEIGHT);
+        label.setLayoutY(positionIndex * LABEL_HEIGHT);
+        label.setPrefHeight(LABEL_HEIGHT);
+        label.setPrefWidth(LABEL_WIDTH);
+        label.setStyle("-fx-background-color: red;");
+        label.setFont(Font.font("Helvetica", 18.0d));
         tasksContainer.getChildren().add(label);
     }
 
