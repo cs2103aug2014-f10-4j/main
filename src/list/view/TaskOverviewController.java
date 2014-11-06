@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.ListChangeListener;
-import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -33,7 +32,14 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
             this.tasks.removeListener(this);
         }
         this.tasks = newTasks;
+        refresh();
         this.tasks.addListener(this);
+    }
+
+    private void refresh() {
+        for (int i = 0; i < Math.min(MAX_NO_OF_TASKS, this.tasks.size()); i++) {
+            displayTaskAtPosition(this.tasks.get(i), i);
+        }
     }
     
     @Override
@@ -50,7 +56,7 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
                 
             } else if (change.wasPermutated()) {
                 
-            } 
+            }
         }
     }
 
