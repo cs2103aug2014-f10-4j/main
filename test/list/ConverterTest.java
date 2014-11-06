@@ -2,17 +2,21 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
-import list.Converter;
 import list.CommandBuilder.RepeatFrequency;
 import list.Converter.CorruptedJsonObjectException;
 import list.model.Category;
 import list.model.Date;
-import list.model.ITask;
-import list.model.Task;
 import list.model.Date.InvalidDateException;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.model.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +24,12 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This class is used to test the functionality of Converter Class
+ * 
+ * @author Michael
+ *
+ */
 public class ConverterTest {
 
 	// String used as a key in JSONObject for Task
@@ -31,6 +41,9 @@ public class ConverterTest {
 	private static final String KEY_PLACE = "place";
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_NOTES = "notes";
+	private static final String KEY_STATUS = "status";
+	private static final String KEY_NAME = "name";
+	private static final String KEY_COLOR = "color";
 	
 	// Tasks Details
 	private static final String TASK_1_NOTES = "This is task 1 under test";
@@ -39,53 +52,28 @@ public class ConverterTest {
 	private static final String TASK_2_TITLE = "Task 2";
 	private static final String TASK_3_TITLE = "Task 3";	
 		
+	// Category Details
+	private static final String CATEGORY_1_NAME = "School";
+	private static final Color CATEGORY_1_COLOR = Color.BLUE;
+	private static final String CATEGORY_2_NAME = "Work";
+	
+	
 	private Converter converter;
 	private List<ITask> tasks;
 	private ITask taskOne;
 	private ITask taskTwo;
 	private ITask taskThree;
-			
-//	@Test
-//	public void shouldConvertTaskToCorrectJsonObject() 
-//			throws JSONException {
-//		JSONObject taskInJson = converter.convertTaskToJson(taskOne);
-//		
-//		assertEquals(true, taskInJson.has(KEY_TITLE));
-//		assertEquals(TASK_1_TITLE, taskInJson.get(KEY_TITLE));
-//		assertEquals(true, taskInJson.has(KEY_DETAILS));
-//		
-//		JSONObject taskDetails = taskInJson.getJSONObject(KEY_DETAILS);
-//		
-//		assertEquals(new Date(1, 1, 2014).toString(), taskDetails.get(KEY_END_TIME));
-//		assertEquals(TASK_1_NOTES, taskDetails.get(KEY_NOTES));
-//		assertEquals(false, taskDetails.has(KEY_CATEGORY));
-//		assertEquals(false, taskDetails.has(KEY_REPEAT_FREQUENCY));
-//		assertEquals(false, taskDetails.has(KEY_START_TIME));
-//		assertEquals(false, taskDetails.has(KEY_PLACE));		
-//	}
-//	
-//	@Test
-//	public void shouldConvertTaskWithOnlyTitleToJsonObject() 
-//			throws JSONException {
-//		ITask task = new Task();
-//		task.setTitle("Task 3");
-//		
-//		JSONObject taskInJson = converter.convertTaskToJson(task);
-//		
-//		assertEquals(true, taskInJson.has(KEY_TITLE));
-//		assertEquals("Task 3", taskInJson.get(KEY_TITLE));
-//		assertEquals(true, taskInJson.has(KEY_DETAILS));
-//		
-//		JSONObject taskDetails = taskInJson.getJSONObject(KEY_DETAILS);
-//		
-//		assertEquals(0, taskDetails.length());		
-//	}
-		
+	private List<ICategory> categories;
+	private ICategory categoryOne;
+	private ICategory categoryTwo;
+	
 	@Before
 	public void initializeTest() throws InvalidDateException {
 		converter = new Converter();
 		tasks = new ArrayList<ITask>();
+		categories = new ArrayList<ICategory>();
 		prepareTask();
+		prepareCategory();
 	}
 	
 	@Test
@@ -106,25 +94,27 @@ public class ConverterTest {
 		assertEquals(TASK_1_TITLE, firstTaskInJson.get(KEY_TITLE));
 		assertEquals(new Date(1, 1, 2014).toString(), firstTaskDetail.get(KEY_END_TIME));
 		assertEquals(TASK_1_NOTES, firstTaskDetail.get(KEY_NOTES));
-		assertEquals(false, firstTaskDetail.has(KEY_CATEGORY));
-		assertEquals(false, firstTaskDetail.has(KEY_REPEAT_FREQUENCY));
-		assertEquals(false, firstTaskDetail.has(KEY_START_TIME));
-		assertEquals(false, firstTaskDetail.has(KEY_PLACE));
+		assertEquals("", firstTaskDetail.get(KEY_CATEGORY));
+		assertEquals("NONE", firstTaskDetail.get(KEY_REPEAT_FREQUENCY));
+		assertEquals("", firstTaskDetail.get(KEY_START_TIME));
+		assertEquals("", firstTaskDetail.get(KEY_PLACE));
+		assertEquals("PENDING", firstTaskDetail.get(KEY_STATUS));
 		
 		// Checking the second task
 		assertEquals(TASK_2_TITLE, secondTaskInJson.get(KEY_TITLE));
 		assertEquals(new Date(2, 1, 2014).toString(), secondTaskDetail.get(KEY_START_TIME));
 		assertEquals(TASK_2_CATEGORY, secondTaskDetail.get(KEY_CATEGORY));
 		assertEquals("DAILY", secondTaskDetail.get(KEY_REPEAT_FREQUENCY));
-		assertEquals(false, secondTaskDetail.has(KEY_END_TIME));
-		assertEquals(false, secondTaskDetail.has(KEY_NOTES));
-		assertEquals(false, secondTaskDetail.has(KEY_PLACE));
+		assertEquals("", secondTaskDetail.get(KEY_END_TIME));
+		assertEquals("", secondTaskDetail.get(KEY_NOTES));
+		assertEquals("", secondTaskDetail.get(KEY_PLACE));
+		assertEquals("PENDING", secondTaskDetail.get(KEY_STATUS));
 		
 		// Checking the third task
 		assertEquals(true, thirdTaskInJson.has(KEY_TITLE));
 		assertEquals(TASK_3_TITLE, thirdTaskInJson.get(KEY_TITLE));
 		assertEquals(true, thirdTaskInJson.has(KEY_DETAILS));
-		assertEquals(0, thirdTaskDetail.length());	
+		assertEquals("DONE", thirdTaskDetail.get(KEY_STATUS));
 	}
 	
 	@Test
@@ -227,6 +217,65 @@ public class ConverterTest {
 		converter.convertJsonToTask(originalTaskInJson);
 	}
 	
+	@Test
+	public void shouldConvertCategoryListToJSON() throws JSONException {
+		JSONArray categoriesInJson = converter.convertCategoryListToJson(categories);
+		
+		JSONObject firstCategory = categoriesInJson.getJSONObject(0);
+		JSONObject secondCategory = categoriesInJson.getJSONObject(1);
+		
+		// Checking the first category
+		assertEquals(CATEGORY_1_NAME, firstCategory.get(KEY_NAME));
+		assertEquals(Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8), firstCategory.get(KEY_COLOR));
+		
+		// Checking the second category
+		assertEquals(CATEGORY_2_NAME, secondCategory.get(KEY_NAME));
+		assertEquals(Integer.toHexString(Color.BLACK.getRGB()).substring(2,8), secondCategory.get(KEY_COLOR));
+	}
+	
+	@Test
+	public void shouldConvertJSONArrayToCategoryList() throws JSONException {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject firstCategoryInJson = new JSONObject();
+		firstCategoryInJson.put(KEY_NAME, CATEGORY_1_NAME);
+		firstCategoryInJson.put(KEY_COLOR, Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8));
+		
+		JSONObject secondCategoryInJson = new JSONObject();
+		secondCategoryInJson.put(KEY_NAME, CATEGORY_2_NAME);
+		
+		jsonArray.put(firstCategoryInJson);
+		jsonArray.put(secondCategoryInJson);
+		
+		ICategory expectedCategoryOne = new Category();
+		expectedCategoryOne.setName(CATEGORY_1_NAME).setColor(CATEGORY_1_COLOR);
+		ICategory expectedCategoryTwo = new Category();
+		expectedCategoryTwo.setName(CATEGORY_2_NAME);
+		
+		HashMap<String, ICategory> categories = converter.convertJsonToCategoryList(jsonArray);
+		
+		assertEquals(true, categories.containsKey(expectedCategoryOne.getName()));
+		assertEquals(CATEGORY_1_NAME, categories.get(expectedCategoryOne.getName()).getName());
+		assertEquals(CATEGORY_1_COLOR, categories.get(expectedCategoryOne.getName()).getColor());
+		assertEquals(true, categories.containsKey(expectedCategoryTwo.getName()));
+		assertEquals(CATEGORY_2_NAME, categories.get(expectedCategoryTwo.getName()).getName());
+		assertEquals(Color.BLACK, categories.get(expectedCategoryTwo.getName()).getColor());	
+	}
+	
+	@Test
+	public void shouldNotConvertJsonCategoryObjectWithoutName() throws JSONException {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject firstCategoryInJson = new JSONObject();
+		firstCategoryInJson.put(KEY_COLOR, Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8));
+		
+		jsonArray.put(firstCategoryInJson);
+		
+		converter.convertJsonToCategoryList(jsonArray);
+		
+		assertEquals(1, converter.getNumOfCorruptedJsonCategoryObjects());	
+	}
+	
 	private void prepareTask() throws InvalidDateException {
 		taskOne = new Task();
 		taskOne.setTitle(TASK_1_TITLE)
@@ -239,10 +288,23 @@ public class ConverterTest {
 			.setRepeatFrequency(RepeatFrequency.DAILY);	
 		taskThree = new Task();
 		taskThree.setTitle(TASK_3_TITLE);
+		taskThree.setStatus(TaskStatus.DONE);
 		
 		tasks.add(taskOne);
 		tasks.add(taskTwo);	
 		tasks.add(taskThree);
+	}
+	
+	private void prepareCategory() {
+		categoryOne = new Category();
+		categoryOne.setName(CATEGORY_1_NAME);
+		categoryOne.setColor(CATEGORY_1_COLOR);
+		
+		categoryTwo = new Category();
+		categoryTwo.setName(CATEGORY_2_NAME);
+		
+		categories.add(categoryOne);
+		categories.add(categoryTwo);
 	}
 	
 }

@@ -2,12 +2,13 @@ package list;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import list.model.Category;
 import list.model.Date;
 import list.model.ICategory;
@@ -27,12 +28,20 @@ import org.json.JSONException;
  * @author andhieka, michael
  */
 public class TaskManager {
-    private List<ITask> floatingTasks = new ArrayList<ITask>();
+
+	private ObservableList<ITask> floatingTasks = FXCollections.observableArrayList();
+	private ObservableList<ITask> currentTasks = FXCollections.observableArrayList();
+	private ObservableList<ITask> overdueTasks = FXCollections.observableArrayList();
+	
+	private Map<String, ObservableList<ITask>> categoryLists = new HashMap<String, ObservableList<ITask>>();
+	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
+	
+    //private List<ITask> floatingTasks = new ArrayList<ITask>();
     private List<ITask> tasks = new ArrayList<ITask>();
     private Stack<ITask> deletedTasks = new Stack<ITask>();
     
     private ReaderWriter readerWriter = new ReaderWriter();
-    private Map<String, ICategory> categories = new HashMap<String, ICategory>();
+    
     
     private static TaskManager taskManagerInstance = null;
         
@@ -42,10 +51,54 @@ public class TaskManager {
     	if (taskManagerInstance == null) {
     		taskManagerInstance = new TaskManager();
     	}	
+    
     	return taskManagerInstance;
     }
     
     //CATEGORY METHODS
+    /**
+     * Creates a new category with the specified name in the input
+     * 
+     * @param categoryName
+     * @return true if new category has successfully been added. false otherwise.
+     */
+    boolean addCategory(String categoryName) {
+    	if (categoryName == null || categoryName.isEmpty()) {
+    		return false;
+    	} 
+    	
+		ICategory category = new Category();
+		category.setName(categoryName);
+		ObservableList<ITask> newCategoryList = FXCollections.observableArrayList();
+		categoryLists.put(categoryName, newCategoryList);
+		categories.put(categoryName, category);
+		
+		return true;
+    	
+    }
+    
+    /**
+     * Deletes a category as specified by <code>categoryName</code>
+     * 
+     * @param categoryName
+     * @return true if new category has successfully been deleted. false otherwise.
+     */
+    boolean deleteCategory(String categoryName) {
+    	if (categoryName == null || categoryName.isEmpty()) {
+    		return false;
+    	} 
+    	
+    	if (categories.containsKey(categoryName) && 
+    		categoryLists.containsKey(categoryName)) {
+    		
+    		categoryLists.remove(categoryName);
+    		categories.remove(categoryName);
+    		return true;
+    		
+    	} else {
+    		return false;
+    	}
+    }    
     
     /**
      * Accepts a string and returns a ICategory object with the same name as the input.
@@ -56,18 +109,15 @@ public class TaskManager {
      */
     ICategory getCategory(String categoryName) {
     	//return a default category if undefined by user
-        if (categoryName == null || categoryName == "") {
+        if (categoryName == null || categoryName.isEmpty()) {
     	    return Category.getDefaultCategory();
     	}
     	
-        if (categories.containsKey(categoryName)) {
-    		return categories.get(categoryName);
-    	} else {
-    		ICategory category = new Category();
-    		category.setName(categoryName);
-    		categories.put(categoryName, category);
-    		return category;
-    	}
+        if (!categories.containsKey(categoryName)) {
+    		addCategory(categoryName);
+        }
+    		
+    	return categories.get(categoryName);
     }
     
     List<ICategory> getAllCategories() {
@@ -81,54 +131,105 @@ public class TaskManager {
     }
     
     //TASK GETTERS
-    
     /**
-     * Returns all task in the TaskManager
-     * @return
+     * Gets all tasks in the TaskManager. 
+     * The list of all tasks returned by method will be used for storage purposes,
+     * and not displaying purposes, hence, there is no need to keep the list of 
+     * all tasks sorted
+     * 
+     * @return list of all tasks in TaskManager
      */
     List<ITask> getAllTasks() {
-        Collections.sort(this.floatingTasks);
-        Collections.sort(this.tasks);
+        int sizeAllTasks = floatingTasks.size() + currentTasks.size() + overdueTasks.size();
         
-    	List<ITask> allTasks = new ArrayList<ITask>(tasks.size() + floatingTasks.size());
-    	for (ITask task: tasks) {
-    	    allTasks.add(task);
-    	}
+    	List<ITask> allTasks = new ArrayList<ITask>(sizeAllTasks);
     	for (ITask task: floatingTasks) {
     	    allTasks.add(task);
     	}
+    	for (ITask task: currentTasks) {
+    	    allTasks.add(task);
+    	}
+    	for (ITask task: overdueTasks) {
+    		allTasks.add(task);
+    	}
+    	
         return allTasks;
     }
     
-    List<ITask> getFloatingTasks() {
-        Collections.sort(this.floatingTasks);
+    ObservableList<ITask> getFloatingTasks() {
+        FXCollections.sort(this.floatingTasks);
         
-        List<ITask> duplicateList = new ArrayList<ITask>(this.floatingTasks);
-        return duplicateList;
+        return this.floatingTasks;
     }
     
-    List<ITask> getTodayTasks() {
-        Collections.sort(this.tasks);
+    ObservableList<ITask> getCurrentTasks() {
+        FXCollections.sort(this.currentTasks);
         
-        List<ITask> todayTasks = new ArrayList<ITask>();
-        Date todayDate = new Date();
-        for (ITask task: this.tasks) {
-            if (task.getEndDate().equals(todayDate)) {
-                todayTasks.add(task);
-            } else {
-                break; //tasks is sorted by deadline
-            }
-        }
-        return todayTasks;
+        return this.currentTasks;
     }
+    
+    ObservableList<ITask> getOverdueTasks() {
+        FXCollections.sort(this.overdueTasks);
+        
+        return this.overdueTasks;
+    }
+    
+    /**
+     * Gets the tasks list of a certain category as specified by <code>categoryName</code>
+     * in the input
+     * 
+     * @param categoryName
+     * @return the tasks list of a certain category
+     */
+    ObservableList<ITask> getTasksInCategory(String categoryName) {
+    	if (categoryName == null || categoryName.isEmpty()) {
+    		return null;
+    	}
+    	
+    	if (categoryLists.containsKey(categoryName)) {
+    		return categoryLists.get(categoryName); 
+    	} else {
+    		return null;
+    	}
+    }    
+    
     
     //METHODS FOR COMMANDS EXECUTION
     void addTask(ITask task) {
         if (hasDeadline(task)) {
-            tasks.add(task);
+            if (isOverdue(task)) {
+            	overdueTasks.add(task);
+            } else {
+            	currentTasks.add(task);
+            }
         } else {
             floatingTasks.add(task);
         }
+        
+        if (hasCategory(task)) {
+        	String categoryName = task.getCategory().getName();
+        	ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+        	
+        	if (tasksListInCategory != null) {
+        		tasksListInCategory.add(task);
+        	}
+        }
+    }
+    
+    public void addToCategoryList(ITask task) {
+    	if (hasCategory(task)) {
+    		String categoryName = task.getCategory().getName(); 
+    		ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+        	tasksListInCategory.add(task);
+    	}
+    }
+    
+    public void removeFromCategoryList(ITask task) {
+    	if (hasCategory(task)) {
+    		String categoryName = task.getCategory().getName();
+    		ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+    		tasksListInCategory.remove(task);
+    	}
     }
     
     void markTaskAsDone(ITask task) {
@@ -157,20 +258,30 @@ public class TaskManager {
 
     void deleteTask(ITask task) {
         if (hasDeadline(task)) {
-            tasks.remove(task);
+        	if (isOverdue(task)) {
+            	overdueTasks.remove(task);
+            } else {
+            	currentTasks.remove(task);
+            }
         } else {
             floatingTasks.remove(task);
         }
+        
+        if (hasCategory(task)) {
+        	String categoryName = task.getCategory().getName();
+        	ObservableList<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+        	
+        	if (tasksListInCategory != null) {
+        		tasksListInCategory.remove(task);
+        	}
+        }
+        
         deletedTasks.push(task);
     }
     
     void undeleteTask(ITask task) {
         if (deletedTasks.contains(task)) {
-            if (hasDeadline(task)) {
-                tasks.add(task);
-            } else {
-                floatingTasks.add(task);
-            }
+        	addTask(task);
             deletedTasks.remove(task);
         }   
     }
@@ -187,21 +298,40 @@ public class TaskManager {
      */
     void clearTasks() {
         floatingTasks.clear();
-        tasks.clear();
+        currentTasks.clear();
+        overdueTasks.clear();
         deletedTasks.clear();
     }
     
-    // SAVING AND LOADING
+    // SAVING AND LOADING  
+    void loadData() throws IOException, JSONException {
+    	loadCategories();
+    	loadTasks();
+    }
     
-    void loadTasks() throws IOException, JSONException {
-    	List<ITask> tasks = readerWriter.loadFromFile();
+    void saveData() throws IOException {
+    	saveCategories();
+    	saveTasks();
+    }
+    
+    private void loadCategories() throws IOException, JSONException {
+    	HashMap<String, ICategory> categories = readerWriter.loadCategoriesFromFile();
+    	this.categories = categories;
+    }
+    
+    private void saveCategories() throws IOException {
+    	readerWriter.saveCategoriesToFile(getAllCategories());
+    }
+    
+    private void loadTasks() throws IOException, JSONException {
+    	List<ITask> tasks = readerWriter.loadTasksFromFile();
     	for (ITask task: tasks) {
     	    this.addTask(task);
     	}
 	}   
     
-    void saveTasks() throws IOException {
-    	readerWriter.saveToFile(this.getAllTasks());
+    private void saveTasks() throws IOException {
+    	readerWriter.saveTasksToFile(this.getAllTasks());
     }
     
     @Deprecated
@@ -216,7 +346,18 @@ public class TaskManager {
         
     //Private functions
     private static boolean hasDeadline(ITask task) {
-        return task.getEndDate() != null;
+        return !task.getEndDate().equals(Date.getFloatingDate());
+    }
+    
+    private static boolean isOverdue(ITask task) {
+    	Date today = new Date();
+    	return (task.getEndDate().compareTo(today) < 0);    	
+    }
+    
+    private static boolean hasCategory(ITask task) {
+    	return (task.getCategory() != null && 
+    		   task.getCategory().getName() != null &&
+    		   !task.getCategory().getName().isEmpty());
     }
     
     /**
@@ -227,5 +368,4 @@ public class TaskManager {
     private static int getTaskId(Integer taskNumberShownOnScreen) {
         return taskNumberShownOnScreen - 1;
     }
-     
 }
