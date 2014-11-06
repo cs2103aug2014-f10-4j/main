@@ -74,7 +74,7 @@ public class Controller extends Application {
     private void initializeMainLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Controller.class.getResource("view/Root.fxml"));
+            loader.setLocation(Controller.class.getResource("view/RootWindow.fxml"));
             
             root = (Pane) loader.load();
             userInterface = loader.getController();
@@ -104,7 +104,7 @@ public class Controller extends Application {
             if (!isUndoRedoOperation) {
                 redoStack.clear();
             }
-            userInterface.refresh();
+            displayCurrentTasks(); //TODO: CONSIDER VIEWING MODES
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {
@@ -144,7 +144,7 @@ public class Controller extends Application {
 	}
 
     private static void displayCategories() {
-        userInterface.updateCategory(taskManager.getAllCategories());
+        userInterface.displayCategories(taskManager.getAllCategories());
     }
 
     private static void rememberDisplayedTasks(List<ITask> tasks) {

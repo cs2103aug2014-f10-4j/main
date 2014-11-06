@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import javafx.collections.ObservableList;
 import list.model.Category;
 import list.model.Date;
 import list.model.ICategory;
@@ -176,23 +175,15 @@ public class TaskManager {
     }
     
     /**
-     * Gets the tasks list of a certain category as specified by <code>categoryName</code>
+     * Gets the tasks list of a certain category as specified by <code>category</code>
      * in the input
      * 
-     * @param categoryName
+     * @param category
      * @return the tasks list of a certain category
      */
-    List<ITask> getTasksInCategory(String categoryName) {
-    	if (categoryName == null || categoryName.isEmpty()) {
-    		return null;
-    	}
-    	
-    	if (categoryLists.containsKey(categoryName)) {
-    		return categoryLists.get(categoryName); 
-    	} else {
-    		return null;
-    	}
-    }    
+    List<ITask> getTasksInCategory(ICategory category) {
+		return categoryLists.get(category); 
+    } 
     
     
     //METHODS FOR COMMANDS EXECUTION
@@ -215,17 +206,17 @@ public class TaskManager {
     
     public void addToCategoryList(ITask task) {
     	if (hasCategory(task)) {
-    		String categoryName = task.getCategory().getName(); 
-    		List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
-        	tasksListInCategory.add(task);
+    	    ICategory category = task.getCategory(); 
+            List<ITask> tasksListInCategory = getTasksInCategory(category);
+            tasksListInCategory.add(task);
         	Collections.sort(tasksListInCategory);
     	}
     }
     
     public void removeFromCategoryList(ITask task) {
     	if (hasCategory(task)) {
-    		String categoryName = task.getCategory().getName();
-    		List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+    		ICategory category = task.getCategory(); 
+    		List<ITask> tasksListInCategory = getTasksInCategory(category);
     		tasksListInCategory.remove(task);
     	}
     }
@@ -266,8 +257,8 @@ public class TaskManager {
         }
         
         if (hasCategory(task)) {
-        	String categoryName = task.getCategory().getName();
-        	List<ITask> tasksListInCategory = getTasksInCategory(categoryName);
+        	ICategory category = task.getCategory();
+        	List<ITask> tasksListInCategory = getTasksInCategory(category);
         	
         	if (tasksListInCategory != null) {
         		tasksListInCategory.remove(task);

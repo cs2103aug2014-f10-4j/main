@@ -277,7 +277,7 @@ public class MainController implements IUserInterface {
 	}
 
 	@Override
-	public void updateCategory(List<ICategory> categories) {
+	public void displayCategories(List<ICategory> categories) {
 		for(int i = 0; i < categories.size(); i++) {
 			if(i < 8 && !categories.get(i).getName().equals("")) {
 				categoryLabels[i].setText(categories.get(i).getName());
@@ -286,9 +286,15 @@ public class MainController implements IUserInterface {
 		
 	}
 
-    @Override
-    public void refresh() {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void hideTaskDetail() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void hideCategories() {
+		// TODO Auto-generated method stub
+		
+	}
 }
