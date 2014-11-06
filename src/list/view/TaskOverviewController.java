@@ -7,8 +7,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import list.model.ITask;
