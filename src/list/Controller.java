@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
 
-import javax.swing.JOptionPane;
-
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
@@ -29,7 +28,7 @@ public class Controller extends Application {
     private static final String LOAD_ERROR_MASTHEAD = "LOADING FAILED";
     private static final String APPLICATION_NAME = "LIST";	
 	private Stage primaryStage;
-	private StackPane mainLayout;
+	private Pane rootLayout;
 	
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
@@ -67,27 +66,46 @@ public class Controller extends Application {
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
 		initializeMainLayout();
+		showTaskOverviewLayout();
 		
-		loadInitialData();
+		//loadInitialData();		
 	}
 	
 	private void initializeMainLayout() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Controller.class.getResource("view/asdf.fxml"));
+			loader.setLocation(Controller.class.getResource("view/RootLayout.fxml"));
 			
-            mainLayout = (StackPane) loader.load();
+            rootLayout = (Pane) loader.load();
 
             // Show the scene containing the root layout.
-            Scene scene = new Scene(mainLayout);
+            Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
+            primaryStage.sizeToScene();
             primaryStage.show();
             
         } catch (IOException e) {
             e.printStackTrace();
 		} 
 	}
+	
+	private void showTaskOverviewLayout() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Controller.class.getResource("view/TaskOverviewLayout.fxml"));
+			
+            Pane taskOverviewLayout = (Pane) loader.load();
+            
+            taskOverviewLayout.setLayoutX(0);
+            taskOverviewLayout.setLayoutY(40);
+            rootLayout.getChildren().add(taskOverviewLayout);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+		} 
+	}
+	
 	
 	public static String processUserInput(String userInput) {
 	    String reply;
@@ -191,16 +209,6 @@ public class Controller extends Application {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-    private static void showError(String title, String errorMessage) {
-	    Dialogs.create()
-	        .title("LIST")
-	        .masthead(title)
-	        .message(errorMessage)
-	        .styleClass(Dialog.STYLE_CLASS_UNDECORATED)
-	        .showError();
-	}
-
 	public static void main(String[] args) {
 	    launch(args);
 	}
