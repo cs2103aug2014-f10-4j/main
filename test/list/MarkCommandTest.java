@@ -25,9 +25,7 @@ public class MarkCommandTest {
 		taskTwo.setStatus(TaskStatus.PENDING);
 		
 		taskManager.addTask(taskOne);
-		taskManager.addTask(taskTwo);
-		
-		Controller.refreshUi();
+		taskManager.addTask(taskTwo);		
 	}
 	
 	@Test

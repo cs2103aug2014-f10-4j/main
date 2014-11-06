@@ -1,13 +1,16 @@
 package list;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
@@ -16,35 +19,31 @@ import list.model.ITask;
 import list.view.IUserInterface;
 import list.view.MainController;
 
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 
 public class Controller extends Application {
-	private static final String APPLICATION_NAME = "LIST";	
+	private static final String SAVE_FILE_NAME = "tasks_list.json";
+    private static final String LOAD_ERROR_MASTHEAD = "LOADING FAILED";
+    private static final String APPLICATION_NAME = "LIST";	
 	private Stage primaryStage;
-	private StackPane mainLayout;
-	
-    private static final String TITLE_FLOATING_TASKS = "Floating Tasks";
-    private static final String TITLE_TODAY_TASKS = "Today's Tasks";
-    private static final String TITLE_ALL_TASKS = "All Tasks";
-
-    public static enum DisplayMode {
-        TODAY, FLOATING, ALL, CUSTOM
-    }
+	private Pane root;
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
-    private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
-    private static final String MESSAGE_ERROR_LOADING = "Error loading data";
-	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT = "Data is not in a valid JSON format ." + 
-																	"Please ensure the JSON format is " + 
-																	"valid and relaunch the program.";
+    private static final String MESSAGE_ERROR_LOADING = "There is unknown error when loading data.";
+	private static final String MESSAGE_ERROR_INVALID_JSON_FORMAT;
+	static {
+	    File saveFile = new File(SAVE_FILE_NAME);
+	    MESSAGE_ERROR_INVALID_JSON_FORMAT = String.format(
+	            "Data is not in a valid JSON format. Please repair the save file to a valid JSON format " + 
+	            "and then relaunch LIST. Path to file:\n\n%s", saveFile.getAbsolutePath());
+	}
 	private static final String MESSAGE_ERROR_SAVING = "Error saving data";
-	
-	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
 	private static IUserInterface userInterface = null;
-	private static IParser parser = new FlexiCommandParser();
+	private static IParser parser = new CommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
-	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	private static List<ITask> displayedTasks = null;
 	private static ITask displayedTaskDetail = null;
 	
@@ -59,36 +58,39 @@ public class Controller extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		singletonInstance = this;
+		
+	    singletonInstance = this;
 		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
+		
 		initializeMainLayout();
 		
 		loadInitialData();
 		
-		refreshUi();
-		
+		displayCurrentTasks();
 	}
 	
-	private void initializeMainLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Controller.class.getResource("view/asdf.fxml"));
-			
-            mainLayout = (StackPane) loader.load();
-
+    private void initializeMainLayout() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Root.fxml"));
+            
+            root = (Pane) loader.load();
+            userInterface = loader.getController();
+            
             // Show the scene containing the root layout.
-            Scene scene = new Scene(mainLayout);
+            Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
+            primaryStage.sizeToScene();
             primaryStage.show();
             
         } catch (IOException e) {
             e.printStackTrace();
-		} 
-	}
+        } 
+    }
 	
 	public static String processUserInput(String userInput) {
 	    String reply;
@@ -104,7 +106,7 @@ public class Controller extends Application {
                 redoStack.clear();
             }
         } catch (ParseException e) {
-            reply = MESSAGE_ERROR_PARSING_COMMAND;
+            reply = e.getMessage();
         } catch (CommandExecutionException e) {
             reply = e.getMessage();
         } catch (IOException e) {
@@ -130,41 +132,27 @@ public class Controller extends Application {
 	}
 	
 	//UI FUNCTIONS
-    public static void setDisplayMode(DisplayMode displayMode) {
-        Controller.displayMode = displayMode; 
-    }
-    
 	public static void displayTaskDetail(ITask selectedTask) {
-	    Controller.displayedTaskDetail = selectedTask;
-		userInterface.displayTaskDetail(selectedTask);
+	    userInterface.displayTaskDetail(selectedTask);
+		Controller.displayedTaskDetail = selectedTask;
 	}
-	
-	public static void refreshUi() {
-		List<ITask> tasksToDisplay = null;
-		if (userInterface == null) {
-		    userInterface = MainController.getInstance();
-		}
-	    switch (Controller.displayMode) {
-		    case ALL:
-		    	tasksToDisplay = taskManager.getAllTasks();
-		        userInterface.display(TITLE_ALL_TASKS, tasksToDisplay);
-		        break;
-		    case TODAY:
-		    	tasksToDisplay = taskManager.getTodayTasks();
-		        userInterface.display(TITLE_TODAY_TASKS, tasksToDisplay);
-		        break;
-		    case FLOATING:
-		    	tasksToDisplay = taskManager.getFloatingTasks();
-		        userInterface.display(TITLE_FLOATING_TASKS, tasksToDisplay);
-		        break;
-		    case CUSTOM:
-		        //do something, or possibly do nothing
-	    }
-	    Controller.displayedTasks = tasksToDisplay;
-	    
-	    //update category sidebar
-	    List<ICategory> categories = taskManager.getAllCategories();
-	    userInterface.updateCategory(categories);
+
+	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
+		userInterface.display(pageTitle, tasks);
+		rememberDisplayedTasks(tasks);
+	    displayCategories();
+	}
+
+    private static void displayCategories() {
+        userInterface.updateCategory(taskManager.getAllCategories());
+    }
+
+    private static void rememberDisplayedTasks(ObservableList<ITask> tasks) {
+        displayedTasks = tasks;
+    }
+	 
+	public static void displayCurrentTasks() {
+		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
@@ -186,17 +174,27 @@ public class Controller extends Application {
 	//TODO: Error with UI when loading
 	public static void loadInitialData() {
 		try {
-			taskManager.loadTasks();
+			taskManager.loadData();
 		} catch (IOException e) {
 		    e.printStackTrace();
-			//userInterface.displayMessageToUser(MESSAGE_ERROR_LOADING);
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_LOADING);
 		} catch (JSONException e) {
-			//userInterface.displayMessageToUser(MESSAGE_ERROR_INVALID_JSON_FORMAT);
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_INVALID_JSON_FORMAT);
 		    e.printStackTrace();
 			System.exit(1);
 		}
 	}
 
+    @SuppressWarnings("deprecation")
+    private static void showError(String title, String errorMessage) {
+        Dialogs.create()
+            .title("LIST")
+            .masthead(title)
+            .message(errorMessage)
+            .styleClass(Dialog.STYLE_CLASS_UNDECORATED)
+            .showError();
+    }
+	
 	public static void main(String[] args) {
 	    launch(args);
 	}
