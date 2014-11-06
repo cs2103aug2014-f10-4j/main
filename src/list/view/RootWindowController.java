@@ -3,7 +3,6 @@ package list.view;
 import java.io.IOException;
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -36,7 +35,7 @@ public class RootWindowController implements IUserInterface {
 	}
 
     @Override
-    public void display(String pageTitle, ObservableList<ITask> tasks) {
+    public void display(String pageTitle, List<ITask> tasks) {
         taskOverviewController.displayTasks(tasks);
         
     }
@@ -137,4 +136,5 @@ public class RootWindowController implements IUserInterface {
         console.setText("");
         //console.promptTextProperty();
     }
+
 }

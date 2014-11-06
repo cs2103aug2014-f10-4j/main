@@ -17,7 +17,7 @@ public interface IUserInterface {
     
     void hideTaskDetail();
         
-    void display(String pageTitle, ObservableList<ITask> tasks);
+    void display(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
         
