@@ -144,7 +144,7 @@ public class Controller extends Application {
 	}
 
     private static void displayCategories() {
-        userInterface.updateCategory(taskManager.getAllCategories());
+        userInterface.displayCategories(taskManager.getAllCategories());
     }
 
     private static void rememberDisplayedTasks(ObservableList<ITask> tasks) {

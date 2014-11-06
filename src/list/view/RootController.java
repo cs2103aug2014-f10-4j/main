@@ -26,6 +26,12 @@ public class RootController implements IUserInterface {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+	public void hideTaskDetail() {
+		// TODO Auto-generated method stub
+		
+	}
 
     @Override
     public void display(String pageTitle, ObservableList<ITask> tasks) {
@@ -46,10 +52,16 @@ public class RootController implements IUserInterface {
     }
 
     @Override
-    public void updateCategory(List<ICategory> categories) {
+    public void displayCategories(List<ICategory> categories) {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+	public void hideCategories() {
+		// TODO Auto-generated method stub
+		
+	}
 
     @Override
     public boolean back() {
@@ -72,9 +84,6 @@ public class RootController implements IUserInterface {
         });
         
     }
-
-
-
     
     private void showTaskOverviewLayout() {
         try {

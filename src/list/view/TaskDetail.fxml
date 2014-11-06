@@ -6,43 +6,78 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button layoutX="220.0" layoutY="163.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+      <TextField layoutX="14.0" layoutY="15.0" prefHeight="45.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
+         <font>
+            <Font name="Helvetica Neue Light" size="28.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="278.0" layoutY="42.0" prefHeight="35.0" prefWidth="78.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
+         <font>
+            <Font name="Helvetica Neue Light" size="18.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="93.0" layoutY="71.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <Label layoutX="18.0" layoutY="77.0" text="Start Date:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="24.0" layoutY="103.0" prefHeight="20.0" prefWidth="69.0" text="End Date:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="39.0" layoutY="182.0" text="Repeat:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <CheckBox layoutX="105.0" layoutY="154.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
+      <Label layoutX="44.0" layoutY="155.0" text="Status:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="50.0" layoutY="129.0" text="Place:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="47.0" layoutY="207.0" text="Notes:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <TextField layoutX="93.0" layoutY="97.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="93.0" layoutY="123.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="93.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Never">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="93.0" layoutY="201.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <Button layoutX="285.0" layoutY="233.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
          <font>
             <Font name="Helvetica Neue Bold" size="12.0" />
          </font>
       </Button>
-      <Label layoutX="17.0" layoutY="39.0" prefHeight="23.0" prefWidth="189.0" text="Meet Michale" textFill="#b5b5b5">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER_RIGHT" layoutX="175.0" layoutY="39.0" prefHeight="23.0" prefWidth="109.0" text="Friend" textFill="#fe642e">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="52.0" layoutY="62.0" prefHeight="23.0" prefWidth="246.0" text="25/12/2014" textFill="#b5b5b5">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="21.0" layoutY="108.0" prefHeight="23.0" prefWidth="277.0" text="Marina Bay Sans Hotel" textFill="#b5b5b5">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="52.0" layoutY="131.0" prefHeight="23.0" prefWidth="214.0" text="Dress code: requires tie" textFill="#b5b5b5">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="52.0" layoutY="85.0" prefHeight="23.0" prefWidth="214.0" text="repeated: monthly" textFill="#b5b5b5">
-         <font>
-            <Font name="Helvetica Neue Light" size="18.0" />
-         </font>
-      </Label>
-      <StackPane layoutX="50.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
    </children>
 </AnchorPane>
