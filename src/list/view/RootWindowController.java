@@ -3,21 +3,23 @@ package list.view;
 import java.io.IOException;
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
 
-public class RootController implements IUserInterface {
+public class RootWindowController implements IUserInterface {
 	@FXML
 	private Pane rootPane;
 	@FXML
     private TextField console;
-	    
+	@FXML
+	private Label labelFeedback;
+   
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
 	
@@ -37,7 +39,7 @@ public class RootController implements IUserInterface {
 	}
 
     @Override
-    public void display(String pageTitle, ObservableList<ITask> tasks) {
+    public void display(String pageTitle, List<ITask> tasks) {
         taskOverviewController.displayTasks(tasks);
         
     }
@@ -142,4 +144,5 @@ public class RootController implements IUserInterface {
         console.setText("");
         //console.promptTextProperty();
     }
+
 }

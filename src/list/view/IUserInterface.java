@@ -2,7 +2,6 @@ package list.view;
 
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import list.model.ICategory;
 import list.model.ITask;
@@ -16,7 +15,7 @@ public interface IUserInterface {
     
     void displayTaskDetail(ITask task);
             
-    void display(String pageTitle, ObservableList<ITask> tasks);
+    void display(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
         

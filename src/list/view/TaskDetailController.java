@@ -17,7 +17,7 @@ import list.model.ITask.TaskStatus;
 
 public class TaskDetailController {
 	
-	private RootController rootContoller;
+	private RootWindowController rootContoller;
 	private int taskNumber = 0;
 	
 	@FXML
@@ -41,7 +41,7 @@ public class TaskDetailController {
 	@FXML
 	private Button buttonDone;
 
-	public void getParentController(RootController rootController) {
+	public void getParentController(RootWindowController rootController) {
 		this.rootContoller = rootController;
 	}
 	

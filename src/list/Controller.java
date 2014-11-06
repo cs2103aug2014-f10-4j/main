@@ -6,15 +6,17 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
+import list.model.ICategory;
 import list.model.ITask;
 import list.view.IUserInterface;
+import list.view.MainController;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
@@ -72,7 +74,7 @@ public class Controller extends Application {
     private void initializeMainLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Controller.class.getResource("view/Root.fxml"));
+            loader.setLocation(Controller.class.getResource("view/RootWindow.fxml"));
             
             root = (Pane) loader.load();
             userInterface = loader.getController();
@@ -102,6 +104,7 @@ public class Controller extends Application {
             if (!isUndoRedoOperation) {
                 redoStack.clear();
             }
+            displayCurrentTasks(); //TODO: CONSIDER VIEWING MODES
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {
@@ -133,7 +136,7 @@ public class Controller extends Application {
 	    userInterface.displayTaskDetail(selectedTask);
 	}
 
-	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
+	public static void displayTasks(String pageTitle, List<ITask> tasks) {
 		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	    displayCategories();
@@ -143,7 +146,7 @@ public class Controller extends Application {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
 
-    private static void rememberDisplayedTasks(ObservableList<ITask> tasks) {
+    private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
     }
 	 
