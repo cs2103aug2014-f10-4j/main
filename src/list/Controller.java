@@ -72,7 +72,7 @@ public class Controller extends Application {
     private void initializeMainLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Controller.class.getResource("view/Root.fxml"));
+            loader.setLocation(Controller.class.getResource("view/RootWindow.fxml"));
             
             root = (Pane) loader.load();
             userInterface = loader.getController();
