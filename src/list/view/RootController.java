@@ -23,8 +23,7 @@ public class RootController implements IUserInterface {
 	
     @Override
     public void displayTaskDetail(ITask task) {
-        // TODO Auto-generated method stub
-        
+        showTaskDetailLayout();
     }
     
     @Override
@@ -85,18 +84,36 @@ public class RootController implements IUserInterface {
         
     }
     
+    private void showTaskDetailLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/TaskDetail.fxml"));
+            
+            Pane taskDetail = (Pane) loader.load();
+            
+            //taskOverviewController = loader.getController();
+            
+            taskDetail.setLayoutX(125);
+            taskDetail.setLayoutY(150);
+            rootPane.getChildren().add(taskDetail);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+    
     private void showTaskOverviewLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Controller.class.getResource("view/TaskOverview.fxml"));
             
-            Pane taskOverviewLayout = (Pane) loader.load();
+            Pane taskOverview = (Pane) loader.load();
             
             taskOverviewController = loader.getController();
             
-            taskOverviewLayout.setLayoutX(0);
-            taskOverviewLayout.setLayoutY(40);
-            rootPane.getChildren().add(taskOverviewLayout);
+            taskOverview.setLayoutX(0);
+            taskOverview.setLayoutY(40);
+            rootPane.getChildren().add(taskOverview);
             
         } catch (IOException e) {
             e.printStackTrace();
