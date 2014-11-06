@@ -32,7 +32,7 @@ public class TaskManager {
 	private List<ITask> currentTasks = new ArrayList<ITask>();
 	private List<ITask> overdueTasks = new ArrayList<ITask>();
 	
-	private Map<String, List<ITask>> categoryLists = new HashMap<String, List<ITask>>();
+	private Map<ICategory, List<ITask>> categoryLists = new HashMap<ICategory, List<ITask>>();
 	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
 	
     //private List<ITask> floatingTasks = new ArrayList<ITask>();
@@ -70,7 +70,7 @@ public class TaskManager {
 		category.setName(categoryName);
 		
 		List<ITask> newCategoryList = new ArrayList<ITask>();
-		categoryLists.put(categoryName, newCategoryList);
+		categoryLists.put(category, newCategoryList);
 		categories.put(categoryName, category);
 		
 		return true;

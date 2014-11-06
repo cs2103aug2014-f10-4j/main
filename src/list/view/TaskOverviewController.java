@@ -20,8 +20,7 @@ public class TaskOverviewController {
     
     @FXML
     Pane tasksContainer;
-    
-    
+ 
     private List<ITask> allTasks;
     private Integer beginIndex = 0;
     private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();
@@ -30,6 +29,23 @@ public class TaskOverviewController {
     public void displayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
         refresh();
+    }
+    
+    /**
+     * Gets the task number in the list currently displayed.
+     * 
+     * @param task
+     * @return an index of a task in the list currently displayed. It returns 0
+     * if the task specified cannot be found in the list
+     */
+    public int getTaskNumber(ITask task) {
+    	for (int i = 1; i <= allTasks.size(); i++) {
+    		if (task.equals(allTasks.get(i - 1))) {
+    			return i;
+    		}
+    	}
+    	
+    	return 0;
     }
 
     void refresh() {

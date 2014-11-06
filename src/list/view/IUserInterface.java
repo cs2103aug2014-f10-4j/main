@@ -2,7 +2,7 @@ package list.view;
 
 import java.util.List;
 
-import javafx.collections.ObservableList;
+import javafx.scene.layout.Pane;
 import list.model.ICategory;
 import list.model.ITask;
 
@@ -14,9 +14,7 @@ import list.model.ITask;
 public interface IUserInterface { 
     
     void displayTaskDetail(ITask task);
-    
-    void hideTaskDetail();
-        
+            
     void display(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
@@ -30,4 +28,6 @@ public interface IUserInterface {
     boolean back();
     
     boolean next();
+
+	void hideTaskDetail(Pane pane);
 }
