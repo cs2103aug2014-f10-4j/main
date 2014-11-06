@@ -6,19 +6,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskDetailController">
    <children>
-      <TextField layoutX="14.0" layoutY="15.0" prefHeight="45.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
+      <TextField fx:id="taskTitle" layoutX="14.0" layoutY="15.0" prefHeight="45.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
          <font>
             <Font name="Helvetica Neue Light" size="28.0" />
          </font>
       </TextField>
-      <TextField layoutX="278.0" layoutY="42.0" prefHeight="35.0" prefWidth="78.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
+      <TextField fx:id="taskCategory" layoutX="278.0" layoutY="42.0" prefHeight="35.0" prefWidth="78.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
          <font>
             <Font name="Helvetica Neue Light" size="18.0" />
          </font>
       </TextField>
-      <TextField layoutX="93.0" layoutY="71.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
+      <TextField fx:id="taskStartDate" layoutX="93.0" layoutY="71.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
@@ -38,7 +38,7 @@
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </Label>
-      <CheckBox layoutX="105.0" layoutY="154.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
+      <CheckBox fx:id="taskStatus" layoutX="105.0" layoutY="154.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
       <Label layoutX="44.0" layoutY="155.0" text="Status:" textFill="WHITE">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
@@ -54,27 +54,27 @@
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </Label>
-      <TextField layoutX="93.0" layoutY="97.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
+      <TextField fx:id="taskEndDate" layoutX="93.0" layoutY="97.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField layoutX="93.0" layoutY="123.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
+      <TextField fx:id="taskPlace" layoutX="93.0" layoutY="123.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField layoutX="93.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Never">
+      <TextField fx:id="taskRepeatFrequency" layoutX="93.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Never">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField layoutX="93.0" layoutY="201.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
+      <TextField fx:id="taskNotes" layoutX="93.0" layoutY="201.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <Button layoutX="285.0" layoutY="233.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+      <Button fx:id="buttonDone" layoutX="285.0" layoutY="233.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
          <font>
             <Font name="Helvetica Neue Bold" size="12.0" />
          </font>
