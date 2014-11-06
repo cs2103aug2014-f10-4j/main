@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskDetailController">
+<AnchorPane fx:id="anchorPane" prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskDetailController">
    <children>
       <TextField fx:id="taskTitle" layoutX="14.0" layoutY="15.0" prefHeight="45.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
          <font>
@@ -38,7 +38,7 @@
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </Label>
-      <CheckBox fx:id="taskStatus" layoutX="105.0" layoutY="154.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
+      <CheckBox fx:id="taskStatus" disable="true" layoutX="105.0" layoutY="159.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
       <Label layoutX="44.0" layoutY="155.0" text="Status:" textFill="WHITE">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />

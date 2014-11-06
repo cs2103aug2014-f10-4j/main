@@ -18,10 +18,9 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
     private static final int TIMELINE_WIDTH = 50;
     
     @FXML
-    Pane tasksContainer;
+    private Pane tasksContainer;
     @FXML
     private Label labelFeedback;
-    
     
     private ObservableList<ITask> tasks;
     private Integer firstDisplayedTaskIndex = -1;
@@ -34,6 +33,23 @@ public class TaskOverviewController implements ListChangeListener<ITask> {
         this.tasks = newTasks;
         refresh();
         this.tasks.addListener(this);
+    }
+    
+    /**
+     * Gets the task number in the list currently displayed.
+     * 
+     * @param task
+     * @return an index of a task in the list currently displayed. It returns 0
+     * if the task specified cannot be found in the list
+     */
+    public int getTaskNumber(ITask task) {
+    	for (int i = 1; i <= tasks.size(); i++) {
+    		if (task.equals(tasks.get(i - 1))) {
+    			return i;
+    		}
+    	}
+    	
+    	return 0;
     }
 
     private void refresh() {

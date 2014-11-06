@@ -6,7 +6,6 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import list.Controller;
@@ -18,18 +17,23 @@ public class RootController implements IUserInterface {
 	private Pane rootPane;
 	@FXML
     private TextField console;
-    
+	    
 	private TaskOverviewController taskOverviewController;
+	private TaskDetailController taskDetailController;
 	
     @Override
     public void displayTaskDetail(ITask task) {
+    	int taskNumber = taskOverviewController.getTaskNumber(task);
         showTaskDetailLayout();
+        taskDetailController.getParentController(this);
+        taskDetailController.displayTaskDetail(task, taskNumber);
+        
     }
     
     @Override
-	public void hideTaskDetail() {
-		// TODO Auto-generated method stub
-		
+	public void hideTaskDetail(Pane pane) {
+		rootPane.getChildren().remove(pane);
+		console.requestFocus();
 	}
 
     @Override
@@ -74,14 +78,18 @@ public class RootController implements IUserInterface {
         return false;
     }
 	
+    public void setEnabledConsole(boolean bool) {
+    	console.setDisable(!bool);
+    }
 
     @FXML
     private void initialize() {
+    	console.requestFocus();
         showTaskOverviewLayout();
+        
         console.setOnAction((event) -> {
             handleEnterAction();
-        });
-        
+        });        
     }
     
     private void showTaskDetailLayout() {
@@ -91,10 +99,10 @@ public class RootController implements IUserInterface {
             
             Pane taskDetail = (Pane) loader.load();
             
-            //taskOverviewController = loader.getController();
+            taskDetailController = loader.getController();
             
-            taskDetail.setLayoutX(125);
-            taskDetail.setLayoutY(150);
+            taskDetail.setLayoutX(120);
+            taskDetail.setLayoutY(75);
             rootPane.getChildren().add(taskDetail);
             
         } catch (IOException e) {

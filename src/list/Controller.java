@@ -131,7 +131,6 @@ public class Controller extends Application {
 	//UI FUNCTIONS
 	public static void displayTaskDetail(ITask selectedTask) {
 	    userInterface.displayTaskDetail(selectedTask);
-		Controller.displayedTaskDetail = selectedTask;
 	}
 
 	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
