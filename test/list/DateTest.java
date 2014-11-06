@@ -33,4 +33,14 @@ public class DateTest {
         Date invalidDate = new Date("34-10-2014");
     }
     
+    @Test
+    public void parseFlexibleFormatDate() throws Exception {
+        Date targetDate = new Date(25, 12, 2014);
+        assertEquals(targetDate, Date.tryParse("25-12-2014"));
+        assertEquals(targetDate, Date.tryParse("25 dec 2014"));
+        assertEquals(targetDate, Date.tryParse("12/25/2014"));
+        //the following is possible but will return different result once the year changes
+        //assertEquals(targetDate, Date.tryParse("one week before 1 Jan"));
+    }
+    
 }
