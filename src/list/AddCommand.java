@@ -109,7 +109,6 @@ public class AddCommand implements ICommand {
 		taskManager.addTask(task);
 		
 		taskManager.saveData();
-		Controller.refreshUi();
 		
 		return MESSAGE_TASK_ADDED_SUCCESFULLY;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -26,10 +27,6 @@ public class Controller extends Application {
     private static final String TITLE_FLOATING_TASKS = "Floating Tasks";
     private static final String TITLE_TODAY_TASKS = "Today's Tasks";
     private static final String TITLE_ALL_TASKS = "All Tasks";
-
-    public static enum DisplayMode {
-        TODAY, FLOATING, ALL, CUSTOM
-    }
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
     private static final String MESSAGE_ERROR_PARSING_COMMAND = "Error parsing command.";
@@ -38,13 +35,10 @@ public class Controller extends Application {
 																	"Please ensure the JSON format is " + 
 																	"valid and relaunch the program.";
 	private static final String MESSAGE_ERROR_SAVING = "Error saving data";
-	
-	private static final DisplayMode DEFAULT_DISPLAY_MODE = DisplayMode.ALL;
     
 	private static IUserInterface userInterface = null;
 	private static IParser parser = new FlexiCommandParser();
 	private static TaskManager taskManager = TaskManager.getInstance();
-	private static DisplayMode displayMode = DEFAULT_DISPLAY_MODE;
 	private static List<ITask> displayedTasks = null;
 	private static ITask displayedTaskDetail = null;
 	
@@ -66,10 +60,7 @@ public class Controller extends Application {
 	
 		initializeMainLayout();
 		
-		loadInitialData();
-		
-		refreshUi();
-		
+		loadInitialData();		
 	}
 	
 	private void initializeMainLayout() {
@@ -130,41 +121,25 @@ public class Controller extends Application {
 	}
 	
 	//UI FUNCTIONS
-    public static void setDisplayMode(DisplayMode displayMode) {
-        Controller.displayMode = displayMode; 
-    }
-    
 	public static void displayTaskDetail(ITask selectedTask) {
 	    Controller.displayedTaskDetail = selectedTask;
 		userInterface.displayTaskDetail(selectedTask);
 	}
-	
-	public static void refreshUi() {
-		List<ITask> tasksToDisplay = null;
+
+	public static void displayTask(String pageTitle, ObservableList<ITask> tasks) {
 		if (userInterface == null) {
 		    userInterface = MainController.getInstance();
+		    userInterface.display(pageTitle, tasks);
 		}
-	    switch (Controller.displayMode) {
-		    case ALL:
-		    	tasksToDisplay = taskManager.getAllTasks();
-		        userInterface.display(TITLE_ALL_TASKS, tasksToDisplay);
-		        break;
-		    case TODAY:
-		    	tasksToDisplay = taskManager.getTodayTasks();
-		        userInterface.display(TITLE_TODAY_TASKS, tasksToDisplay);
-		        break;
-		    case FLOATING:
-		    	tasksToDisplay = taskManager.getFloatingTasks();
-		        userInterface.display(TITLE_FLOATING_TASKS, tasksToDisplay);
-		        break;
-		    case CUSTOM:
-		        //do something, or possibly do nothing
-	    }
-	    Controller.displayedTasks = tasksToDisplay;
-	    
-	    //update category sidebar
-	    List<ICategory> categories = taskManager.getAllCategories();
+		
+		displayedTasks = tasks;
+		
+		List<ICategory> categories = taskManager.getAllCategories();
 	    userInterface.updateCategory(categories);
+	}
+	 
+	public static void displayCurrentTasks() {
+		displayTask("CURRENT TASK", taskManager.getCurrentTasks());
 	}
 
 	public static void updateUiWithTaskDetail(ITask selectedTask) {

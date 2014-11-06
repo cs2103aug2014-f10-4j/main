@@ -32,7 +32,6 @@ public class UnmarkCommand implements ICommand {
 		taskManager.unmarkTask(taskToUnmark);
 		
 		taskManager.saveData();
-		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}

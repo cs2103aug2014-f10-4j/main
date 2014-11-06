@@ -29,7 +29,6 @@ public class UndeleteCommand implements ICommand {
         taskManager.undeleteTask(this.task);
         
         taskManager.saveData();
-        Controller.refreshUi();
         
         return MESSAGE_SUCCESS;
     }

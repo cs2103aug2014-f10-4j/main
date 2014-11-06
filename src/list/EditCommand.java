@@ -125,7 +125,9 @@ public class EditCommand implements ICommand {
 		}
 		
 		if (this.category != null) {
+			taskManager.removeFromCategoryList(taskToEdit);
 			taskToEdit.setCategory(category);
+			taskManager.addToCategoryList(taskToEdit);
 		}
 		
 		if (this.notes != null) {
@@ -133,7 +135,6 @@ public class EditCommand implements ICommand {
 		}
 		
 		taskManager.saveData();
-		Controller.refreshUi();
 		
 		return MESSAGE_SUCCESS;
 	}
