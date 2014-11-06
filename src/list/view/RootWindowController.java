@@ -21,7 +21,7 @@ public class RootWindowController implements IUserInterface {
 	@FXML
 	private Label labelFeedback;
 	
-	Pane paneForCategories;
+	ScrollPane paneForCategories;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
@@ -44,9 +44,8 @@ public class RootWindowController implements IUserInterface {
     
     @Override
     public void displayCategories(List<ICategory> categories) {
-    	categoriesController = new CategoriesController(categories);
     	showCategoriesLayout();
-    	categoriesController.setUpView();
+    	categoriesController.setUpView(categories);
     }
     
     @Override
@@ -102,14 +101,13 @@ public class RootWindowController implements IUserInterface {
     	try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Controller.class.getResource("view/Categories.fxml"));
-            
-            paneForCategories = (Pane) loader.load();
-            
-            System.out.println("afafafafafa");
+
+            paneForCategories = (ScrollPane) loader.load();
+
             categoriesController = loader.getController();
 
             paneForCategories.setLayoutX(0);
-            paneForCategories.setLayoutY(42);
+            paneForCategories.setLayoutY(40);
             rootPane.getChildren().add(paneForCategories);
             
         } catch (IOException e) {

@@ -139,7 +139,6 @@ public class Controller extends Application {
 	public static void displayTasks(String pageTitle, List<ITask> tasks) {
 		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
-	    displayCategories();
 	}
 
     public static void displayCategories() {

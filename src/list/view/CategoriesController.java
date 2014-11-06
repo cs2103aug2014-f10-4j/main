@@ -3,13 +3,12 @@ package list.view;
 import java.util.List;
 
 import javafx.fxml.FXML;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import list.model.ICategory;
 
 /**
@@ -21,33 +20,33 @@ import list.model.ICategory;
 public class CategoriesController {
 	
 	// fixed value for the size and number of buttons
-    private static final double BUTTON_X = 0.0d;
-    private static final double BUTTON_WIDTH = 140.0d;
+    private static final double BUTTON_X = 1.0d;
+    private static final double BUTTON_WIDTH = 138.0d;
     private static final double BUTTON_HEIGHT = 26.0d;
     private static final double NUMBER_OF_DEFALUT_BUTTON = 3.0d;
     
     // fixed value for the size and number of labels
-    private static final double LABEL_X = 0.0d;
+    private static final double LABEL_X = 1.0d;
     private static final double LABEL_Y = 0.0d;
-    private static final double LABEL_WIDTH = 140.0d;
+    private static final double LABEL_WIDTH = 138.0d;
     private static final double LABEL_HEIGHT = 13.0d;
     private static final double NUMBER_OF_DEFAULT_LABEL = 2.0d;
     
     // fixed value for the size of pane
-    private static final double PANE_X = 0.0d;
+    private static final double PANE_X = 1.0d;
     private static final double PANE_Y = 0.0d;
-    private static final double PANE_WIDTH = 140.0d;
+    private static final double PANE_WIDTH = 138.0d;
     private double PANE_HEIGHT;
     
     // fixed value for the string of labels and buttons
     private static final String stringForLabelAllCategory = "All Task";
-    private static final String stringForLabelOtherCategory = "Others";
+    private static final String stringForLabelOtherCategory = "Categories";
     private static final String stringForButtonCurrentTask = "Current Task";
     private static final String stringForButtonFloatingTask = "Floating Task";
     private static final String stringForButtonOverDueTask = "Overdue Task";
     
     // lists to hold the value of tasks and categories to keep on track them
-    private List<ICategory> categories;
+    private List<ICategory> listOfCategories;
     
     // position to start displaying the categories made by user
     private double positonToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFALUT_BUTTON;
@@ -59,14 +58,11 @@ public class CategoriesController {
     // Pane to hold the buttons and labels
     Pane categoriesContainer = new Pane();
     
-    public CategoriesController(List<ICategory> categories) {
+    public void setUpView(List<ICategory> categories) {
     	
-    	// assign the value of list of the tasks
-    	this.categories = categories;
+    	listOfCategories = categories;
+    	
     	PANE_HEIGHT = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFALUT_BUTTON + categories.size());
-    }
-    
-    public void setUpView() {
     	
     	// set the style, layout and the size of the Pane
     	categoriesContainer.setLayoutX(PANE_X);
@@ -107,8 +103,9 @@ public class CategoriesController {
         label.setLayoutY(yPos);
         label.setPrefWidth(LABEL_WIDTH);
         label.setPrefHeight(LABEL_HEIGHT);
-        label.setStyle("-fx-background-color: white;");
         label.setFont(Font.font("Helvetica", 10.0d));
+        label.setStyle("-fx-background-color: white; -fx-opacity: 60%;");
+        label.setTextFill(Color.web("#000000"));
         
         // return the label created
         return label;
@@ -123,8 +120,8 @@ public class CategoriesController {
         button.setLayoutY(yPos);
         button.setPrefWidth(BUTTON_WIDTH);
         button.setPrefHeight(BUTTON_HEIGHT);
-        button.setStyle("-fx-background-color: #333333;");
         button.setFont(Font.font("Helvetica", 14.0d));
+        button.setStyle("-fx-background-color: #333333; -fx-text-fill: #ffffff;");
         
         // return the button created
         return button;
@@ -142,20 +139,21 @@ public class CategoriesController {
 		int currentPosition = 0;
 		
 		// check whether the category is already added
-		for(int i = 0; i < categories.size(); i++) {				
+		for(int i = 0; i < listOfCategories.size(); i++) {				
 				// set up the button according to the title, layout, and size
 				Button button = new Button();
-		        button.setText(categories.get(i).getName());
+		        button.setText(listOfCategories.get(i).getName());
 		        button.setLayoutX(BUTTON_X);
 		        button.setLayoutY(positonToDisplayOthers + BUTTON_HEIGHT * currentPosition);
 		        button.setPrefHeight(BUTTON_HEIGHT);
 		        button.setPrefWidth(BUTTON_WIDTH);
-		        button.setStyle("-fx-background-color: #333333;");
-		        button.setFont(Font.font("Helvetica", 18.0d));
+		        button.setFont(Font.font("Helvetica", 14.0d));
+		        button.setStyle("-fx-background-color: #333333; -fx-text-fill: #ffffff;");
 		        
 		        // add the button on the Pane
 		        categoriesContainer.getChildren().add(button);
 			
+		        currentPosition++;
 		}
     }
 }
