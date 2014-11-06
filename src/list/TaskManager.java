@@ -159,22 +159,19 @@ public class TaskManager {
     ObservableList<ITask> getFloatingTasks() {
         FXCollections.sort(this.floatingTasks);
         
-        ObservableList<ITask> duplicateList = FXCollections.observableArrayList(this.floatingTasks);
-        return duplicateList;
+        return this.floatingTasks;
     }
     
     ObservableList<ITask> getCurrentTasks() {
         FXCollections.sort(this.currentTasks);
         
-        ObservableList<ITask> duplicateList = FXCollections.observableArrayList(this.currentTasks);
-        return duplicateList;
+        return this.currentTasks;
     }
     
     ObservableList<ITask> getOverdueTasks() {
         FXCollections.sort(this.overdueTasks);
         
-        ObservableList<ITask> duplicateList = FXCollections.observableArrayList(this.overdueTasks);
-        return duplicateList;
+        return this.overdueTasks;
     }
     
     /**
