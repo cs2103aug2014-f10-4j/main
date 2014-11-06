@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6d6969;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="rootPane" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6d6969;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.RootController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="600.0" style="-fx-background-color: #2E2E2E;">
          <items>
@@ -49,6 +49,6 @@
             <Region maxWidth="435.0" minWidth="33.0" prefHeight="30.0" prefWidth="215.0" />
          </items>
       </ToolBar>
-      <TextField layoutY="372.0" prefHeight="28.0" prefWidth="600.0" promptText="Enter command" style="-fx-background-color: #585858;" />
+      <TextField fx:id="console" layoutY="372.0" prefHeight="28.0" prefWidth="600.0" promptText="Enter command" style="-fx-background-color: #585858;" />
    </children>
 </Pane>

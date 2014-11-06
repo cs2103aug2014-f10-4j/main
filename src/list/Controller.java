@@ -28,8 +28,7 @@ public class Controller extends Application {
     private static final String LOAD_ERROR_MASTHEAD = "LOADING FAILED";
     private static final String APPLICATION_NAME = "LIST";	
 	private Stage primaryStage;
-	private Pane rootLayout;
-	
+	private Pane root;
     
 	private static final String MESSAGE_UNKNOWN_ERROR = "Unknown error!";
     private static final String MESSAGE_ERROR_LOADING = "There is unknown error when loading data.";
@@ -65,21 +64,24 @@ public class Controller extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(APPLICATION_NAME);
 	
-		initializeMainLayout();
-		showTaskOverviewLayout();
 		
-		loadInitialData();		
+		initializeMainLayout();
+		
+		loadInitialData();
+		
+		displayCurrentTasks();
 	}
 	
-	private void initializeMainLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Controller.class.getResource("view/RootLayout.fxml"));
-			
-            rootLayout = (Pane) loader.load();
-
+    private void initializeMainLayout() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Root.fxml"));
+            
+            root = (Pane) loader.load();
+            userInterface = loader.getController();
+            
             // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
+            Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.sizeToScene();
@@ -87,25 +89,8 @@ public class Controller extends Application {
             
         } catch (IOException e) {
             e.printStackTrace();
-		} 
-	}
-	
-	private void showTaskOverviewLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Controller.class.getResource("view/TaskOverviewLayout.fxml"));
-			
-            Pane taskOverviewLayout = (Pane) loader.load();
-            
-            taskOverviewLayout.setLayoutX(0);
-            taskOverviewLayout.setLayoutY(40);
-            rootLayout.getChildren().add(taskOverviewLayout);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-		} 
-	}
-	
+        } 
+    }
 	
 	public static String processUserInput(String userInput) {
 	    String reply;
@@ -148,26 +133,17 @@ public class Controller extends Application {
 	
 	//UI FUNCTIONS
 	public static void displayTaskDetail(ITask selectedTask) {
-	    if (userInterface == null) {
-            userInterface = MainController.getInstance();
-        }
-		userInterface.displayTaskDetail(selectedTask);
+	    userInterface.displayTaskDetail(selectedTask);
 		Controller.displayedTaskDetail = selectedTask;
 	}
 
 	public static void displayTasks(String pageTitle, ObservableList<ITask> tasks) {
-		if (userInterface == null) {
-		    userInterface = MainController.getInstance();
-		}
-        userInterface.display(pageTitle, tasks);
+		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	    displayCategories();
 	}
 
     private static void displayCategories() {
-        if (userInterface == null) {
-            userInterface = MainController.getInstance();
-        }
         userInterface.updateCategory(taskManager.getAllCategories());
     }
 

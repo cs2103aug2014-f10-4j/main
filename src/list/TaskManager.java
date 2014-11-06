@@ -349,7 +349,7 @@ public class TaskManager {
         
     //Private functions
     private static boolean hasDeadline(ITask task) {
-        return task.getEndDate() != null;
+        return !task.getEndDate().equals(Date.getFloatingDate());
     }
     
     private static boolean isOverdue(ITask task) {
