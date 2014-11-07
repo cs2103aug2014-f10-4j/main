@@ -136,10 +136,9 @@ public class Controller extends Application {
 	public static void displayTasks(String pageTitle, List<ITask> tasks) {
 		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
-	    displayCategories();
 	}
 
-    private static void displayCategories() {
+    public static void displayCategories() {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
 
