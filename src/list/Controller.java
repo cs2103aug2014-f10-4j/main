@@ -53,9 +53,7 @@ public class Controller extends Application {
 	public static Controller getInstance() {
 		return singletonInstance;
 	}
-	
-	
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -107,7 +105,7 @@ public class Controller extends Application {
                 redoStack.clear();
             }
 
-            determineDisplayMode(displayMode);
+            displayTasksBasedOnDisplayMode();
             
             
         } catch (ParseException e) {
@@ -162,35 +160,33 @@ public class Controller extends Application {
     	return userInterface.back();
     }
     
-	public static void displayCurrentTasks() {
+	private static void displayCurrentTasks() {
 		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}
 	
-	public static void displayFloatingTasks() {
+	private static void displayFloatingTasks() {
 		displayTasks("FLOATING TASK", taskManager.getFloatingTasks());
 	}
 	
-	public static void displayOverdueTasks() {
+	private static void displayOverdueTasks() {
 		displayTasks("OVERDUE TASK", taskManager.getOverdueTasks());
 	}
 	
-	public static void displayTasksInCategory(ICategory category) {
+	private static void displayTasksInCategory(ICategory category) {
 		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
 	}
 	
 	public static boolean changeDisplayMode(String name) {
-		if (name.equalsIgnoreCase("floating")) {
-			displayMode = name;
-			return true;
-		} else if (name.equalsIgnoreCase("overdue")) {
-			displayMode = name;
-			return true;
-		} else if (name.equalsIgnoreCase("current")) {
-			displayMode = name;
+		String viewingMode = name.toLowerCase().trim();
+		
+		if (viewingMode.equalsIgnoreCase("floating") ||
+			viewingMode.equalsIgnoreCase("overdue") || 
+			viewingMode.equalsIgnoreCase("current")) {
+			displayMode = viewingMode;
 			return true;
 		} else {
-			if (taskManager.hasCategory(name)) {
-				displayMode = name;
+			if (taskManager.hasCategory(viewingMode)) {
+				displayMode = viewingMode;
 				return true;
 			} else {
 				return false;
@@ -198,15 +194,15 @@ public class Controller extends Application {
 		}
 	}
 
-	public static void determineDisplayMode(String name) {
-		if (name.equalsIgnoreCase("floating")) {
+	private static void displayTasksBasedOnDisplayMode() {
+		if (displayMode.equalsIgnoreCase("floating")) {
 			displayFloatingTasks();
-		} else if (name.equalsIgnoreCase("overdue")) {
+		} else if (displayMode.equalsIgnoreCase("overdue")) {
 			displayOverdueTasks();
-		} else if (name.equalsIgnoreCase("current")) {
+		} else if (displayMode.equalsIgnoreCase("current")) {
 			displayCurrentTasks();
 		} else {
-			ICategory category = taskManager.getCategory(name);
+			ICategory category = taskManager.getCategory(displayMode);
 			displayTasksInCategory(category);
 		}
 	}
