@@ -52,6 +52,7 @@ public class TaskOverviewController {
     
     public void displayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
+        beginIndex = 0;
         refresh();
     }
     

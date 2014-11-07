@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
+import list.model.ICategory;
 import list.model.ITask;
 import list.view.IUserInterface;
 
@@ -47,10 +48,13 @@ public class Controller extends Application {
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static boolean isUndoRedoOperation = false;
 	private static Controller singletonInstance = null;
+	private static String displayMode = "current";
 	
 	public static Controller getInstance() {
 		return singletonInstance;
 	}
+	
+	
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -102,7 +106,10 @@ public class Controller extends Application {
             if (!isUndoRedoOperation) {
                 redoStack.clear();
             }
-            displayCurrentTasks(); //TODO: CONSIDER VIEWING MODES
+
+            determineDisplayMode(displayMode);
+            
+            
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {
@@ -158,7 +165,52 @@ public class Controller extends Application {
 	public static void displayCurrentTasks() {
 		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}
+	
+	public static void displayFloatingTasks() {
+		displayTasks("FLOATING TASK", taskManager.getFloatingTasks());
+	}
+	
+	public static void displayOverdueTasks() {
+		displayTasks("OVERDUE TASK", taskManager.getOverdueTasks());
+	}
+	
+	public static void displayTasksInCategory(ICategory category) {
+		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
+	}
+	
+	public static boolean changeDisplayMode(String name) {
+		if (name.equalsIgnoreCase("floating")) {
+			displayMode = name;
+			return true;
+		} else if (name.equalsIgnoreCase("overdue")) {
+			displayMode = name;
+			return true;
+		} else if (name.equalsIgnoreCase("current")) {
+			displayMode = name;
+			return true;
+		} else {
+			if (taskManager.hasCategory(name)) {
+				displayMode = name;
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
+	public static void determineDisplayMode(String name) {
+		if (name.equalsIgnoreCase("floating")) {
+			displayFloatingTasks();
+		} else if (name.equalsIgnoreCase("overdue")) {
+			displayOverdueTasks();
+		} else if (name.equalsIgnoreCase("current")) {
+			displayCurrentTasks();
+		} else {
+			ICategory category = taskManager.getCategory(name);
+			displayTasksInCategory(category);
+		}
+	}
+	
 	public static void updateUiWithTaskDetail(ITask selectedTask) {
 		userInterface.displayTaskDetail(selectedTask);
 	}

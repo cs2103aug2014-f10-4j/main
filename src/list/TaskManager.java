@@ -74,7 +74,10 @@ public class TaskManager {
 		categories.put(categoryName, category);
 		
 		return true;
-    	
+    }
+    
+    boolean hasCategory(String categoryName) {
+    	return categories.containsKey(categoryName);
     }
     
     /**
