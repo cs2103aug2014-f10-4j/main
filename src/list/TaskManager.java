@@ -43,7 +43,8 @@ public class TaskManager {
     
     private static TaskManager taskManagerInstance = null;
         
-    private TaskManager() { } ;
+    private TaskManager() {
+    }
     
     static TaskManager getInstance() {
     	if (taskManagerInstance == null) {
@@ -60,7 +61,7 @@ public class TaskManager {
      * @param categoryName
      * @return true if new category has successfully been added. false otherwise.
      */
-    boolean addCategory(String categoryName) {
+    private boolean addCategory(String categoryName) {
     	if (categoryName == null || categoryName.isEmpty()) {
     		return false;
     	} 
@@ -80,27 +81,20 @@ public class TaskManager {
     }
     
     /**
-     * Deletes a category as specified by <code>categoryName</code>
+     * Deletes the given category from the manager's category list.
      * 
-     * @param categoryName
-     * @return true if new category has successfully been deleted. false otherwise.
+     * @param category
      */
-    boolean deleteCategory(String categoryName) {
-    	if (categoryName == null || categoryName.isEmpty()) {
-    		return false;
-    	} 
-    	
-    	if (categories.containsKey(categoryName) && 
-    		categoryLists.containsKey(categoryName)) {
-    		
-    		categoryLists.remove(categoryName);
+    void deleteCategory(ICategory category) {
+        String categoryName = category.getName();
+    	if (categories.containsKey(categoryName)) {
     		categories.remove(categoryName);
-    		return true;
-    		
-    	} else {
-    		return false;
     	}
-    }    
+    	if (categoryLists.containsKey(categoryName)) {
+    	    categoryLists.remove(categoryName);
+    	}
+    }
+    
     
     /**
      * Accepts a string and returns a ICategory object with the same name as the input.
@@ -305,6 +299,21 @@ public class TaskManager {
     void loadData() throws IOException, JSONException {
     	loadCategories();
     	loadTasks();
+        setupDisplayModeAsCategory();
+    }
+
+    private void setupDisplayModeAsCategory() {
+        ICategory current = new Category().setName("Current Tasks");
+        categories.put("current", current);
+        categoryLists.put(current, currentTasks);
+        
+        ICategory floating = new Category().setName("Floating Tasks");
+        categories.put("floating", floating);
+        categoryLists.put(floating, currentTasks);
+        
+        ICategory overdue = new Category().setName("Overdue Tasks");
+        categories.put("overdue", overdue);
+        categoryLists.put(overdue, currentTasks);
     }
     
     void saveData() throws IOException {

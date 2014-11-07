@@ -47,7 +47,6 @@ public class Controller extends Application {
 	
 	private static Stack<ICommand> undoStack = new Stack<ICommand>();
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
-	private static boolean isUndoRedoOperation = false;
 	private static Controller singletonInstance = null;
 	
 	public static Controller getInstance() {
@@ -94,14 +93,11 @@ public class Controller extends Application {
 	public static String processUserInput(String userInput) {
 	    String reply;
         try {
-            isUndoRedoOperation = false;
             ICommand commandMadeByParser = parser.parse(userInput);
             reply = commandMadeByParser.execute();
             ICommand inverseCommand = commandMadeByParser.getInverseCommand();
             if (inverseCommand != null) {
                 undoStack.add(inverseCommand);
-            }
-            if (!isUndoRedoOperation) {
                 redoStack.clear();
             }            
             
@@ -238,10 +234,6 @@ public class Controller extends Application {
 	
 	static Stack<ICommand> getRedoStack() {
 	    return redoStack;
-	}
-	
-	static void reportUndoRedoOperation() {
-	    isUndoRedoOperation = true;
 	}
 	
 	//TODO: Error with UI when loading

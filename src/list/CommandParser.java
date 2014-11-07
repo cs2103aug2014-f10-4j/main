@@ -18,6 +18,12 @@ public class CommandParser implements IParser {
     
     private static final String ERROR_END_DATE_BEFORE_START_DATE = "End date cannot be earlier than start date.";
     private static final String ERROR_COMMAND_TYPE_NOT_SPECIFIED = "Error: command type is not specified";
+    private static final String ERROR_CANNOT_PARSE_START_DATE = "Error: unable to parse start date.";
+    private static final String ERROR_END_DATE_NOT_SPECIFIED = "Error: if start date is specified, end date must also be specified.";
+    private static final String ERROR_CANNOT_PARSE_END_DATE = "Error: unable to parse end date.";
+    private static final String ERROR_AMBIGUOUS_COMMAND_TYPE = "Error: ambiguous command type.";
+    private static final String ERROR_PARAMETER_CONFLICT = "The parameter %s is specified multiple times.";
+    
     private static final String MARKER_COLOR = "-c";
     private static final String MARKER_REPEAT = "-r";
     private static final String MARKER_CATEGORY = "-c";
@@ -26,12 +32,6 @@ public class CommandParser implements IParser {
     private static final String MARKER_END_DATE = "-d";
     private static final String MARKER_START_DATE = "-s";
     private static final String MARKER_TITLE = "-t";
-
-    private static final String ERROR_CANNOT_PARSE_START_DATE = "Error: unable to parse start date.";
-    private static final String ERROR_END_DATE_NOT_SPECIFIED = "Error: if start date is specified, end date must also be specified.";
-    private static final String ERROR_CANNOT_PARSE_END_DATE = "Error: unable to parse end date.";
-    private static final String ERROR_AMBIGUOUS_COMMAND_TYPE = "Error: ambiguous command type.";
-    private static final String ERROR_PARAMETER_CONFLICT = "The parameter %s is specified multiple times.";
     
     private static final String REGEX_SPLITTER = "\\s+";
 
@@ -96,6 +96,9 @@ public class CommandParser implements IParser {
     private String action;
     private Date startDate;
     private Date endDate;
+    private String selectedCategory;
+    
+    private TaskManager taskManager = TaskManager.getInstance();
     
     public CommandParser() {
         this.clear();
@@ -166,6 +169,7 @@ public class CommandParser implements IParser {
         this.action = "";
         this.startDate = null;
         this.endDate = null;
+        this.selectedCategory = null;
     }
  
     public ICommand finish() throws ParseException {
@@ -237,8 +241,15 @@ public class CommandParser implements IParser {
     } 
     
     private void fillCategoryParameters(CommandBuilder commandBuilder) throws ParseException {
+        setSelectedCategory(commandBuilder);
         setTitle(commandBuilder);
         setColor(commandBuilder);
+    }
+
+    private void setSelectedCategory(CommandBuilder commandBuilder) {
+        if (this.selectedCategory != null) {
+            commandBuilder.setSelectedCategory(selectedCategory);
+        }
     }
 
     private void setColor(CommandBuilder commandBuilder) throws ParseException {
@@ -313,7 +324,7 @@ public class CommandParser implements IParser {
         //category
         if (this.parameters.containsKey(MARKER_CATEGORY)) {
             String categoryName = this.parameters.get(MARKER_CATEGORY).toString();
-            ICategory category = TaskManager.getInstance().getCategory(categoryName);
+            ICategory category = taskManager.getCategory(categoryName);
             commandBuilder.setCategory(category);
         }
     }
@@ -418,6 +429,8 @@ public class CommandParser implements IParser {
             this.parseMode = ParseMode.CATEGORY;
         } else if (isInteger(word)) {
             this.taskNumber = Integer.parseInt(word);
+        } else if (parseMode == ParseMode.CATEGORY && !action.isEmpty()) {
+            this.selectedCategory = word;
         } else {
             if (this.action.isEmpty()) {
                 this.action = word;
