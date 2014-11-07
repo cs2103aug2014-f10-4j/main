@@ -17,7 +17,7 @@ import list.model.ICategory;
 import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
-	private Pane taskDetail;
+	
 	@FXML
 	private Pane rootPane;
 	@FXML
@@ -25,9 +25,10 @@ public class RootWindowController implements IUserInterface {
 	@FXML
 	private Label labelFeedback;
 	
-	ScrollPane paneForCategories;
-	Pane taskDetail;
-	Pane taskOverview;
+	private Pane taskDetail;
+	private ScrollPane paneForCategories;
+	private Pane taskOverview;
+	private boolean isShowingCategories = false;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
@@ -53,12 +54,16 @@ public class RootWindowController implements IUserInterface {
     	//showCategoriesLayout();
     	categoriesController.setUpView(categories);
     	animateCategoryAndTextOverview(true);
+    	
+    	isShowingCategories = true;
     }
     
     @Override
 	public void hideCategories() {
     	animateCategoryAndTextOverview(false);
-    	rootPane.getChildren().remove(paneForCategories);
+    	//rootPane.getChildren().remove(paneForCategories);
+    	
+    	isShowingCategories = false;
 	}
 
     @Override
@@ -180,6 +185,10 @@ public class RootWindowController implements IUserInterface {
      */
     @FXML
     private void handleEnterAction() {
+    	if (isShowingCategories) {
+    		hideCategories();
+    	}
+    	
         String userInput = console.getText();
         String reply = Controller.processUserInput(userInput);
         displayMessageToUser(reply);
