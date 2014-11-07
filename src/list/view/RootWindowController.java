@@ -52,18 +52,14 @@ public class RootWindowController implements IUserInterface {
     
     @Override
     public void displayCategories(List<ICategory> categories) {
-    	//showCategoriesLayout();
     	categoriesController.setUpView(categories);
     	animateCategoryAndTextOverview(true);
-    	
     	isShowingCategories = true;
     }
     
     @Override
 	public void hideCategories() {
-    	animateCategoryAndTextOverview(false);
-    	//rootPane.getChildren().remove(paneForCategories);
-    	
+    	animateCategoryAndTextOverview(false);    	
     	isShowingCategories = false;
 	}
 

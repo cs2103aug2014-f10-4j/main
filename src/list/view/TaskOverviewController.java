@@ -48,6 +48,8 @@ public class TaskOverviewController {
     private Integer beginIndex = 0;
     private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();
     private List<ImageView> timelineImageViews = new ArrayList<ImageView>();
+    private List<Label> timelineMonthLabel = new ArrayList<Label>();
+    private List<Label> timelineDateLabel = new ArrayList<Label>();
     private List<ITask> oldDisplayedTasks;
     
     public void displayTasks(List<ITask> newTasks) {
@@ -77,6 +79,7 @@ public class TaskOverviewController {
 		if (this.beginIndex + MAX_NO_OF_TASKS < allTasks.size()) {
 			this.beginIndex += MAX_NO_OF_TASKS;
 			refresh();
+			
 			return true;
 		} else {
 			return false;
@@ -138,12 +141,12 @@ public class TaskOverviewController {
 
     private Label createTaskLabel(ITask task, int positionIndex) {
         Label label = new Label();
-        label.setText(task.getTitle());
+        label.setText((beginIndex*MAX_NO_OF_TASKS +positionIndex+ 1) + ". " + task.getTitle());
         label.setLayoutX(TIMELINE_WIDTH);
         label.setLayoutY(positionIndex * LABEL_HEIGHT);
         label.setPrefHeight(LABEL_HEIGHT);
         label.setPrefWidth(LABEL_WIDTH);
-        label.setStyle("-fx-background-color: red;");
+        //label.setStyle("-fx-background-color: red;");
         label.setFont(Font.font("Helvetica", 18.0d));
         return label;
     }
@@ -173,8 +176,10 @@ public class TaskOverviewController {
     }
     
     private void clearTimeline() {
-    	for (int i = 0; i < timelineImageViews.size(); i++) {
+    	for (int i = 0; i < Math.min(MAX_NO_OF_TASKS, timelineImageViews.size()); i++) {
     		tasksContainer.getChildren().remove(timelineImageViews.get(i));
+    		tasksContainer.getChildren().remove(timelineDateLabel.get(i));
+    		tasksContainer.getChildren().remove(timelineMonthLabel.get(i));
     	}
     }
     
@@ -197,6 +202,7 @@ public class TaskOverviewController {
     	labelDay.setText(date.getDay() + "");
     	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
     	labelDay.setAlignment(Pos.CENTER);
+    	timelineDateLabel.add(labelDay);
     	
     	labelMonth.setPrefWidth(TIMELINE_WIDTH);
     	labelMonth.setPrefHeight(LABEL_HEIGHT / 5);
@@ -204,6 +210,7 @@ public class TaskOverviewController {
     	labelMonth.setText(date.getMonthName().toUpperCase());
     	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
     	labelMonth.setAlignment(Pos.CENTER);
+    	timelineMonthLabel.add(labelMonth);
     	
     	
 //    	labelYear.setPrefWidth(TIMELINE_WIDTH);
