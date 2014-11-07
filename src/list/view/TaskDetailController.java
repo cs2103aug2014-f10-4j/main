@@ -138,7 +138,7 @@ public class TaskDetailController {
 		
 		Controller.processUserInput(inputStringBuilder.toString());
 		
-		rootContoller.hideTaskDetail(anchorPane);
+		rootContoller.hideTaskDetail();
 	}
 
 	
