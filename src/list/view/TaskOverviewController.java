@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import list.model.Date;
 import list.model.ITask;
 
@@ -227,6 +228,12 @@ public class TaskOverviewController {
     	timelineImageViews.add(imageView);
     	
     	tasksContainer.getChildren().add(imageView);
+    }
+
+    public void displayMessageToUser(String message) {
+        labelFeedback.setText(message);
+        SequentialTransition animation = new SequentialTransition(labelFeedback, fadeIn, pause, fadeOut);
+        animation.play();
     }
 
 	
