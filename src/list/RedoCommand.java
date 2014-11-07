@@ -12,7 +12,6 @@ public class RedoCommand implements ICommand {
             InvalidTaskNumberException {
         Stack<ICommand> undoStack = Controller.getUndoStack();
         Stack<ICommand> redoStack = Controller.getRedoStack();
-        Controller.reportUndoRedoOperation();
         
         if (redoStack.empty()) {
             return MESSAGE_NOTHING_TO_REDO;

@@ -9,7 +9,6 @@ public class UndoCommand implements ICommand {
     
     @Override
     public String execute() throws CommandExecutionException, IOException, InvalidTaskNumberException {
-        Controller.reportUndoRedoOperation();
         Stack<ICommand> undoStack = Controller.getUndoStack();
         Stack<ICommand> redoStack = Controller.getRedoStack();
         if (undoStack.empty()) {
