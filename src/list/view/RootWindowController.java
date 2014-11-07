@@ -1,5 +1,6 @@
 package list.view;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import list.Controller;
@@ -151,6 +153,7 @@ public class RootWindowController implements IUserInterface {
             
             taskOverview.setLayoutX(0);
             taskOverview.setLayoutY(42);
+            taskOverview.setEffect(new DropShadow(2.0d, Color.black));
             showCategoriesLayout();
             rootPane.getChildren().add(taskOverview);
         } catch (IOException e) {
