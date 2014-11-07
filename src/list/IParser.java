@@ -6,7 +6,7 @@ package list;
  * 
  * @author andhieka, michael
  */
-interface IParser {
+public interface IParser {
 	@SuppressWarnings("serial")
     class ParseException extends Exception {
         public ParseException(String string) {
