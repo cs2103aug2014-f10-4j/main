@@ -25,6 +25,12 @@ public class DeleteCategoryCommand implements ICommand {
         setCategory(category);
     }
     
+    public DeleteCategoryCommand(String categoryName) {
+        if (taskManager.hasCategory(categoryName)) {
+            category = taskManager.getCategory(categoryName);
+        }
+    }
+    
     @Override
     public String execute() throws CommandExecutionException, IOException {
         if (category == null) {

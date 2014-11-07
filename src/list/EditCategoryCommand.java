@@ -18,8 +18,10 @@ public class EditCategoryCommand implements ICommand {
         
     }
     
-    public EditCategoryCommand(ICategory category, String categoryName, Color color) {
-        setCategory(category);
+    public EditCategoryCommand(String selectedCategoryName, String categoryName, Color color) {
+        if (taskManager.hasCategory(categoryName)) {
+            category = taskManager.getCategory(categoryName);
+        }
         setCategoryName(categoryName);
         setColor(color);
     }

@@ -12,19 +12,20 @@ public class DisplayCategoryCommand implements ICommand {
     private static final String MESSAGE_DISPLAYING = "Displaying...";
     private static final String MESSAGE_INVALID_CATEGORY = "No such category exists";
     
-    private ICategory category;
+    private String categoryName;
     
-    public DisplayCategoryCommand(ICategory category) {
-		this.category = category;
+    
+    public DisplayCategoryCommand(String categoryName) {
+        this.categoryName = categoryName;
 	}
     
 	@Override
 	public String execute() throws CommandExecutionException {
-		if (category == null) {
+		if (categoryName == null) {
 			Controller.displayCategories();
 			return MESSAGE_DISPLAYING;
 		} else {
-			if (Controller.changeDisplayMode(category.getName())) {
+			if (Controller.changeDisplayMode(categoryName)) {
 				return MESSAGE_DISPLAYING;
 			} else {
 				return MESSAGE_INVALID_CATEGORY;
