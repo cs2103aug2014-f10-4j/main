@@ -24,6 +24,7 @@ public class CommandBuilder {
 	private String notes = null;
 	private ITask task = null;
 	private Color color = null;
+	private String selectedCategoryName = null;
 	
 	@SuppressWarnings("serial")
     class CommandTypeNotSetException extends Exception { };
@@ -99,6 +100,11 @@ public class CommandBuilder {
 	    return this;
 	}
 
+	CommandBuilder setSelectedCategory(String selectedCategory) {
+	    this.selectedCategoryName = selectedCategory;
+	    return this;
+	}
+	
 	/**
 	 * This method uses the given information to construct
 	 * the corresponding command object.
@@ -123,7 +129,7 @@ public class CommandBuilder {
 				command = new DisplayCommand(task);
 				break;
 			case CATEGORY_DISPLAY:
-				command = new DisplayCategoryCommand(title);
+				command = new DisplayCategoryCommand(selectedCategoryName);
 				break;
 			case DELETE:
 				command = new DeleteCommand(task);
@@ -149,6 +155,15 @@ public class CommandBuilder {
 			case NEXT:
 			    command = new NextCommand();
 		        break;
+			case CATEGORY_ADD:
+			    command = new AddCategoryCommand(title, color);
+                break;
+			case CATEGORY_EDIT:
+			    command = new EditCategoryCommand(selectedCategoryName, title, color);
+                break;
+			case CATEGORY_DELETE:
+			    command = new DeleteCategoryCommand(selectedCategoryName);
+			    break;
 		    default:
 			    throw new CommandTypeNotSetException();    
 		}

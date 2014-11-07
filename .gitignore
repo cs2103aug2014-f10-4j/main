@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io
 
 ###Our own file###
+build/
 *.txt
 tasks
 list_tasks.json

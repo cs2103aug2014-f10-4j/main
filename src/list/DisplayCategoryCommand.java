@@ -1,5 +1,6 @@
 package list;
 
+import list.model.ICategory;
 import list.model.ITask;
 
 /**
@@ -8,23 +9,23 @@ import list.model.ITask;
  *
  */
 public class DisplayCategoryCommand implements ICommand {
-    private static final String MESSAGE_DISPLAYING = "Displaying ...";
-    private static final String MESSAGE_INVALID_COMMAND = "Please make valid input.";
+    private static final String MESSAGE_DISPLAYING = "Displaying...";
     private static final String MESSAGE_INVALID_CATEGORY = "No such category exists";
     
-    private String title;
+    private String categoryName;
     
-    public DisplayCategoryCommand(String title) {
-		this.title = title;
+    
+    public DisplayCategoryCommand(String categoryName) {
+        this.categoryName = categoryName;
 	}
     
 	@Override
 	public String execute() throws CommandExecutionException {
-		if (title == null) {
+		if (categoryName == null) {
 			Controller.displayCategories();
 			return MESSAGE_DISPLAYING;
 		} else {
-			if (Controller.changeDisplayMode(title)) {
+			if (Controller.changeDisplayMode(categoryName)) {
 				return MESSAGE_DISPLAYING;
 			} else {
 				return MESSAGE_INVALID_CATEGORY;
