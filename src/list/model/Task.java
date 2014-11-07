@@ -26,7 +26,7 @@ public class Task implements ITask {
 	@Override
 	public int compareTo(ITask o) {
 	    if (this.getEndDate() != null && o.getEndDate() != null) {
-	        int result = this.getEndDate().compareTo(o.getEndDate());
+	        int result = this.getTimelineDate().compareTo(o.getTimelineDate());
 	        if (result != 0) {
 	            return result;
 	        } else {
@@ -70,6 +70,19 @@ public class Task implements ITask {
 		return this;
 	}
 
+	public Date getTimelineDate() {
+		Date today = new Date();
+		if (this.startDate.equals(Date.getFloatingDate())) { //if there is not start date
+			return this.endDate; //can be a floating date
+		} else { //has both start date and end date
+			if (today.compareTo(this.startDate) > 0) {
+				return today;
+			} else {
+				return this.startDate;
+			}
+		}
+	}
+	
 	public RepeatFrequency getRepeatFrequency() {
 		return repeatFrequency;
 	}

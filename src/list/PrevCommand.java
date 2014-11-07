@@ -6,13 +6,11 @@ import list.view.IUserInterface;
 import list.view.MainController;
 
 public class PrevCommand implements ICommand {
-
-    private IUserInterface userInterface = MainController.getInstance();
     
     @Override
     public String execute() throws CommandExecutionException, IOException,
             InvalidTaskNumberException {
-        boolean success = userInterface.back();
+        boolean success = Controller.back();
         return success ? "Previous page displayed" : "End of list";
     }
 

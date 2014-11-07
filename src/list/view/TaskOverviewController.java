@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import list.model.Date;
 import list.model.ITask;
 
 public class TaskOverviewController {
@@ -24,6 +28,7 @@ public class TaskOverviewController {
     private List<ITask> allTasks;
     private Integer beginIndex = 0;
     private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();
+    private List<ImageView> timelineImageViews = new ArrayList<ImageView>();
     private List<ITask> oldDisplayedTasks;
     
     public void displayTasks(List<ITask> newTasks) {
@@ -48,6 +53,26 @@ public class TaskOverviewController {
     	return 0;
     }
 
+    boolean next() {
+		if (this.beginIndex + MAX_NO_OF_TASKS < allTasks.size()) {
+			this.beginIndex += MAX_NO_OF_TASKS;
+			refresh();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	boolean back() {
+		if (this.beginIndex - MAX_NO_OF_TASKS >= 0) {
+			this.beginIndex -= MAX_NO_OF_TASKS;
+			refresh();
+			return true;
+		} else {
+			return false;
+		}
+	}
+    
     void refresh() {
         List<ITask> newDisplayedTasks = getDisplayTasks();
         for (int newPositionIndex = 0; newPositionIndex < newDisplayedTasks.size(); newPositionIndex++) {
@@ -62,6 +87,8 @@ public class TaskOverviewController {
             }
         }
         oldDisplayedTasks = newDisplayedTasks;
+        
+        refreshTimeline();
     }
     
     private List<ITask> getDisplayTasks() {
@@ -109,4 +136,80 @@ public class TaskOverviewController {
         }
     }
     
+    //ASSUME WE ARE DISPLAYING CURRENT TASKS, all tasks have deadline
+    void refreshTimeline() {
+    	clearTimeline();
+    	List<ITask> newDisplayedTask = getDisplayTasks();
+    	Date prevDate = Date.getFloatingDate();
+    	for (int i = 0; i < newDisplayedTask.size(); i++) {
+    		Date curDate = newDisplayedTask.get(i).getTimelineDate();
+    		if(prevDate.equals(curDate)) {
+    			displayLineAtPosition(i);
+    		} else {
+    			displayDateAtPosition(curDate, i);
+    		}
+    		prevDate = curDate;
+    	}
+    }
+    
+    private void clearTimeline() {
+    	for (int i = 0; i < timelineImageViews.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineImageViews.get(i));
+    	}
+    }
+    
+    private void displayDateAtPosition(Date date, int positionIndex) {
+    	Label labelDay = new Label();
+    	Label labelMonth = new Label();
+    	Label labelYear = new Label();
+    	
+    	ImageView imageView = new ImageView();
+    	Image calendar = new Image("list/view/icon_calender.png");
+    	imageView.setImage(calendar);
+    	imageView.setFitHeight(LABEL_HEIGHT);
+    	imageView.setFitWidth(TIMELINE_WIDTH);
+    	imageView.setLayoutY(positionIndex * LABEL_HEIGHT);
+    	timelineImageViews.add(imageView);
+    	
+    	labelDay.setPrefWidth(TIMELINE_WIDTH);
+    	labelDay.setPrefHeight(LABEL_HEIGHT / 2);
+    	labelDay.setLayoutY(positionIndex * LABEL_HEIGHT + LABEL_HEIGHT * 0.25);
+    	labelDay.setText(date.getDay() + "");
+    	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
+    	labelDay.setAlignment(Pos.CENTER);
+    	
+    	labelMonth.setPrefWidth(TIMELINE_WIDTH);
+    	labelMonth.setPrefHeight(LABEL_HEIGHT / 5);
+    	labelMonth.setLayoutY(positionIndex * LABEL_HEIGHT);
+    	labelMonth.setText(date.getMonthName().toUpperCase());
+    	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
+    	labelMonth.setAlignment(Pos.CENTER);
+    	
+    	
+//    	labelYear.setPrefWidth(TIMELINE_WIDTH);
+//    	labelYear.setPrefHeight(LABEL_HEIGHT / 3);
+//    	labelYear.setLayoutY(positionIndex * LABEL_HEIGHT + LABEL_HEIGHT * 2 / 3);
+//    	labelYear.setText(date.getYear() + "");
+    	
+    	tasksContainer.getChildren().add(imageView);
+    	tasksContainer.getChildren().add(labelDay);
+    	tasksContainer.getChildren().add(labelMonth);
+//    	tasksContainer.getChildren().add(labelYear);
+    	
+    	
+    }
+    
+    private void displayLineAtPosition(int positionIndex) {
+    	ImageView imageView = new ImageView();
+    	Image line = new Image("list/view/icon_bar.png");
+    	imageView.setImage(line);
+    	imageView.setFitHeight(LABEL_HEIGHT);
+    	imageView.setFitWidth(TIMELINE_WIDTH);
+    	imageView.setLayoutY(positionIndex * LABEL_HEIGHT);
+    	timelineImageViews.add(imageView);
+    	
+    	tasksContainer.getChildren().add(imageView);
+    }
+
+	
 }
