@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -31,7 +33,13 @@ public class RootWindowController implements IUserInterface {
 	@FXML
     private TextField console;
 	@FXML
-	private Label labelFeedback;
+	private Button buttonToHome;
+	@FXML
+	private Button buttonToCategory;
+	@FXML
+	private Button buttonToNext;
+	@FXML
+	private Button buttonToPrev;
 	
 	private Pane taskDetail;
 	private ScrollPane paneForCategories;
@@ -42,6 +50,7 @@ public class RootWindowController implements IUserInterface {
 	private TaskDetailController taskDetailController;
 	private CategoriesController categoriesController;
 	private CommandParser parser = new CommandParser();
+	
 	
     @Override
     public void displayTaskDetail(ITask task) {
@@ -102,12 +111,39 @@ public class RootWindowController implements IUserInterface {
     private void initialize() {
     	console.requestFocus();
         showTaskOverviewLayout();
-        
+        setUpButtons();
         console.setOnAction((event) -> {
             handleEnterAction();
         });
         
         setConsoleKeyPressHandler();
+    }
+    
+    private void setUpButtons() {
+    	buttonToHome.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	
+    	    }
+    	});
+    	buttonToCategory.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	if(!isShowingCategories){
+    	    		Controller.displayCategories();
+    	    	} else {
+    	    		hideCategories();
+    	    	}
+    	    }
+    	});
+    	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	next();
+    	    }
+    	});
+    	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	back();
+    	    }
+    	});
     }
 
     private void setConsoleKeyPressHandler() {
@@ -233,5 +269,4 @@ public class RootWindowController implements IUserInterface {
         console.setText("");
         //console.promptTextProperty();
     }
-
 }

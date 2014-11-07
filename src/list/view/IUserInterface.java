@@ -3,6 +3,7 @@ package list.view;
 import java.util.List;
 
 import javafx.scene.layout.Pane;
+import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
 
