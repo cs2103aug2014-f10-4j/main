@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
-import list.model.ICategory;
 import list.model.ITask;
 import list.view.IUserInterface;
-import list.view.MainController;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
