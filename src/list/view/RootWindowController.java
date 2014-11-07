@@ -1,10 +1,8 @@
 package list.view;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +11,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import list.Controller;
 import list.model.ICategory;
@@ -132,7 +131,7 @@ public class RootWindowController implements IUserInterface {
             taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            
+            taskDetail.setEffect(new DropShadow(2.0d, Color.BLACK));
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(75);
             rootPane.getChildren().add(taskDetail);
@@ -153,7 +152,7 @@ public class RootWindowController implements IUserInterface {
             
             taskOverview.setLayoutX(0);
             taskOverview.setLayoutY(42);
-            taskOverview.setEffect(new DropShadow(2.0d, Color.black));
+            taskOverview.setEffect(new DropShadow());
             showCategoriesLayout();
             rootPane.getChildren().add(taskOverview);
         } catch (IOException e) {
@@ -168,7 +167,6 @@ public class RootWindowController implements IUserInterface {
     		translateForTaskOverview.setToX(140);
     		translateForTaskOverview.setCycleCount(1);
     		translateForTaskOverview.setAutoReverse(false);
-    		
     		translateForTaskOverview.play();
     	} else {
     		TranslateTransition translateForTaskOverview;
