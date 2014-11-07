@@ -14,6 +14,7 @@ import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
+import list.util.Constants;
 import list.view.IUserInterface;
 
 import org.controlsfx.dialog.Dialog;
@@ -48,7 +49,6 @@ public class Controller extends Application {
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static boolean isUndoRedoOperation = false;
 	private static Controller singletonInstance = null;
-	private static String displayMode = "current";
 	
 	public static Controller getInstance() {
 		return singletonInstance;
@@ -68,7 +68,7 @@ public class Controller extends Application {
 		loadInitialData();
 		
 		displayCurrentTasks();
-		
+		refreshUI();
 	}
 	
     private void initializeMainLayout() {
@@ -103,10 +103,7 @@ public class Controller extends Application {
             }
             if (!isUndoRedoOperation) {
                 redoStack.clear();
-            }
-
-            displayTasksBasedOnDisplayMode();
-            
+            }            
             
         } catch (ParseException e) {
             reply = e.getMessage();
@@ -160,50 +157,70 @@ public class Controller extends Application {
     	return userInterface.back();
     }
     
+    public static void highlightTask(ITask task) {
+    	userInterface.highlightTask(task);
+	}
+    
+    public static boolean hasTask(ITask task) {
+    	return displayedTasks.contains(task);
+    }
+    
+    public static void refreshUI() {
+    	userInterface.refreshUI();
+    }
+    
 	private static void displayCurrentTasks() {
-		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
+		displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
 	}
 	
 	private static void displayFloatingTasks() {
-		displayTasks("FLOATING TASK", taskManager.getFloatingTasks());
+		displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
 	}
 	
 	private static void displayOverdueTasks() {
-		displayTasks("OVERDUE TASK", taskManager.getOverdueTasks());
+		displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
 	}
 	
 	private static void displayTasksInCategory(ICategory category) {
 		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
 	}
 	
-	public static boolean changeDisplayMode(String name) {
-		String viewingMode = name.toLowerCase().trim();
-		
-		if (viewingMode.equalsIgnoreCase("floating") ||
-			viewingMode.equalsIgnoreCase("overdue") || 
-			viewingMode.equalsIgnoreCase("current")) {
-			displayMode = viewingMode;
+//	public static boolean changeDisplayMode(String name) {
+//		String viewingMode = name.toLowerCase().trim();
+//		
+//		if (viewingMode.equalsIgnoreCase("floating") ||
+//			viewingMode.equalsIgnoreCase("overdue") || 
+//			viewingMode.equalsIgnoreCase("current")) {
+//			displayMode = viewingMode;
+//			return true;
+//		} else {
+//			if (taskManager.hasCategory(viewingMode)) {
+//				displayMode = viewingMode;
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		}
+//	}
+
+	public static boolean displayTasksBasedOnDisplayMode(String displayMode) {
+		if (displayMode.equalsIgnoreCase("floating")) {
+			displayFloatingTasks();
+			return true;
+		} else if (displayMode.equalsIgnoreCase("overdue")) {
+			displayOverdueTasks();
+			return true;
+		} else if (displayMode.equalsIgnoreCase("current")) {
+			displayCurrentTasks();
 			return true;
 		} else {
-			if (taskManager.hasCategory(viewingMode)) {
-				displayMode = viewingMode;
+			if (taskManager.hasCategory(displayMode)) {
+				ICategory category = taskManager.getCategory(displayMode);
+				displayTasksInCategory(category);
 				return true;
 			} else {
 				return false;
 			}
-		}
-	}
-
-	private static void displayTasksBasedOnDisplayMode() {
-		if (displayMode.equalsIgnoreCase("floating")) {
-			displayFloatingTasks();
-		} else if (displayMode.equalsIgnoreCase("overdue")) {
-			displayOverdueTasks();
-		} else if (displayMode.equalsIgnoreCase("current")) {
-			displayCurrentTasks();
-		} else {
-			ICategory category = taskManager.getCategory(displayMode);
-			displayTasksInCategory(category);
 		}
 	}
 	
@@ -249,6 +266,5 @@ public class Controller extends Application {
 	
 	public static void main(String[] args) {
 	    launch(args);
-	}
-	
+	}	
 }

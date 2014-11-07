@@ -2,7 +2,6 @@ package list.view;
 
 import java.util.List;
 
-import javafx.scene.layout.Pane;
 import list.model.ICategory;
 import list.model.ITask;
 
@@ -30,4 +29,8 @@ public interface IUserInterface {
     boolean next();
 
 	void hideTaskDetail();
+	
+	void highlightTask(ITask task);
+	
+	void refreshUI();
 }

@@ -4,10 +4,17 @@ import java.io.IOException;
 
 public class NextCommand implements ICommand {
     
+	private static final String MESSAGE_SUCCESS = "Next page displayed";
+	private static final String MESSAGE_ERROR = "End of list";
+	
     @Override
     public String execute() throws CommandExecutionException, IOException {
         boolean success = Controller.next();
-        return success ? "Next page displayed" : "End of list";
+        if (success) {
+        	return MESSAGE_SUCCESS;
+        } else {
+        	return MESSAGE_ERROR;
+        }
     }
 
     @Override

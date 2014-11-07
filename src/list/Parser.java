@@ -1,15 +1,15 @@
 package list;
 
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
-import list.model.ICategory;
 import list.model.Date.InvalidDateException;
+import list.model.ICategory;
 
 /**
  * A simple implementation of IParser using Regex. 

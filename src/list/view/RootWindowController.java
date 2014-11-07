@@ -22,7 +22,6 @@ import list.Controller;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
-import list.IParser;
 
 public class RootWindowController implements IUserInterface {
 	
@@ -98,7 +97,12 @@ public class RootWindowController implements IUserInterface {
         return taskOverviewController.next();
     }
 
-    @FXML
+	@Override
+	public void highlightTask(ITask task) {
+		taskOverviewController.highlightTask(task);
+	}
+
+	@FXML
     private void initialize() {
     	console.requestFocus();
         showTaskOverviewLayout();
@@ -233,5 +237,12 @@ public class RootWindowController implements IUserInterface {
         console.setText("");
         //console.promptTextProperty();
     }
+
+	@Override
+	public void refreshUI() {
+		taskOverviewController.refresh();
+	}
+
+
 
 }

@@ -1,6 +1,7 @@
 package list;
 
 import list.model.ITask;
+import list.util.Constants;
 
 /**
  * 
@@ -24,7 +25,9 @@ public class DisplayCategoryCommand implements ICommand {
 			Controller.displayCategories();
 			return MESSAGE_DISPLAYING;
 		} else {
-			if (Controller.changeDisplayMode(title)) {
+			boolean success = Controller.displayTasksBasedOnDisplayMode(title);
+			if (success) {
+				Controller.refreshUI();
 				return MESSAGE_DISPLAYING;
 			} else {
 				return MESSAGE_INVALID_CATEGORY;
