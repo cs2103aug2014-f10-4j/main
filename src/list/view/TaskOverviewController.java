@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -16,6 +19,19 @@ import list.model.Date;
 import list.model.ITask;
 
 public class TaskOverviewController {
+    private static FadeTransition fadeIn;
+    private static FadeTransition fadeOut;
+    private static PauseTransition pause;
+    static {
+        fadeIn = new FadeTransition(Duration.seconds(1));
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(0.7);
+        pause = new PauseTransition(Duration.seconds(2));
+        fadeOut = new FadeTransition(Duration.seconds(2));
+        fadeOut.setFromValue(0.7);
+        fadeOut.setToValue(0);
+    }
+    
     private static final double LABEL_WIDTH = 550.0d;
     private static final double LABEL_HEIGHT = 37.5d;
     private static final double TIMELINE_WIDTH = 37.5d;
@@ -24,7 +40,9 @@ public class TaskOverviewController {
     
     @FXML
     Pane tasksContainer;
- 
+    @FXML
+    private Label labelFeedback;
+   
     private List<ITask> allTasks;
     private Integer beginIndex = 0;
     private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();

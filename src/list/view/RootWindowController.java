@@ -77,8 +77,7 @@ public class RootWindowController implements IUserInterface {
 
     @Override
     public void displayMessageToUser(String message) {
-        // TODO Auto-generated method stub
-        
+        taskOverviewController.displayMessageToUser(message);
     }
 
     @Override
