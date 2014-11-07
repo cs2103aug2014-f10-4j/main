@@ -176,9 +176,15 @@ public class TaskOverviewController {
     }
     
     private void clearTimeline() {
-    	for (int i = 0; i < Math.min(MAX_NO_OF_TASKS, timelineImageViews.size()); i++) {
+    	for (int i = 0; i < timelineImageViews.size(); i++) {
     		tasksContainer.getChildren().remove(timelineImageViews.get(i));
+    	}
+    	
+    	for (int i = 0; i < timelineDateLabel.size(); i++) {
     		tasksContainer.getChildren().remove(timelineDateLabel.get(i));
+    	}
+    	
+    	for (int i = 0; i < timelineMonthLabel.size(); i++) {
     		tasksContainer.getChildren().remove(timelineMonthLabel.get(i));
     	}
     }
