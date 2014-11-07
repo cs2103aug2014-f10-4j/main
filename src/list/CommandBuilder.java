@@ -123,7 +123,7 @@ public class CommandBuilder {
 				command = new DisplayCommand(task);
 				break;
 			case CATEGORY_DISPLAY:
-				command = new DisplayCategoryCommand();
+				command = new DisplayCategoryCommand(title);
 				break;
 			case DELETE:
 				command = new DeleteCommand(task);
