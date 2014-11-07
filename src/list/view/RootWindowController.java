@@ -156,23 +156,22 @@ public class RootWindowController implements IUserInterface {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.SPACE)) {
-                    try {
-                        parser.clear();
-                        parser.append(console.getText());
-                        Map<String, String> expected = parser.getExpectedInputs();
-                        StringBuilder expectedStr = new StringBuilder();
-                        for (String key: expected.keySet()) {
-                            expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
-                        }
-                        displayMessageToUser(expectedStr.toString());
-                    } catch (ParseException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    
+                    showSyntaxSuggestion();   
                 }
-                if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.BACK_SPACE)) {
+            }
+
+            private void showSyntaxSuggestion() {
+                try {
                     parser.clear();
+                    parser.append(console.getText());
+                    Map<String, String> expected = parser.getExpectedInputs();
+                    StringBuilder expectedStr = new StringBuilder();
+                    for (String key: expected.keySet()) {
+                        expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
+                    }
+                    displayMessageToUser(expectedStr.toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
             
@@ -185,7 +184,9 @@ public class RootWindowController implements IUserInterface {
 
             @Override
             public void handle(KeyEvent event) {
-                console.requestFocus();
+                if(!event.getText().isEmpty()) {
+                    console.requestFocus();
+                }
             }
             
         };
