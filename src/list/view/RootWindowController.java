@@ -19,9 +19,7 @@ public class RootWindowController implements IUserInterface {
 	private Pane rootPane;
 	@FXML
     private TextField console;
-	@FXML
-	private Label labelFeedback;
-   
+	
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
 	
@@ -55,15 +53,7 @@ public class RootWindowController implements IUserInterface {
 
     @Override
     public void displayMessageToUser(String message) {
-        /*FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), labelFeedback);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(0.75);
-        fadeIn.setAutoReverse(true);
-        fadeIn.setCycleCount(1);*/
-        
-        labelFeedback.setText(message);
-        labelFeedback.setOpacity(70.0);
-        labelFeedback.setVisible(true);
+        taskOverviewController.displayMessageToUser(message);
     }
 
     @Override
