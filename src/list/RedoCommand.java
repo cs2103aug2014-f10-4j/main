@@ -8,8 +8,7 @@ public class RedoCommand implements ICommand {
     private static final String MESSAGE_NOTHING_TO_REDO = "There is nothing to redo.";
 
     @Override
-    public String execute() throws CommandExecutionException, IOException,
-            InvalidTaskNumberException {
+    public String execute() throws CommandExecutionException, IOException {
         Stack<ICommand> undoStack = Controller.getUndoStack();
         Stack<ICommand> redoStack = Controller.getRedoStack();
         Controller.reportUndoRedoOperation();

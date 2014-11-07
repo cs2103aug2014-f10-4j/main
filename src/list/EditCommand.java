@@ -90,8 +90,7 @@ public class EditCommand implements ICommand {
 	}
 
 	@Override
-	public String execute() throws CommandExecutionException, 
-	                               IOException {
+	public String execute() throws CommandExecutionException, IOException {
 	    if (this.task == null) {
             throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
         }

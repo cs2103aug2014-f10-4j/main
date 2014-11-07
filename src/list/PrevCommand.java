@@ -7,8 +7,7 @@ import list.view.IUserInterface;
 public class PrevCommand implements ICommand {
     
     @Override
-    public String execute() throws CommandExecutionException, IOException,
-            InvalidTaskNumberException {
+    public String execute() throws CommandExecutionException, IOException {
         boolean success = Controller.back();
         return success ? "Previous page displayed" : "End of list";
     }
