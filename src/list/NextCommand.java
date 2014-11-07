@@ -3,7 +3,6 @@ package list;
 import java.io.IOException;
 
 import list.view.IUserInterface;
-import list.view.MainController;
 import list.view.RootWindowController;
 
 public class NextCommand implements ICommand {

@@ -23,7 +23,7 @@ public class CategoriesController {
     private static final double BUTTON_X = 1.0d;
     private static final double BUTTON_WIDTH = 138.0d;
     private static final double BUTTON_HEIGHT = 26.0d;
-    private static final double NUMBER_OF_DEFALUT_BUTTON = 3.0d;
+    private static final double NUMBER_OF_DEFAULT_BUTTON = 3.0d;
     
     // fixed value for the size and number of labels
     private static final double LABEL_X = 1.0d;
@@ -49,7 +49,7 @@ public class CategoriesController {
     private List<ICategory> listOfCategories;
     
     // position to start displaying the categories made by user
-    private double positonToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFALUT_BUTTON;
+    private double positonToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON;
     
     // ScrollPane to make the categories to be able to scroll
     @FXML
@@ -62,7 +62,7 @@ public class CategoriesController {
     	
     	listOfCategories = categories;
     	
-    	PANE_HEIGHT = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFALUT_BUTTON + categories.size());
+    	PANE_HEIGHT = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFAULT_BUTTON + categories.size());
     	
     	// set the style, layout and the size of the Pane
     	categoriesContainer.setLayoutX(PANE_X);
@@ -73,7 +73,7 @@ public class CategoriesController {
         
         // create the default label to be displayed
     	Label labelForAllCategory = setUpLabel(stringForLabelAllCategory, LABEL_X, LABEL_Y);
-    	Label labelForOtherCategory = setUpLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFALUT_BUTTON);
+    	Label labelForOtherCategory = setUpLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON);
     	
     	// create the default button to be displayed
     	Button buttonForCurrentTask = setUpButton(stringForButtonCurrentTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT);
