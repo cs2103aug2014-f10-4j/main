@@ -3,6 +3,7 @@ package list;
 import java.io.IOException;
 
 import list.model.ITask;
+import list.util.Constants;
 
 /**
  * 
@@ -35,6 +36,18 @@ public class DeleteCommand implements ICommand {
         }
         
         taskManager.deleteTask(this.task);
+        
+        if (!Controller.hasTask(task)) {
+        	if (!task.hasDeadline()) {
+    			Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+    		} else if (task.isOverdue()) {
+    			Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+    		} else {
+    			Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+    		}
+        }
+        
+        Controller.refreshUI();
         
 		taskManager.saveData();
 		

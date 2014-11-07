@@ -10,11 +10,7 @@ import java.io.IOException;
  * @author andhieka, michael
  *
  */
-interface ICommand {
-    @Deprecated
-	@SuppressWarnings("serial")
-    class InvalidTaskNumberException extends Exception { };
-		
+interface ICommand {	
 	@SuppressWarnings("serial")
     class CommandExecutionException extends Exception {
 	    public CommandExecutionException(String message) {
@@ -26,12 +22,10 @@ interface ICommand {
 	 * Executes this command.
 	 * 
 	 * @return the response to be shown in the console.
-	 * @throws CommandExecutionException 
-	 * @throws InvalidTaskNumberException 
+	 * @throws CommandExecutionException  
 	 * @throws IOException  
 	 */
-	String execute() throws CommandExecutionException, 
-			IOException, InvalidTaskNumberException;
+	String execute() throws CommandExecutionException, IOException;
 	
 	
 	/**

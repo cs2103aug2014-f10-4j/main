@@ -57,7 +57,7 @@ public class TaskOverviewController {
     public void displayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
         beginIndex = 0;
-        refresh();
+        //refresh();
     }
     
     /**
@@ -81,7 +81,6 @@ public class TaskOverviewController {
 		if (this.beginIndex + MAX_NO_OF_TASKS < allTasks.size()) {
 			this.beginIndex += MAX_NO_OF_TASKS;
 			refresh();
-			
 			return true;
 		} else {
 			return false;
@@ -129,6 +128,8 @@ public class TaskOverviewController {
         Label label;
         if (taskLabels.containsKey(task)) { //if task is already displayed now
             label = taskLabels.get(task);
+            updateTaskLabelText(label, beginIndex + 1 + positionIndex, 
+            					task.getTitle());
             animateMoveLabel(label, positionIndex);
         } else { //if task is not displayed yet
             label = createTaskLabel(task, positionIndex);
@@ -141,9 +142,13 @@ public class TaskOverviewController {
         label.setLayoutY(positionIndex * LABEL_HEIGHT);
     }
 
+    private void updateTaskLabelText(Label label, int index, String title) {
+    	label.setText(index + ". "  + title);
+    }
+    
     private Label createTaskLabel(ITask task, int positionIndex) {
         Label label = new Label();
-        label.setText((beginIndex*MAX_NO_OF_TASKS +positionIndex+ 1) + ". " + task.getTitle());
+        updateTaskLabelText(label, beginIndex + 1 + positionIndex, task.getTitle());
         label.setLayoutX(TIMELINE_WIDTH);
         label.setLayoutY(positionIndex * LABEL_HEIGHT);
         label.setPrefHeight(LABEL_HEIGHT);
@@ -162,7 +167,7 @@ public class TaskOverviewController {
     }
     
     //ASSUME WE ARE DISPLAYING CURRENT TASKS, all tasks have deadline
-    void refreshTimeline() {
+    private void refreshTimeline() {
     	clearTimeline();
     	List<ITask> newDisplayedTask = getDisplayTasks();
     	Date prevDate = Date.getFloatingDate();
@@ -255,6 +260,17 @@ public class TaskOverviewController {
         animation.play();
         this.animation = animation;
     }
+
+	public void highlightTask(ITask task) {
+		goToPageContaininingTask(task);
+		refresh();
+		//TODO: highlight animation
+	}
+
+	private void goToPageContaininingTask(ITask task) {
+		int taskNumber = getTaskNumber(task);
+		beginIndex = taskNumber / MAX_NO_OF_TASKS;
+	}
 
 	
 }

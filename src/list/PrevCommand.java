@@ -2,15 +2,19 @@ package list;
 
 import java.io.IOException;
 
-import list.view.IUserInterface;
-
 public class PrevCommand implements ICommand {
+	
+	private static final String MESSAGE_SUCCESS = "Previous page displayed";
+	private static final String MESSAGE_ERROR = "End of list";
     
-    @Override
-    public String execute() throws CommandExecutionException, IOException,
-            InvalidTaskNumberException {
+	@Override
+    public String execute() throws CommandExecutionException, IOException {
         boolean success = Controller.back();
-        return success ? "Previous page displayed" : "End of list";
+        if (success) {
+        	return MESSAGE_SUCCESS;
+        } else {
+        	return MESSAGE_ERROR;
+        }
     }
 
     @Override

@@ -25,7 +25,9 @@ public class DisplayCategoryCommand implements ICommand {
 			Controller.displayCategories();
 			return MESSAGE_DISPLAYING;
 		} else {
-			if (Controller.changeDisplayMode(categoryName)) {
+			boolean success = Controller.displayTasksBasedOnDisplayMode(categoryName);
+			if (success) {
+				Controller.refreshUI();
 				return MESSAGE_DISPLAYING;
 			} else {
 				return MESSAGE_INVALID_CATEGORY;

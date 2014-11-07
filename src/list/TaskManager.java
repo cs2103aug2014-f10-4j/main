@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import list.model.Category;
-import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
 import list.model.ITask.TaskStatus;
@@ -189,8 +188,8 @@ public class TaskManager {
     
     //METHODS FOR COMMANDS EXECUTION
     void addTask(ITask task) {
-        if (hasDeadline(task)) {
-            if (isOverdue(task)) {
+        if (task.hasDeadline()) {
+            if (task.isOverdue()) {
             	overdueTasks.add(task);
             	Collections.sort(overdueTasks);
             } else {
@@ -238,7 +237,7 @@ public class TaskManager {
     @Deprecated
     void deleteTask(Integer taskNumberShownOnScreen) {
         ITask task = getTask(taskNumberShownOnScreen);
-        if (hasDeadline(task)) {
+        if (task.hasDeadline()) {
             tasks.remove(task);
         } else {
             floatingTasks.remove(task);
@@ -247,8 +246,8 @@ public class TaskManager {
     }
 
     void deleteTask(ITask task) {
-        if (hasDeadline(task)) {
-        	if (isOverdue(task)) {
+        if (task.hasDeadline()) {
+        	if (task.isOverdue()) {
             	overdueTasks.remove(task);
             } else {
             	currentTasks.remove(task);
@@ -353,14 +352,14 @@ public class TaskManager {
     }
         
     //Private functions
-    private static boolean hasDeadline(ITask task) {
-        return !task.getEndDate().equals(Date.getFloatingDate());
-    }
-    
-    private static boolean isOverdue(ITask task) {
-    	Date today = new Date();
-    	return (task.getEndDate().compareTo(today) < 0);    	
-    }
+//    private static boolean hasDeadline(ITask task) {
+//        return !task.getEndDate().equals(Date.getFloatingDate());
+//    }
+//    
+//    private static boolean isOverdue(ITask task) {
+//    	Date today = new Date();
+//    	return (task.getEndDate().compareTo(today) < 0);    	
+//    }
     
     private static boolean hasCategory(ITask task) {
     	return (task.getCategory() != null && 

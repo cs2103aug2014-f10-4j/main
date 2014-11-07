@@ -137,4 +137,15 @@ public class Task implements ITask {
 	        this.status = status;
 	    }
 	}
+
+	@Override
+	public boolean hasDeadline() {
+		return !this.getEndDate().equals(Date.getFloatingDate());
+	}
+
+	@Override
+	public boolean isOverdue() {
+		Date today = new Date();
+    	return (this.getEndDate().compareTo(today) < 0);    
+	}
 }

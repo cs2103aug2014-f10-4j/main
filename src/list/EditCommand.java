@@ -6,6 +6,7 @@ import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
+import list.util.Constants;
 
 /**
  * 
@@ -90,8 +91,7 @@ public class EditCommand implements ICommand {
 	}
 
 	@Override
-	public String execute() throws CommandExecutionException, 
-	                               IOException {
+	public String execute() throws CommandExecutionException, IOException {
 	    if (this.task == null) {
             throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
         }
@@ -132,6 +132,20 @@ public class EditCommand implements ICommand {
 		
 		if (this.notes != null) {
 			taskToEdit.setNotes(notes);
+		}
+		
+		if (Controller.hasTask(taskToEdit)) {
+			Controller.highlightTask(taskToEdit);
+		} else {
+			if (!taskToEdit.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (taskToEdit.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(taskToEdit);
 		}
 		
 		taskManager.saveData();

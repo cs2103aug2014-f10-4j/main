@@ -3,6 +3,7 @@ package list;
 import java.io.IOException;
 
 import list.model.ITask;
+import list.util.Constants;
 
 public class MarkCommand implements ICommand {
 
@@ -30,6 +31,21 @@ public class MarkCommand implements ICommand {
         
 		ITask taskToMark = this.task;
 		taskManager.markTaskAsDone(taskToMark);
+		
+		if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+		
 		taskManager.saveData();
 		
 		return MESSAGE_SUCCESS;
