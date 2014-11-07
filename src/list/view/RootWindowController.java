@@ -113,7 +113,6 @@ public class RootWindowController implements IUserInterface {
 
 	@FXML
     private void initialize() {
-    	console.requestFocus();
         showTaskOverviewLayout();
         setUpButtons();
         console.setOnAction((event) -> {
@@ -121,6 +120,7 @@ public class RootWindowController implements IUserInterface {
         });
         
         setConsoleKeyPressHandler();
+        setWindowKeyPressHandler();
     }
     
     private void setUpButtons() {
@@ -178,6 +178,18 @@ public class RootWindowController implements IUserInterface {
             
         };
         console.setOnKeyPressed(handler);
+    }
+    
+    private void setWindowKeyPressHandler() {
+        EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                console.requestFocus();
+            }
+            
+        };
+        rootPane.setOnKeyPressed(handler);
     }
     
     private void showCategoriesLayout() {
