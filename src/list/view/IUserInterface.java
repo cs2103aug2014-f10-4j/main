@@ -29,5 +29,5 @@ public interface IUserInterface {
     
     boolean next();
 
-	void hideTaskDetail(Pane pane);
+	void hideTaskDetail();
 }

@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import list.ICommand.CommandExecutionException;
 import list.IParser.ParseException;
-import list.model.ICategory;
 import list.model.ITask;
 import list.view.IUserInterface;
-import list.view.MainController;
 
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
@@ -140,10 +137,9 @@ public class Controller extends Application {
 	public static void displayTasks(String pageTitle, List<ITask> tasks) {
 		userInterface.display(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
-	    displayCategories();
 	}
 
-    private static void displayCategories() {
+    public static void displayCategories() {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
 
@@ -151,6 +147,14 @@ public class Controller extends Application {
         displayedTasks = tasks;
     }
 	 
+    public static boolean next() {
+    	return userInterface.next();
+    }
+    
+    public static boolean back() {
+    	return userInterface.back();
+    }
+    
 	public static void displayCurrentTasks() {
 		displayTasks("CURRENT TASK", taskManager.getCurrentTasks());
 	}

@@ -3,26 +3,37 @@ package list.view;
 import java.io.IOException;
 import java.util.List;
 
-import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import list.Controller;
 import list.model.ICategory;
 import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
+	
 	@FXML
 	private Pane rootPane;
 	@FXML
     private TextField console;
+	@FXML
+	private Label labelFeedback;
 	
+	private Pane taskDetail;
+	private ScrollPane paneForCategories;
+	private Pane taskOverview;
+	private boolean isShowingCategories = false;
+   
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
-	
+	private CategoriesController categoriesController;
 	
     @Override
     public void displayTaskDetail(ITask task) {
@@ -34,9 +45,26 @@ public class RootWindowController implements IUserInterface {
     }
     
     @Override
-	public void hideTaskDetail(Pane pane) {
-		rootPane.getChildren().remove(pane);
+	public void hideTaskDetail() {
+		rootPane.getChildren().remove(taskDetail);
 		console.requestFocus();
+	}
+    
+    @Override
+    public void displayCategories(List<ICategory> categories) {
+    	//showCategoriesLayout();
+    	categoriesController.setUpView(categories);
+    	animateCategoryAndTextOverview(true);
+    	
+    	isShowingCategories = true;
+    }
+    
+    @Override
+	public void hideCategories() {
+    	animateCategoryAndTextOverview(false);
+    	//rootPane.getChildren().remove(paneForCategories);
+    	
+    	isShowingCategories = false;
 	}
 
     @Override
@@ -57,31 +85,13 @@ public class RootWindowController implements IUserInterface {
     }
 
     @Override
-    public void displayCategories(List<ICategory> categories) {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-	public void hideCategories() {
-		// TODO Auto-generated method stub
-		
-	}
-
-    @Override
     public boolean back() {
-        // TODO Auto-generated method stub
-        return false;
+        return taskOverviewController.back();
     }
 
     @Override
     public boolean next() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-	
-    public void setEnabledConsole(boolean bool) {
-    	console.setDisable(!bool);
+        return taskOverviewController.next();
     }
 
     @FXML
@@ -92,7 +102,24 @@ public class RootWindowController implements IUserInterface {
         console.setOnAction((event) -> {
             handleEnterAction();
         });        
-        
+    }
+    
+    private void showCategoriesLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Categories.fxml"));
+
+            paneForCategories = (ScrollPane) loader.load();
+
+            categoriesController = loader.getController();
+
+            paneForCategories.setLayoutX(0);
+            paneForCategories.setLayoutY(42);
+            rootPane.getChildren().add(paneForCategories);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
     }
     
     private void showTaskDetailLayout() {
@@ -100,10 +127,10 @@ public class RootWindowController implements IUserInterface {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Controller.class.getResource("view/TaskDetail.fxml"));
             
-            Pane taskDetail = (Pane) loader.load();
+            taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            
+            taskDetail.setEffect(new DropShadow(2.0d, Color.BLACK));
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(75);
             rootPane.getChildren().add(taskDetail);
@@ -118,17 +145,38 @@ public class RootWindowController implements IUserInterface {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Controller.class.getResource("view/TaskOverview.fxml"));
             
-            Pane taskOverview = (Pane) loader.load();
+            taskOverview = (Pane) loader.load();
             
             taskOverviewController = loader.getController();
             
             taskOverview.setLayoutX(0);
-            taskOverview.setLayoutY(40);
+            taskOverview.setLayoutY(42);
+            taskOverview.setEffect(new DropShadow());
+            showCategoriesLayout();
             rootPane.getChildren().add(taskOverview);
-            
         } catch (IOException e) {
             e.printStackTrace();
         } 
+    }
+    
+    private void animateCategoryAndTextOverview(boolean willDisplay) {
+    	if(willDisplay) {
+    		TranslateTransition translateForTaskOverview;
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
+    		translateForTaskOverview.setToX(140);
+    		translateForTaskOverview.setCycleCount(1);
+    		translateForTaskOverview.setAutoReverse(false);
+    		translateForTaskOverview.play();
+    	} else {
+    		TranslateTransition translateForTaskOverview;
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
+    		translateForTaskOverview.setToX(0);
+    		translateForTaskOverview.setCycleCount(1);
+    		translateForTaskOverview.setAutoReverse(false);
+    		
+    		translateForTaskOverview.play();
+    		
+    	}
     }
 
     /**
@@ -137,6 +185,10 @@ public class RootWindowController implements IUserInterface {
      */
     @FXML
     private void handleEnterAction() {
+    	if (isShowingCategories) {
+    		hideCategories();
+    	}
+    	
         String userInput = console.getText();
         String reply = Controller.processUserInput(userInput);
         displayMessageToUser(reply);
