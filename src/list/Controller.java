@@ -144,6 +144,10 @@ public class Controller extends Application {
     public static void displayCategories() {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
+    
+    public static void hideCategories() {
+        userInterface.hideCategories();
+    }
 
     private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
@@ -266,5 +270,5 @@ public class Controller extends Application {
 	
 	public static void main(String[] args) {
 	    launch(args);
-	}	
+	}
 }
