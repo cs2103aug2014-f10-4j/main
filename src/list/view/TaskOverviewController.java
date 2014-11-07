@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
@@ -32,6 +33,7 @@ public class TaskOverviewController {
         fadeOut.setFromValue(0.7);
         fadeOut.setToValue(0);
     }
+    private Animation animation;
     
     private static final double LABEL_WIDTH = 550.0d;
     private static final double LABEL_HEIGHT = 37.5d;
@@ -238,9 +240,13 @@ public class TaskOverviewController {
     }
 
     public void displayMessageToUser(String message) {
+        if (this.animation != null) {
+            this.animation.stop();
+        }
         labelFeedback.setText(message);
         SequentialTransition animation = new SequentialTransition(labelFeedback, fadeIn, pause, fadeOut);
         animation.play();
+        this.animation = animation;
     }
 
 	
