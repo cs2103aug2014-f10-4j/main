@@ -236,7 +236,7 @@ public class RootWindowController implements IUserInterface {
     }
     
     private void animateCategoryAndTextOverview(boolean willDisplay) {
-    	if(willDisplay) {
+    	if (willDisplay) {
     		TranslateTransition translateForTaskOverview;
     		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
     		translateForTaskOverview.setToX(140);

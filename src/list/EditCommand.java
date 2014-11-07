@@ -134,18 +134,18 @@ public class EditCommand implements ICommand {
 			taskToEdit.setNotes(notes);
 		}
 		
-		if (Controller.hasTask(task)) {
-			Controller.highlightTask(task);
+		if (Controller.hasTask(taskToEdit)) {
+			Controller.highlightTask(taskToEdit);
 		} else {
-			if (!task.hasDeadline()) {
+			if (!taskToEdit.hasDeadline()) {
 				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
-			} else if (task.isOverdue()) {
+			} else if (taskToEdit.isOverdue()) {
 				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
 			} else {
 				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
 			}
 			
-			Controller.highlightTask(task);
+			Controller.highlightTask(taskToEdit);
 		}
 		
 		taskManager.saveData();
