@@ -65,6 +65,7 @@ public class CommandParser implements IParser {
         EXPECTATIONS_ACTION.put("edit", "Edit an existing task");
         EXPECTATIONS_ACTION.put("delete", "Delete an existing task");
         EXPECTATIONS_ACTION.put("display", "Display the details of an existing task.");
+        EXPECTATIONS_ACTION.put("display cat", "Show categories.");
         EXPECTATIONS_ACTION.put("mark", "Mark a task as done");
         EXPECTATIONS_ACTION.put("unmark", "Mark a task as not done.");
         EXPECTATIONS_ACTION.put("undo", "Undo your last command (multiple undo supported)");

@@ -2,20 +2,27 @@ package list.view;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javafx.animation.TranslateTransition;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import list.CommandParser;
 import list.Controller;
+import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
+import list.IParser;
 
 public class RootWindowController implements IUserInterface {
 	
@@ -34,6 +41,7 @@ public class RootWindowController implements IUserInterface {
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
 	private CategoriesController categoriesController;
+	private CommandParser parser = new CommandParser();
 	
     @Override
     public void displayTaskDetail(ITask task) {
@@ -101,7 +109,39 @@ public class RootWindowController implements IUserInterface {
         
         console.setOnAction((event) -> {
             handleEnterAction();
-        });        
+        });
+        
+        setConsoleKeyPressHandler();
+    }
+
+    private void setConsoleKeyPressHandler() {
+        EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.SPACE)) {
+                    try {
+                        parser.clear();
+                        parser.append(console.getText());
+                        Map<String, String> expected = parser.getExpectedInputs();
+                        StringBuilder expectedStr = new StringBuilder();
+                        for (String key: expected.keySet()) {
+                            expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
+                        }
+                        displayMessageToUser(expectedStr.toString());
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    
+                }
+                if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.BACK_SPACE)) {
+                    parser.clear();
+                }
+            }
+            
+        };
+        console.setOnKeyPressed(handler);
     }
     
     private void showCategoriesLayout() {
