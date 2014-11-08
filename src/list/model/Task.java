@@ -1,5 +1,7 @@
 package list.model;
 
+import java.util.List;
+
 import list.CommandBuilder.RepeatFrequency;
 
 public class Task implements ITask {
@@ -11,6 +13,7 @@ public class Task implements ITask {
 	private ICategory category;
 	private String notes;
 	private TaskStatus status;
+	private List<ITask> list;
 	
 	public Task() {
 	    title = "";
@@ -37,10 +40,12 @@ public class Task implements ITask {
 	    }
 	}
 
+	@Override
 	public String getTitle() {
 		return title;
 	}
 
+	@Override
 	public Task setTitle(String title) {
 		if (title != null) {
 		    this.title = title;
@@ -48,10 +53,12 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public Date getStartDate() {
 		return startDate;
 	}
 
+	@Override
 	public Task setStartDate(Date startDate) {
 	    if (startDate != null) {
 	        this.startDate = startDate;
@@ -59,10 +66,12 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public Date getEndDate() {
 		return endDate;
 	}
 
+	@Override
 	public Task setEndDate(Date endDate) {
 	    if (endDate != null) {
 	        this.endDate = endDate;
@@ -70,12 +79,28 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public Date getTimelineDate() {
 		Date today = new Date();
+		
+//		if (this.hasDeadline()) {
+//			if (this.isOverdue()) {
+//				return this.endDate;
+//			} else {
+//				if (today.compareTo(this.startDate) > 0) {
+//					return today;
+//				} else {
+//					return this.startDate;
+//				}
+//			}
+//		} else {
+		
 		if (this.startDate.equals(Date.getFloatingDate())) { //if there is not start date
 			return this.endDate; //can be a floating date
 		} else { //has both start date and end date
-			if (today.compareTo(this.startDate) > 0) {
+			if (today.compareTo(this.startDate) > 0 && today.compareTo(this.endDate) > 0) {
+				return this.endDate;
+			} else if (today.compareTo(this.startDate) > 0 && today.compareTo(this.endDate) <= 0) {
 				return today;
 			} else {
 				return this.startDate;
@@ -83,10 +108,12 @@ public class Task implements ITask {
 		}
 	}
 	
+	@Override
 	public RepeatFrequency getRepeatFrequency() {
 		return repeatFrequency;
 	}
 
+	@Override
 	public Task setRepeatFrequency(RepeatFrequency repeatFrequency) {
 	    if (repeatFrequency != null) {
 	        this.repeatFrequency = repeatFrequency;
@@ -94,10 +121,12 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public String getPlace() {
 		return place;
 	}
 
+	@Override
 	public Task setPlace(String place) {
 	    if (place != null) {
 	        this.place = place;
@@ -105,22 +134,28 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public ICategory getCategory() {
 		return category;
 	}
 
+	@Override
 	public Task setCategory(ICategory category) {
 	    if (category != null) {
-	        this.category = category;
+	    	this.category.getList().remove(this);
+	        category.getList().add(this);
+	    	this.category = category;
 	    }
 	    
 		return this;
 	}
-
+	
+	@Override
 	public String getNotes() {
 		return notes;
 	}
 
+	@Override
 	public Task setNotes(String notes) {
 	    if (notes != null) {
 	        this.notes = notes;
@@ -128,16 +163,28 @@ public class Task implements ITask {
 		return this;
 	}
 
+	@Override
 	public TaskStatus getStatus() {
 		return status;
 	}
 
+	@Override
 	public void setStatus(TaskStatus status) {
 	    if (status != null) {
 	        this.status = status;
 	    }
 	}
 
+	@Override
+	public List<ITask> getList() {
+		return this.list;
+	}
+	
+	@Override
+	public void setList(List<ITask> list) {
+		this.list = list;
+	}
+	
 	@Override
 	public boolean hasDeadline() {
 		return !this.getEndDate().equals(Date.getFloatingDate());
@@ -148,4 +195,6 @@ public class Task implements ITask {
 		Date today = new Date();
     	return (this.getEndDate().compareTo(today) < 0);    
 	}
+
+	
 }

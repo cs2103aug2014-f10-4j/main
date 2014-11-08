@@ -17,6 +17,10 @@ public class EditCommand implements ICommand {
 		
     private static final String MESSAGE_SUCCESS = "Task is successfully edited";
     private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+    private static final String MESSAGE_ERROR_NO_END_TIME = "Unable to edit into task with " + 
+    												  		"start date but no end date";
+    private static final String MESSAGE_ERROR_INVALID_START_DATE = "Unable to edit because end date " + 
+    												  		       "cannot be later than start date";
     
     private TaskManager taskManager = TaskManager.getInstance(); 
     private ITask task;
@@ -94,6 +98,12 @@ public class EditCommand implements ICommand {
 	public String execute() throws CommandExecutionException, IOException {
 	    if (this.task == null) {
             throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        } else if (!task.getStartDate().equals(Date.getFloatingDate()) &&
+        		   this.endDate != null && this.endDate.equals(Date.getFloatingDate())) {
+        	throw new CommandExecutionException(MESSAGE_ERROR_NO_END_TIME);
+        } else if (this.endDate != null && this.startDate != null &&
+        		   this.startDate.compareTo(endDate) > 0) {
+        	throw new CommandExecutionException(MESSAGE_ERROR_INVALID_START_DATE);
         }
 	    
 	    if (isExecuted) {
@@ -103,6 +113,8 @@ public class EditCommand implements ICommand {
 	    this.inverseCommand = createInverseCommand();
         
 	    ITask taskToEdit = this.task;
+	    
+	    taskToEdit.getList().remove(taskToEdit);	    
 	    
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	
@@ -125,15 +137,28 @@ public class EditCommand implements ICommand {
 		}
 		
 		if (this.category != null) {
-			taskManager.removeFromCategoryList(taskToEdit);
+			//taskManager.removeFromCategoryList(taskToEdit);
 			taskToEdit.setCategory(category);
-			taskManager.addToCategoryList(taskToEdit);
+			//taskManager.addToCategoryList(taskToEdit);
 		}
 		
 		if (this.notes != null) {
 			taskToEdit.setNotes(notes);
 		}
 		
+		if (taskToEdit.hasDeadline()) {
+			if (taskToEdit.isOverdue()) {
+				taskManager.addToOverdueTasks(taskToEdit);
+				taskToEdit.setList(taskManager.getOverdueTasks());
+			} else {
+				taskManager.addToCurrentTasks(taskToEdit);
+				taskToEdit.setList(taskManager.getCurrentTasks());
+			}
+		} else {
+			taskManager.addToFloatingTasks(taskToEdit);
+			taskToEdit.setList(taskManager.getFloatingTasks());
+		}
+				
 		if (Controller.hasTask(taskToEdit)) {
 			Controller.highlightTask(taskToEdit);
 		} else {
