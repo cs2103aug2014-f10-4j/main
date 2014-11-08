@@ -304,7 +304,7 @@ public class TaskOverviewController {
     	labelDay.setPrefWidth(TIMELINE_WIDTH);
     	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
     	labelDay.setFont(Font.font(HELVETICA_NEUE));
-    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.15);
+    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.2);
     	labelDay.setStyle("-fx-font-size:13pt;-fx-font-weight:bold");
     	labelDay.setAlignment(Pos.CENTER);
     	labelDay.setText(date.getDay() + "");
