@@ -8,76 +8,71 @@
 
 <AnchorPane fx:id="anchorPane" prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskDetailController">
    <children>
-      <TextField fx:id="taskTitle" layoutX="14.0" layoutY="15.0" prefHeight="45.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
+      <TextField fx:id="taskTitle" layoutX="14.0" layoutY="15.0" prefHeight="60.0" prefWidth="338.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
          <font>
             <Font name="Helvetica Neue Light" size="28.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskCategory" layoutX="278.0" layoutY="42.0" prefHeight="35.0" prefWidth="78.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
+      <TextField fx:id="taskStartDate" layoutX="89.0" layoutY="72.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <Label layoutX="14.0" layoutY="78.0" text="Start Date:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="20.0" layoutY="104.0" prefHeight="20.0" prefWidth="69.0" text="End Date:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="42.0" layoutY="207.0" text="Status:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="48.0" layoutY="156.0" text="Place:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="42.0" layoutY="182.0" text="Notes:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="taskEndDate" layoutX="89.0" layoutY="98.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="taskCategory" layoutX="87.0" layoutY="123.0" prefHeight="39.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
          <font>
             <Font name="Helvetica Neue Light" size="18.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskStartDate" layoutX="93.0" layoutY="71.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
+      <TextField fx:id="taskPlace" layoutX="86.0" layoutY="150.0" prefHeight="37.0" prefWidth="280.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <Label layoutX="18.0" layoutY="77.0" text="Start Date:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="24.0" layoutY="103.0" prefHeight="20.0" prefWidth="69.0" text="End Date:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="39.0" layoutY="182.0" text="Repeat:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <CheckBox fx:id="taskStatus" disable="true" layoutX="105.0" layoutY="159.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
-      <Label layoutX="44.0" layoutY="155.0" text="Status:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="50.0" layoutY="129.0" text="Place:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="47.0" layoutY="207.0" text="Notes:" textFill="WHITE">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </Label>
-      <TextField fx:id="taskEndDate" layoutX="93.0" layoutY="97.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
+      <TextField fx:id="taskNotes" layoutX="86.0" layoutY="176.0" prefHeight="37.0" prefWidth="280.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskPlace" layoutX="93.0" layoutY="123.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="taskRepeatFrequency" layoutX="93.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Never">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="taskNotes" layoutX="93.0" layoutY="201.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
-         <font>
-            <Font name="Helvetica Neue Light" size="16.0" />
-         </font>
-      </TextField>
+      <CheckBox fx:id="taskStatus" layoutX="102.0" layoutY="211.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="3.0" text="CheckBox" />
       <Button fx:id="buttonDone" layoutX="285.0" layoutY="233.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
          <font>
             <Font name="Helvetica Neue Bold" size="12.0" />
          </font>
       </Button>
+      <Label layoutX="21.0" layoutY="130.0" text="Category:" textFill="WHITE">
+         <font>
+            <Font name="Helvetica Neue Light" size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
