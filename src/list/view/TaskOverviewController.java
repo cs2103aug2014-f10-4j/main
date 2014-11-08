@@ -291,6 +291,9 @@ public class TaskOverviewController {
     }
 
     public void displayMessageToUser(String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
         if (this.feedbackAnimation != null) {
             this.feedbackAnimation.stop();
         }
