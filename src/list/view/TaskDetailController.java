@@ -136,7 +136,7 @@ public class TaskDetailController {
 		if (event.getCode() == KeyCode.ESCAPE) {
 			rootContoller.hideTaskDetail();
 		}
-		
+
 		event.consume();
 	}
 	

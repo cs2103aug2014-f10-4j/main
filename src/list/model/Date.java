@@ -1,12 +1,15 @@
+//@author A0113672L
 package list.model;
 
 import java.util.Calendar;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.IllegalFieldValueException;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import com.mdimension.jchronic.Chronic;
 import com.mdimension.jchronic.utils.Span;
@@ -15,21 +18,23 @@ public class Date implements Comparable<Date> {
     private static final String DAY_FLOATING_PRETTY = "";
     private static final String DAY_FLOATING = "";
     
-    private static final int MINUTE_VALUE = 0;
-    private static final int HOUR_VALUE = 0;
-    private static final String FORMAT_STRING_PRETTY = "d MMM y"; //Wed, 15 Oct 2014 
+    private static final int MINUTE_VALUE = 00;
+    private static final int HOUR_VALUE = 12;
+    private static final String FORMAT_STRING_PRETTY = "d MMM y hh:mma";
     private static final String FORMAT_STRING_DAY_NAME = "EEEE";
     private static final String FORMAT_STRING_MONTH_NAME = "MMM";
-    private static final String FORMAT_STRING_STANDARD = "dd-MM-yyyy"; //15-10-2014
-    private static final String STRING_TODAY = "TODAY";
-    private static final String STRING_TOMORROW = "TOMORROW";
+    private static final String FORMAT_STRING_TIME = "hh:mma";
+    private static final String STRING_TODAY = "Today";
+    private static final String STRING_TOMORROW = "Tomorrow";
     
     private static final DateTimeFormatter FORMATTER_PRETTY = DateTimeFormat.forPattern(FORMAT_STRING_PRETTY);
     private static final DateTimeFormatter FORMATTER_DAY_NAME = DateTimeFormat.forPattern(FORMAT_STRING_DAY_NAME);
     private static final DateTimeFormatter FORMATTER_MONTH_NAME = DateTimeFormat.forPattern(FORMAT_STRING_MONTH_NAME);
-    private static final DateTimeFormatter FORMATTER_STANDARD = DateTimeFormat.forPattern(FORMAT_STRING_STANDARD);
+    private static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern(FORMAT_STRING_TIME);
+    private static final DateTimeFormatter FORMATTER_STANDARD = ISODateTimeFormat.dateTime();
     
     private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
+    private static final DateTimeComparator TIME_COMPARATOR = DateTimeComparator.getInstance(DateTimeFieldType.minuteOfDay());
     
     private static Date DATE_FLOATING = null;
     
@@ -43,7 +48,7 @@ public class Date implements Comparable<Date> {
      * Returns today's date
      */
     public Date() {
-        this.dateTime = new DateTime().withTimeAtStartOfDay();
+        this.dateTime = new DateTime();
     }
     
     public Date(int day, int month, int year) throws InvalidDateException {
@@ -59,7 +64,7 @@ public class Date implements Comparable<Date> {
         try {
             if (dateString.equals(DAY_FLOATING)) {
                 this.isFloating = true;
-                this.dateTime = new DateTime().withTimeAtStartOfDay();
+                this.dateTime = new DateTime();
             } else {
                 this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
             }
@@ -69,8 +74,12 @@ public class Date implements Comparable<Date> {
         }
     }
     
-    public Date(Calendar calendar) {
+    private Date(Calendar calendar) {
         this.dateTime = new DateTime(calendar);
+    }
+    
+    private Date(DateTime dateTime) {
+        this.dateTime = dateTime;
     }
     
     /**
@@ -82,9 +91,24 @@ public class Date implements Comparable<Date> {
      */
     public static Date tryParse(String userInput) {
         try {
-            Span time = Chronic.parse(userInput);
-            return new Date(time.getEndCalendar());
+            Date result;
+            result = tryParsePrettyFormat(userInput);
+            if (result != null) {
+                return result;
+            } else {
+                Span time = Chronic.parse(userInput);
+                return new Date(time.getEndCalendar());                
+            }
         } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private static Date tryParsePrettyFormat(String prettyDateString) {
+        try {
+            DateTime dateTime = FORMATTER_PRETTY.parseDateTime(prettyDateString);
+            return new Date(dateTime);
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
@@ -129,11 +153,32 @@ public class Date implements Comparable<Date> {
         DateTime today = new DateTime();
         DateTime tomorrow = today.plusDays(1);
     	if (DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
-    		return STRING_TODAY;
+    		return STRING_TODAY + " " + getTime();
     	} else if (DATE_ONLY_COMPARATOR.compare(tomorrow, this.dateTime) == 0) {
-    		return STRING_TOMORROW;
+    		return STRING_TOMORROW + " " + getTime();
     	}
         return FORMATTER_PRETTY.print(this.dateTime); 
+    }
+    
+    public String getTime() {
+        return FORMATTER_TIME.print(this.dateTime);
+    }
+    
+    public int compareToDateOnly(Date o) {
+        if (this.isFloating && !o.isFloating) {
+            return 1;
+        } else if (!this.isFloating && o.isFloating) {
+            return -1;
+        }
+        return DATE_ONLY_COMPARATOR.compare(this.dateTime, o.dateTime);
+    }
+    
+    public boolean equalsDateOnly(Date o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof Date)) return false;
+        Date other = (Date) o;
+        return this.compareToDateOnly(other) == 0; 
     }
     
     @Override
@@ -143,7 +188,7 @@ public class Date implements Comparable<Date> {
         } else if (!this.isFloating && o.isFloating) {
             return -1;
         }
-        return DATE_ONLY_COMPARATOR.compare(this.dateTime, o.dateTime);
+        return TIME_COMPARATOR.compare(dateTime, o.dateTime);
     }
     
     @Override
@@ -165,6 +210,6 @@ public class Date implements Comparable<Date> {
         if (this.isFloating) {
             return DAY_FLOATING;
         }
-        return FORMATTER_STANDARD.print(this.dateTime);
+        return FORMATTER_STANDARD.print(dateTime);
     }
 }
