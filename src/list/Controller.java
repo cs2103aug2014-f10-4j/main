@@ -111,7 +111,10 @@ public class Controller extends Application {
             reply = MESSAGE_UNKNOWN_ERROR;
             e.printStackTrace();
         }
-		return reply;
+        
+        userInterface.displayMessageToUser(reply);
+        
+        return reply;
 	}
 
 	public static ITask getTaskWithNumber(int taskNumber) {
@@ -191,7 +194,7 @@ public class Controller extends Application {
 	}
 	
 	private static void displayTasksInCategory(ICategory category) {
-		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
+		displayTasks(category.getName().toUpperCase(), category.getList());
 	}
 	
 //	public static boolean changeDisplayMode(String name) {
