@@ -112,6 +112,8 @@ public class Controller extends Application {
             e.printStackTrace();
         }
         
+        userInterface.displayMessageToUser(reply);
+        
         return reply;
 	}
 

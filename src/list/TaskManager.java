@@ -30,8 +30,6 @@ public class TaskManager {
 	private List<ITask> currentTasks = new ArrayList<ITask>();
 	private List<ITask> overdueTasks = new ArrayList<ITask>();
 
-	// private Map<ICategory, List<ITask>> categoryLists = new
-	// HashMap<ICategory, List<ITask>>();
 	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
 
 	// private List<ITask> floatingTasks = new ArrayList<ITask>();
@@ -68,9 +66,6 @@ public class TaskManager {
 
 		ICategory category = new Category();
 		category.setName(categoryName);
-
-		// List<ITask> newCategoryList = new ArrayList<ITask>();
-		// categoryLists.put(category, newCategoryList);
 		categories.put(categoryName, category);
 
 		return true;
@@ -90,10 +85,6 @@ public class TaskManager {
 		if (categories.containsKey(categoryName)) {
 			categories.remove(categoryName);
 		}
-		
-//		if (categoryLists.containsKey(categoryName)) {
-//			categoryLists.remove(categoryName);
-//		}
 	}
 
 	/**
@@ -195,21 +186,6 @@ public class TaskManager {
 		return this.overdueTasks;
 	}
 
-	/**
-	 * Gets the tasks list of a certain category as specified by
-	 * <code>category</code> in the input
-	 * 
-	 * @param category
-	 * @return the tasks list of a certain category
-	 */
-	List<ITask> getTasksInCategory(ICategory category) {
-		if (categoryLists.get(category) == null) {
-			categoryLists.put(category, new ArrayList<ITask>());
-		}
-
-		return categoryLists.get(category);
-	}
-
 	// METHODS FOR COMMANDS EXECUTION
 	void addTask(ITask task) {
 		if (task.hasDeadline()) {
@@ -228,25 +204,6 @@ public class TaskManager {
 			Collections.sort(floatingTasks);
 		}
 	}
-
-//	public void addToCategoryList(ITask task) {
-//		if (hasCategory(task)) {
-//			ICategory category = task.getCategory();
-//			category.getList().add(task);
-//			
-//			List<ITask> tasksListInCategory = getTasksInCategory(category);
-//			tasksListInCategory.add(task);
-//			Collections.sort(tasksListInCategory);
-//		}
-//	}
-//
-//	public void removeFromCategoryList(ITask task) {
-//		if (hasCategory(task)) {
-//			ICategory category = task.getCategory();
-//			List<ITask> tasksListInCategory = getTasksInCategory(category);
-//			tasksListInCategory.remove(task);
-//		}
-//	}
 
 	void markTaskAsDone(ITask task) {
 		task.setStatus(TaskStatus.DONE);
@@ -286,12 +243,6 @@ public class TaskManager {
 		if (hasCategory(task)) {
 			ICategory category = task.getCategory();
 			category.getList().remove(task);
-			
-//			List<ITask> tasksListInCategory = getTasksInCategory(category);
-//
-//			if (tasksListInCategory != null) {
-//				tasksListInCategory.remove(task);
-//			}
 		}
 
 		deletedTasks.push(task);
@@ -319,8 +270,9 @@ public class TaskManager {
 		currentTasks.clear();
 		overdueTasks.clear();
 		deletedTasks.clear();
-		for (List<ITask> list : this.categoryLists.values()) {
-			list.clear();
+		
+		for (ICategory category: this.categories.values()) {
+			category.getList().clear();
 		}
 	}
 
@@ -328,21 +280,6 @@ public class TaskManager {
 	void loadData() throws IOException, JSONException {
 		loadCategories();
 		loadTasks();
-		setupDisplayModeAsCategory();
-	}
-
-	private void setupDisplayModeAsCategory() {
-		ICategory current = new Category().setName("Current Tasks");
-		categories.put("current", current);
-		categoryLists.put(current, currentTasks);
-
-		ICategory floating = new Category().setName("Floating Tasks");
-		categories.put("floating", floating);
-		categoryLists.put(floating, currentTasks);
-
-		ICategory overdue = new Category().setName("Overdue Tasks");
-		categories.put("overdue", overdue);
-		categoryLists.put(overdue, currentTasks);
 	}
 
 	void saveData() throws IOException {
@@ -379,16 +316,6 @@ public class TaskManager {
 	boolean hasTask(ITask task) {
 		return tasks.contains(task) || floatingTasks.contains(task);
 	}
-
-	// Private functions
-	// private static boolean hasDeadline(ITask task) {
-	// return !task.getEndDate().equals(Date.getFloatingDate());
-	// }
-	//
-	// private static boolean isOverdue(ITask task) {
-	// Date today = new Date();
-	// return (task.getEndDate().compareTo(today) < 0);
-	// }
 
 	private static boolean hasCategory(ITask task) {
 		return (task.getCategory() != null

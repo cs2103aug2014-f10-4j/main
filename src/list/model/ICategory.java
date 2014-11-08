@@ -15,10 +15,5 @@ public interface ICategory {
     
     public ICategory setName(String name);
     
-    public void setList(List<ITask> list);
-
-	public Color getDefaultColor();
-
-	public String getDefaultName();
-    
+    public void setList(List<ITask> list);    
 }

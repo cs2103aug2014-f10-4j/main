@@ -47,13 +47,11 @@ public class Category implements ICategory {
 		return this;
 	}
 	
-	@Override
-	public Color getDefaultColor() {
+	public static Color getDefaultColor() {
 		return DEFAULT_COLOR;
 	}
 	
-	@Override
-	public String getDefaultName() {
+	public static String getDefaultName() {
 		return DEFAULT_NAME;
 	}
 	
