@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
@@ -24,7 +23,6 @@ import list.Controller;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
-import list.IParser;
 
 public class RootWindowController implements IUserInterface {
 	
