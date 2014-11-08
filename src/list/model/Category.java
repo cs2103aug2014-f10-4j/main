@@ -1,14 +1,17 @@
 package list.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Category implements ICategory {
 	private static final String DEFAULT_NAME = "";
-    private static final Color DEFAULT_COLOR = Color.BLACK;
+    private static final Color DEFAULT_COLOR = Color.WHITE;
     private static ICategory defaultCategory = null;
     
     private String name = null;
 	private Color color = null;
+	private List<ITask> list;
 	
 	/**
 	 * Using Category constructor can cause the application to create
@@ -19,6 +22,7 @@ public class Category implements ICategory {
 	public Category() {
 	    this.name = DEFAULT_NAME;
 	    this.color = DEFAULT_COLOR;
+	    list = new ArrayList<ITask>();
 	}
 	
 	@Override
@@ -56,6 +60,16 @@ public class Category implements ICategory {
 	        defaultCategory = new Category().setName(DEFAULT_NAME).setColor(DEFAULT_COLOR);
 	    }
 	    return defaultCategory;
+	}
+
+	@Override
+	public List<ITask> getList() {
+		return list;
+	}
+
+	@Override
+	public void setList(List<ITask> list) {
+		this.list = list;
 	}
 
 }

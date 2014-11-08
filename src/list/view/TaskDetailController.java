@@ -17,6 +17,8 @@ import list.model.ITask.TaskStatus;
 
 public class TaskDetailController {
 	
+	private static final String MESSAGE_EDIT_SUCCESS = "Task is successfully edited";
+	
 	private RootWindowController rootContoller;
 	private int taskNumber = 0;
 	
@@ -97,31 +99,16 @@ public class TaskDetailController {
 			handleDoneAction();
 		});
 		
-		buttonDone.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.ENTER) {
-					System.out.println("Enter Pressed on button");
-					handleDoneAction();
-				} else if (event.getCode() == KeyCode.TAB){
-					buttonDone.setEffect(null);
-				} 
-			}
-		
+		anchorPane.setOnKeyPressed((event) -> {
+			handlePaneKeyEvent(event);
 		});
 		
-		taskNotes.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.TAB && !event.isShiftDown()) {
-					DropShadow dropShadow = new DropShadow(20,Color.WHITE);
-					buttonDone.setEffect(dropShadow);
-					System.out.println("TAB Pressed");
-					buttonDone.requestFocus();
-				}
-			}
+		buttonDone.setOnKeyPressed((event) -> {
+			handleDoneKeyEvent(event);
+		});
+		
+		taskNotes.setOnKeyPressed((event) -> {
+			handleTaskNotesKeyEvent(event);
 		});
 		
 		anchorPane.setOnKeyPressed((event) -> {
@@ -133,21 +120,71 @@ public class TaskDetailController {
 	    event.consume();
 	}
 	
+	private void handleTaskNotesKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.TAB && !event.isShiftDown()) {
+			animateDoneButton();
+		}
+	}
+	
+	private void handlePaneKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.ESCAPE) {
+			rootContoller.hideTaskDetail();
+		}
+	}
+	
+	private void handleDoneKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			handleDoneAction();
+		} else if (event.getCode() == KeyCode.TAB) {
+			buttonDone.setEffect(null);
+			taskTitle.requestFocus();
+		}
+	}
+
 	private void handleDoneAction() {
 		StringBuilder inputStringBuilder = new StringBuilder();
 		inputStringBuilder.append("edit " + this.taskNumber + " ");
-		inputStringBuilder.append("-t " + taskTitle.getText() + " ");
-		inputStringBuilder.append("-c " + taskCategory.getText() + " ");
-		inputStringBuilder.append("-s " + taskStartDate.getText() + " ");
-		inputStringBuilder.append("-d " + taskEndDate.getText() + " ");
-		inputStringBuilder.append("-p " + taskPlace.getText() + " ");
-		inputStringBuilder.append("-r " + taskRepeatFrequency.getText() + " ");
-		inputStringBuilder.append("-n " + taskNotes.getText());
 		
-		Controller.processUserInput(inputStringBuilder.toString());
+		if (!taskTitle.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-t " + taskTitle.getText() + " ");
+		}
 		
-		rootContoller.hideTaskDetail();
+		if (!taskCategory.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-c " + taskCategory.getText() + " ");
+		}
+		
+		if (!taskStartDate.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-s " + taskStartDate.getText() + " ");
+		}
+		
+		if (!taskEndDate.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-d " + taskEndDate.getText() + " ");
+		}
+		
+		if (!taskPlace.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-p " + taskPlace.getText() + " ");
+		}
+		
+		if (!taskRepeatFrequency.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-r " + taskRepeatFrequency.getText() + " ");
+		}
+		
+		if (!taskNotes.getText().trim().isEmpty()) {
+			inputStringBuilder.append("-n " + taskNotes.getText());
+		}
+		
+		String reply = Controller.processUserInput(inputStringBuilder.toString());
+		rootContoller.displayMessageToUser(reply);
+		
+		if (reply.equals(MESSAGE_EDIT_SUCCESS)) {
+			rootContoller.hideTaskDetail();
+		} 
 	}
 
+	private void animateDoneButton() {
+		DropShadow dropShadow = new DropShadow(20,Color.WHITE);
+		buttonDone.setEffect(dropShadow);
+		buttonDone.requestFocus();
+	}
 	
 }

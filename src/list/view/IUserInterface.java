@@ -29,6 +29,10 @@ public interface IUserInterface {
     void displayCategories(List<ICategory> categories);
     
     void hideCategories();
+
+    void displayHelp();
+    
+    void hideHelp();
     
     boolean back();
     

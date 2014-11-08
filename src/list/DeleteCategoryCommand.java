@@ -36,7 +36,7 @@ public class DeleteCategoryCommand implements ICommand {
         if (category == null) {
             throw new CommandExecutionException(ERROR_CATEGORY_NOT_SPECIFIED);
         }
-        affectedTasks = taskManager.getTasksInCategory(category);
+        affectedTasks = category.getList();
         makeInverseCommand(); //make inverse command for undo
         for (ITask task: affectedTasks) {
             task.setCategory(Category.getDefaultCategory());

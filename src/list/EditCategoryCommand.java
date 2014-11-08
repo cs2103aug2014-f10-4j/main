@@ -40,6 +40,7 @@ public class EditCategoryCommand implements ICommand {
         }
         taskManager.saveData();
         Controller.displayCategories();
+        Controller.refreshUI();
         return MESSAGE_SUCCESS;
     }
 
