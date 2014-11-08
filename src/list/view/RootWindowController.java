@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
@@ -41,6 +40,7 @@ public class RootWindowController implements IUserInterface {
 	private Button buttonToPrev;
 	
 	private Pane taskDetail;
+	private Pane help;
 	private ScrollPane paneForCategories;
 	private Pane taskOverview;
 	private boolean isShowingCategories = false;
@@ -48,6 +48,7 @@ public class RootWindowController implements IUserInterface {
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
 	private CategoriesController categoriesController;
+	private HelpController helpController;
 	private CommandParser parser = new CommandParser();
 	
 	
@@ -77,6 +78,18 @@ public class RootWindowController implements IUserInterface {
 	public void hideCategories() {
     	animateCategoryAndTextOverview(false);    	
     	isShowingCategories = false;
+	}
+    
+    @Override
+    public void displayHelp() {
+        showHelpLayout();
+        helpController.getParentController(this);        
+    }
+    
+    @Override
+	public void hideHelp() {
+		rootPane.getChildren().remove(taskDetail);
+		console.requestFocus();
 	}
 
     @Override
@@ -222,10 +235,28 @@ public class RootWindowController implements IUserInterface {
             taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            taskDetail.setEffect(new DropShadow(2.0d, Color.BLACK));
+            taskDetail.setEffect(new DropShadow(2.0d, Color.WHITE));
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(75);
             rootPane.getChildren().add(taskDetail);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+    
+    private void showHelpLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Help.fxml"));
+            
+            help = (Pane) loader.load();
+            
+            helpController = loader.getController();
+            help.setEffect(new DropShadow(2.0d, Color.BLACK));
+            help.setLayoutX(50);
+            help.setLayoutY(33);
+            rootPane.getChildren().add(help);
             
         } catch (IOException e) {
             e.printStackTrace();

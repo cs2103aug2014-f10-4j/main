@@ -5,6 +5,6 @@
 <?import javafx.scene.control.ScrollPane?>
 
 
-<ScrollPane fx:id="paneContainer" prefHeight="332.0" prefWidth="140.0" style="-fx-background-color: #333333; -fx-background: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.CategoriesController">
+<ScrollPane prefHeight="332.0" prefWidth="140.0" style="-fx-background-color: #333333; -fx-background: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.CategoriesController">
 	<!-- TODO Add Nodes -->
 </ScrollPane>
