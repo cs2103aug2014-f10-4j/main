@@ -39,8 +39,8 @@ public class CategoriesController {
     private double PANE_HEIGHT;
     
     // fixed value for the string of labels and buttons
-    private static final String stringForLabelAllCategory = "All Task";
-    private static final String stringForLabelOtherCategory = "Categories";
+    private static final String stringForLabelAllCategory = " All Task";
+    private static final String stringForLabelOtherCategory = " Categories";
     private static final String stringForButtonCurrentTask = "Current Task";
     private static final String stringForButtonFloatingTask = "Floating Task";
     private static final String stringForButtonOverDueTask = "Overdue Task";
@@ -148,8 +148,9 @@ public class CategoriesController {
 		        button.setPrefHeight(BUTTON_HEIGHT);
 		        button.setPrefWidth(BUTTON_WIDTH);
 		        button.setFont(Font.font("Helvetica", 14.0d));
-		        button.setStyle("-fx-background-color: #333333; -fx-text-fill: #ffffff;");
-		        
+		        button.setStyle("-fx-background-color: #333333;");
+		        String s = Integer.toHexString(listOfCategories.get(i).getColor().getRGB());
+		        button.setTextFill(Color.web("#" + s.substring(2, 8)));
 		        // add the button on the Pane
 		        categoriesContainer.getChildren().add(button);
 			
