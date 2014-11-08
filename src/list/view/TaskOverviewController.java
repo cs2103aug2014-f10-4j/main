@@ -224,7 +224,7 @@ public class TaskOverviewController {
     		Date curDate = newDisplayedTask.get(i).getTimelineDate();
     		if (curDate.equals(Date.getFloatingDate())) {
     			displayFloatingDateAtPosition(i);
-    		} else if (prevDate.equals(curDate)) {
+    		} else if (prevDate.equalsDateOnly(curDate)) {
     			displayLineAtPosition(i);
     		} else {
     			displayDateAtPosition(curDate, i);

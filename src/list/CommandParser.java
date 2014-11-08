@@ -312,7 +312,7 @@ public class CommandParser implements IParser {
     }
 
     private void setStatus(CommandBuilder commandBuilder) {
-    	if (commandType == CommandType.EDIT) {
+    	if (commandType == CommandType.EDIT && parameters.containsKey(MARKER_STATUS)) {
     		TaskStatus status = TaskStatus.valueOf(parameters.get(MARKER_STATUS).toString().trim().toUpperCase());
     		commandBuilder.setStatus(status);
     	}
