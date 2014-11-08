@@ -123,6 +123,14 @@ public class TaskDetailController {
 				}
 			}
 		});
+		
+		anchorPane.setOnKeyPressed((event) -> {
+		    handleKeyPressed(event);
+		}); 
+	}
+	
+	private void handleKeyPressed(KeyEvent event) {
+	    event.consume();
 	}
 	
 	private void handleDoneAction() {

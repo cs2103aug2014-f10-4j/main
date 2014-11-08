@@ -35,7 +35,7 @@ public class SearchCommand implements ICommand {
                 matchKeyword(task.getPlace()) ||
                 matchKeyword(task.getNotes()) ||
                 matchKeyword(task.getCategory().getName()) ||
-                matchKeyword(task.getStatus().toString())) {        
+                matchKeyword(task.getStatus().toString())) {
                 results.add(task);
             }
         }
