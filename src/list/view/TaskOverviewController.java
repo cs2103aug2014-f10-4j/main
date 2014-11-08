@@ -17,6 +17,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import list.model.Date;
@@ -142,6 +145,7 @@ public class TaskOverviewController {
             label = taskLabels.get(task);
             updateTaskLabelText(label, beginIndex + 1 + positionIndex, 
             					task.getTitle());
+            updateTaskLabelColor(label, task.getCategory().getColor());
             animateMoveLabel(label, positionIndex);
         } else { //if task is not displayed yet
             label = createTaskLabel(task, positionIndex);
@@ -150,7 +154,12 @@ public class TaskOverviewController {
         }
     }
 
-    private void animateShowLabel(Label label) {
+    private void updateTaskLabelColor(Label label, java.awt.Color color) {
+    	String s = Integer.toHexString(color.getRGB());
+        label.setTextFill(Color.web("#" + s.substring(2, 8)));
+	}
+
+	private void animateShowLabel(Label label) {
         label.setOpacity(0);
         tasksContainer.getChildren().add(label);
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(TASK_LABEL_ANIMATION_DURATION), label);
@@ -189,6 +198,8 @@ public class TaskOverviewController {
         label.setPrefHeight(TASK_LABEL_HEIGHT);
         label.setPrefWidth(TASK_LABEL_WIDTH);
         label.setFont(Font.font(HELVETICA_NEUE, 18.0d));
+        String s = Integer.toHexString(task.getCategory().getColor().getRGB());
+        label.setTextFill(Color.web("#" + s.substring(2, 8)));
         return label;
     }
     
