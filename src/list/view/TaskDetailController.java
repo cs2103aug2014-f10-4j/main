@@ -1,6 +1,5 @@
 package list.view;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -32,8 +31,8 @@ public class TaskDetailController {
 	private TextField taskStartDate;
 	@FXML
 	private TextField taskEndDate;
-	@FXML
-	private TextField taskRepeatFrequency;
+//	@FXML
+//	private TextField taskRepeatFrequency;
 	@FXML
 	private TextField taskPlace;
 	@FXML
@@ -72,7 +71,7 @@ public class TaskDetailController {
 			taskEndDate.setText(task.getEndDate().getPrettyFormat());
 		}
 		
-		taskRepeatFrequency.setText(task.getRepeatFrequency().name());
+		//taskRepeatFrequency.setText(task.getRepeatFrequency().name());
 		
 		if (task.getPlace().isEmpty()) {
 			taskPlace.setText("");
@@ -110,11 +109,28 @@ public class TaskDetailController {
 		taskNotes.setOnKeyPressed((event) -> {
 			handleTaskNotesKeyEvent(event);
 		});
+		
+		taskStatus.setOnKeyPressed((event) -> {
+			handleTaskStatusKeyEvent(event);
+		});
 	}
 	
-	private void handleTaskNotesKeyEvent(KeyEvent event) {
-		if (event.getCode() == KeyCode.TAB && !event.isShiftDown()) {
+	private void handleTaskStatusKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.TAB && event.isShiftDown()) {
+			taskNotes.requestFocus();
+		} else if (event.getCode() == KeyCode.TAB) {
 			animateDoneButton();
+		} else if (event.getCode() == KeyCode.SPACE) {
+			toggleTaskStatus();
+			event.consume();
+		}
+	}
+
+	
+
+	private void handleTaskNotesKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.TAB) {
+			taskStatus.requestFocus();
 		}
 	}
 	
@@ -157,13 +173,15 @@ public class TaskDetailController {
 			inputStringBuilder.append("-p " + taskPlace.getText() + " ");
 		}
 		
-		if (!taskRepeatFrequency.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-r " + taskRepeatFrequency.getText() + " ");
-		}
+//		if (!taskRepeatFrequency.getText().trim().isEmpty()) {
+//			inputStringBuilder.append("-r " + taskRepeatFrequency.getText() + " ");
+//		}
 		
 		if (!taskNotes.getText().trim().isEmpty()) {
 			inputStringBuilder.append("-n " + taskNotes.getText());
 		}
+		
+		inputStringBuilder.append("-f " + taskStatus.isSelected());
 		
 		String reply = Controller.processUserInput(inputStringBuilder.toString());
 		rootContoller.displayMessageToUser(reply);
@@ -177,6 +195,14 @@ public class TaskDetailController {
 		DropShadow dropShadow = new DropShadow(20,Color.WHITE);
 		buttonDone.setEffect(dropShadow);
 		buttonDone.requestFocus();
+	}
+	
+	private void toggleTaskStatus() {
+		if (taskStatus.isSelected()) {
+			taskStatus.setSelected(false);
+		} else {
+			taskStatus.setSelected(true);
+		}
 	}
 	
 }
