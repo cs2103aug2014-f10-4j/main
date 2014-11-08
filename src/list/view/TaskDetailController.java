@@ -31,8 +31,6 @@ public class TaskDetailController {
 	private TextField taskStartDate;
 	@FXML
 	private TextField taskEndDate;
-//	@FXML
-//	private TextField taskRepeatFrequency;
 	@FXML
 	private TextField taskPlace;
 	@FXML
@@ -57,6 +55,8 @@ public class TaskDetailController {
 			taskCategory.setText("");
 		} else {
 			taskCategory.setText(task.getCategory().getName());
+			String rgbString = Integer.toHexString(task.getCategory().getColor().getRGB());
+	        taskCategory.setStyle("-fx-background-color:#333333;-fx-text-fill:#" + rgbString.substring(2, 8));
 		}
 		
 		if (task.getStartDate().equals(Date.getFloatingDate())) {
@@ -70,9 +70,7 @@ public class TaskDetailController {
 		} else {
 			taskEndDate.setText(task.getEndDate().getPrettyFormat());
 		}
-		
-		//taskRepeatFrequency.setText(task.getRepeatFrequency().name());
-		
+				
 		if (task.getPlace().isEmpty()) {
 			taskPlace.setText("");
 		} else {
@@ -175,15 +173,15 @@ public class TaskDetailController {
 			inputStringBuilder.append("-p " + taskPlace.getText() + " ");
 		}
 		
-//		if (!taskRepeatFrequency.getText().trim().isEmpty()) {
-//			inputStringBuilder.append("-r " + taskRepeatFrequency.getText() + " ");
-//		}
-		
 		if (!taskNotes.getText().trim().isEmpty()) {
 			inputStringBuilder.append("-n " + taskNotes.getText());
 		}
 		
-		inputStringBuilder.append("-f " + taskStatus.isSelected());
+		if (taskStatus.isSelected()) {
+			inputStringBuilder.append("-status done");
+		} else {
+			inputStringBuilder.append("-status pending");
+		}
 		
 		String reply = Controller.processUserInput(inputStringBuilder.toString());
 		rootContoller.displayMessageToUser(reply);

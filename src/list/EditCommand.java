@@ -6,6 +6,7 @@ import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
+import list.model.ITask.TaskStatus;
 import list.util.Constants;
 
 /**
@@ -31,6 +32,7 @@ public class EditCommand implements ICommand {
 	private String place;
 	private ICategory category;
 	private String notes;
+	private TaskStatus status;
 	
 	private ICommand inverseCommand;
 	private boolean isExecuted = false;
@@ -44,7 +46,8 @@ public class EditCommand implements ICommand {
 			           RepeatFrequency repeatFrequency,
 			           String place,
 			           ICategory category,
-			           String notes) {
+			           String notes,
+			           TaskStatus status) {
 		this.task = task;
 		this.title = title;
 		this.startDate = startDate;
@@ -53,6 +56,7 @@ public class EditCommand implements ICommand {
 		this.place = place;
 		this.category = category;
 		this.notes = notes;
+		this.status = status;
 	}
 	
 	public EditCommand setTask(ITask task) {
@@ -92,6 +96,11 @@ public class EditCommand implements ICommand {
 	public EditCommand setNotes(String notes) {
 	    this.notes = notes;
 	    return this;
+	}
+	
+	public EditCommand setStatus(TaskStatus status) {
+		this.status = status;
+		return this;
 	}
 
 	@Override
@@ -137,13 +146,15 @@ public class EditCommand implements ICommand {
 		}
 		
 		if (this.category != null) {
-			//taskManager.removeFromCategoryList(taskToEdit);
 			taskToEdit.setCategory(category);
-			//taskManager.addToCategoryList(taskToEdit);
 		}
 		
 		if (this.notes != null) {
 			taskToEdit.setNotes(notes);
+		}
+		
+		if (this.status != null) {
+			taskToEdit.setStatus(status);
 		}
 		
 		if (taskToEdit.hasDeadline()) {
@@ -206,6 +217,10 @@ public class EditCommand implements ICommand {
 	public String getNotes() {
 	    return this.notes;
 	}
+	
+	public TaskStatus getStatus() {
+		return this.status;
+	}
 
     @Override
     public ICommand getInverseCommand() {
@@ -240,8 +255,10 @@ public class EditCommand implements ICommand {
         if (this.repeatFrequency != null) {
             inverseCommand.setRepeatFrequency(this.task.getRepeatFrequency());
         }
+        if (this.status != null) {
+        	inverseCommand.setStatus(this.task.getStatus());
+        }
         
         return inverseCommand;
     }
-
 }

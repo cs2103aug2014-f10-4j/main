@@ -5,6 +5,7 @@ import java.awt.Color;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
+import list.model.ITask.TaskStatus;
 
 /**
  * A builder class for generating various command objects
@@ -22,6 +23,7 @@ public class CommandBuilder {
 	private String place = null;
 	private ICategory category = null;
 	private String notes = null;
+	private TaskStatus status = null;
 	private ITask task = null;
 	private Color color = null;
 	private String selectedCategoryName = null;
@@ -89,6 +91,11 @@ public class CommandBuilder {
 		return this;
 	}
 	
+	CommandBuilder setStatus(TaskStatus status) {
+		this.status = status;
+		return this;
+	}
+	
 	CommandBuilder setObjectNumber(Integer taskNumber) {
 	    if (taskNumber != null) {
 	        this.task = Controller.getTaskWithNumber(taskNumber);
@@ -129,7 +136,7 @@ public class CommandBuilder {
 			    break;
 			case EDIT:
 			    command = new EditCommand(task, title, startDate, endTime,
-			            repeatFrequency, place, category, notes);
+			            repeatFrequency, place, category, notes, status);
 			    break;
 			case DISPLAY:
 				command = new DisplayCommand(task);

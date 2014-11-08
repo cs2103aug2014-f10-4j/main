@@ -17,9 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import list.model.Date;
@@ -154,8 +152,8 @@ public class TaskOverviewController {
     }
 
     private void updateTaskLabelColor(Label label, java.awt.Color color) {
-    	String s = Integer.toHexString(color.getRGB());
-        label.setTextFill(Color.web("#" + s.substring(2, 8)));
+    	String rgbString = Integer.toHexString(color.getRGB());
+        label.setTextFill(Color.web("#" + rgbString.substring(2, 8)));
 	}
 
 	private void animateShowLabel(Label label) {

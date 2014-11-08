@@ -13,6 +13,7 @@ import list.CommandBuilder.CommandTypeNotSetException;
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
+import list.model.ITask.TaskStatus;
 
 public class CommandParser implements IParser {
     
@@ -32,6 +33,7 @@ public class CommandParser implements IParser {
     private static final String MARKER_END_DATE = "-d";
     private static final String MARKER_START_DATE = "-s";
     private static final String MARKER_TITLE = "-t";
+    private static final String MARKER_STATUS = "-status";
     
     private static final String REGEX_SPLITTER = "\\s+";
 
@@ -48,6 +50,7 @@ public class CommandParser implements IParser {
         EXPECTATIONS_TASK.put(MARKER_PLACE, "Place");
         EXPECTATIONS_TASK.put(MARKER_NOTES, "Notes");
         EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
+        EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
     }
     private static final Map<String, String> EXPECTATIONS_CATEGORY;
     static {
@@ -303,11 +306,19 @@ public class CommandParser implements IParser {
         setRepeatFrequency(commandBuilder);
         setGeneralArgumentAsTitle(commandBuilder);
         setKeyword(commandBuilder);
-        
+        setStatus(commandBuilder);
+       
         ensureEndDateIsNotEarlierThanStartDate();
     }
 
-    private void setKeyword(CommandBuilder commandBuilder) {
+    private void setStatus(CommandBuilder commandBuilder) {
+    	if (commandType == CommandType.EDIT) {
+    		TaskStatus status = TaskStatus.valueOf(parameters.get(MARKER_STATUS).toString().trim().toUpperCase());
+    		commandBuilder.setStatus(status);
+    	}
+	}
+
+	private void setKeyword(CommandBuilder commandBuilder) {
         if (commandType == CommandType.SEARCH) {
             commandBuilder.setKeyword(generalArgument.toString());            
         }
