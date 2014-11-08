@@ -126,6 +126,7 @@ public class RootWindowController implements IUserInterface {
 
 	@Override
 	public void highlightTask(ITask task) {
+		updatePageTitle();
 		taskOverviewController.highlightTask(task);
 	}
 
@@ -332,7 +333,6 @@ public class RootWindowController implements IUserInterface {
 
 	@Override
 	public void refreshUI() {
-	    updatePageTitle();
 		taskOverviewController.refresh();
 	}
 
