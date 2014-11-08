@@ -101,13 +101,12 @@ public class TaskManager {
 		if (categoryName == null || categoryName.isEmpty()) {
 			return Category.getDefaultCategory();
 		}
-		categoryName = categoryName.trim().toLowerCase();
 
-		if (!categories.containsKey(categoryName)) {
+		if (!categories.containsKey(categoryName.trim().toLowerCase())) {
 			addCategory(categoryName);
 		}
 
-		return categories.get(categoryName);
+		return categories.get(categoryName.trim().toLowerCase());
 	}
 
 	List<ICategory> getAllCategories() {
