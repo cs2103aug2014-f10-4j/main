@@ -110,14 +110,6 @@ public class TaskDetailController {
 		taskNotes.setOnKeyPressed((event) -> {
 			handleTaskNotesKeyEvent(event);
 		});
-		
-		anchorPane.setOnKeyPressed((event) -> {
-		    handleKeyPressed(event);
-		}); 
-	}
-	
-	private void handleKeyPressed(KeyEvent event) {
-	    event.consume();
 	}
 	
 	private void handleTaskNotesKeyEvent(KeyEvent event) {
@@ -130,6 +122,7 @@ public class TaskDetailController {
 		if (event.getCode() == KeyCode.ESCAPE) {
 			rootContoller.hideTaskDetail();
 		}
+		event.consume();
 	}
 	
 	private void handleDoneKeyEvent(KeyEvent event) {
