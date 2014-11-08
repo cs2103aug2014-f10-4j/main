@@ -140,7 +140,10 @@ public class RootWindowController implements IUserInterface {
     	});
     	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	next();
+    	    	boolean success = next();
+    	    	if (!success) {
+    	    	    //show something
+    	    	}
     	    }
     	});
     	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {

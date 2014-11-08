@@ -7,9 +7,11 @@ import java.util.Map;
 
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -17,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import list.model.Date;
@@ -300,7 +303,10 @@ public class TaskOverviewController {
 	public void highlightTask(ITask task) {
 		goToPageContaininingTask(task);
 		refresh();
-		//TODO: highlight animation
+		Label label = taskLabels.get(task);
+		label.setStyle("-fx-background-color: yellow;");
+		//wait a few seconds
+		label.setStyle("-fx-background-color: none;");
 	}
 
 	private void goToPageContaininingTask(ITask task) {
