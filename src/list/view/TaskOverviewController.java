@@ -311,7 +311,7 @@ public class TaskOverviewController {
 
 	private void goToPageContaininingTask(ITask task) {
 		int taskNumber = getTaskNumber(task);
-		beginIndex = taskNumber / MAX_NO_OF_TASKS;
+		beginIndex = (taskNumber / MAX_NO_OF_TASKS) * MAX_NO_OF_TASKS;
 	}
 
 	
