@@ -25,6 +25,7 @@ public class CommandBuilder {
 	private ITask task = null;
 	private Color color = null;
 	private String selectedCategoryName = null;
+    private String keyword;
 	
 	@SuppressWarnings("serial")
     class CommandTypeNotSetException extends Exception { };
@@ -44,7 +45,7 @@ public class CommandBuilder {
 	
 	static enum CommandType {
 		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
-		UNDO, REDO, PREV, NEXT, HELP, SEARCH,
+		UNDO, REDO, PREV, NEXT, HELP, SEARCH, HOME,
 		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY
 	}
 	
@@ -105,6 +106,11 @@ public class CommandBuilder {
 	    return this;
 	}
 	
+	CommandBuilder setKeyword(String keyword) {
+	    this.keyword = keyword;
+	    return this;
+	}
+	
 	/**
 	 * This method uses the given information to construct
 	 * the corresponding command object.
@@ -156,7 +162,10 @@ public class CommandBuilder {
 			    command = new HelpCommand();
 			    break;
 			case SEARCH:
-			    command = new SearchCommand();
+			    command = new SearchCommand(keyword);
+			    break;
+			case HOME:
+			    command = new HomeCommand();
 			    break;
 			case CATEGORY_ADD:
 			    command = new AddCategoryCommand(title, color);
