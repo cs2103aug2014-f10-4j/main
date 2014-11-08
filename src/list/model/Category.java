@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Category implements ICategory {
 	private static final String DEFAULT_NAME = "";
-    private static final Color DEFAULT_COLOR = Color.BLACK;
+    private static final Color DEFAULT_COLOR = Color.WHITE;
     private static ICategory defaultCategory = null;
     
     private String name = null;
