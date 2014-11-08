@@ -41,4 +41,8 @@ public interface ITask extends Comparable<ITask> {
 	public TaskStatus getStatus();
 
 	public void setStatus(TaskStatus status);
+	
+	public boolean hasDeadline();
+	
+	public boolean isOverdue();
 }

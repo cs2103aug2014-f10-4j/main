@@ -105,9 +105,13 @@ public class RootWindowController implements IUserInterface {
         return taskOverviewController.next();
     }
 
-    @FXML
+	@Override
+	public void highlightTask(ITask task) {
+		taskOverviewController.highlightTask(task);
+	}
+
+	@FXML
     private void initialize() {
-    	console.requestFocus();
         showTaskOverviewLayout();
         setUpButtons();
         console.setOnAction((event) -> {
@@ -115,6 +119,7 @@ public class RootWindowController implements IUserInterface {
         });
         
         setConsoleKeyPressHandler();
+        setWindowKeyPressHandler();
     }
     
     private void setUpButtons() {
@@ -134,7 +139,10 @@ public class RootWindowController implements IUserInterface {
     	});
     	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	next();
+    	    	boolean success = next();
+    	    	if (!success) {
+    	    	    //show something
+    	    	}
     	    }
     	});
     	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {
@@ -150,28 +158,41 @@ public class RootWindowController implements IUserInterface {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.SPACE)) {
-                    try {
-                        parser.clear();
-                        parser.append(console.getText());
-                        Map<String, String> expected = parser.getExpectedInputs();
-                        StringBuilder expectedStr = new StringBuilder();
-                        for (String key: expected.keySet()) {
-                            expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
-                        }
-                        displayMessageToUser(expectedStr.toString());
-                    } catch (ParseException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    
+                    showSyntaxSuggestion();   
                 }
-                if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.BACK_SPACE)) {
+            }
+
+            private void showSyntaxSuggestion() {
+                try {
                     parser.clear();
+                    parser.append(console.getText());
+                    Map<String, String> expected = parser.getExpectedInputs();
+                    StringBuilder expectedStr = new StringBuilder();
+                    for (String key: expected.keySet()) {
+                        expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
+                    }
+                    displayMessageToUser(expectedStr.toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
             
         };
         console.setOnKeyPressed(handler);
+    }
+    
+    private void setWindowKeyPressHandler() {
+        EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                if(!event.getText().isEmpty()) {
+                    console.requestFocus();
+                }
+            }
+            
+        };
+        rootPane.setOnKeyPressed(handler);
     }
     
     private void showCategoriesLayout() {
@@ -230,7 +251,7 @@ public class RootWindowController implements IUserInterface {
     }
     
     private void animateCategoryAndTextOverview(boolean willDisplay) {
-    	if(willDisplay) {
+    	if (willDisplay) {
     		TranslateTransition translateForTaskOverview;
     		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
     		translateForTaskOverview.setToX(140);
@@ -267,4 +288,9 @@ public class RootWindowController implements IUserInterface {
         console.setText("");
         //console.promptTextProperty();
     }
+
+	@Override
+	public void refreshUI() {
+		taskOverviewController.refresh();
+	}
 }

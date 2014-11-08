@@ -68,7 +68,7 @@ public class ConverterTest {
 	private ICategory categoryTwo;
 	
 	@Before
-	public void initializeTest() throws InvalidDateException {
+	public void initializeTest() throws Exception {
 		converter = new Converter();
 		tasks = new ArrayList<ITask>();
 		categories = new ArrayList<ICategory>();
@@ -77,8 +77,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldConvertListOfTasksToCorrectJsonObject() 
-			throws JSONException, InvalidDateException {	
+	public void shouldConvertListOfTasksToCorrectJsonObject() throws Exception {	
 		JSONArray tasksListInJson = converter.convertTasksListToJson(tasks);
 		
 		JSONObject firstTaskInJson = tasksListInJson.getJSONObject(0);
@@ -118,8 +117,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldConvertJsonArrayToTaskLists() throws JSONException, 
-			InvalidDateException, CorruptedJsonObjectException {
+	public void shouldConvertJsonArrayToTaskLists() throws Exception {
 		JSONArray jsonArray = new JSONArray();
 		
 		JSONObject jsonTaskOne = new JSONObject();
@@ -169,8 +167,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldConvertJsonObjectToTask() throws JSONException, 
-			InvalidDateException, CorruptedJsonObjectException {
+	public void shouldConvertJsonObjectToTask() throws Exception {
 		JSONObject originalTaskInJson = new JSONObject();
 		JSONObject originalTaskDetail = new JSONObject();
 		
@@ -204,8 +201,7 @@ public class ConverterTest {
 	}
 	
 	@Test(expected=InvalidDateException.class)
-	public void shouldNotConvertJsonObjectWithInvalidDate() throws JSONException,
-			InvalidDateException, CorruptedJsonObjectException {
+	public void shouldNotConvertJsonObjectWithInvalidDate() throws Exception {
 		
 		JSONObject originalTaskInJson = new JSONObject();
 		JSONObject originalTaskDetail = new JSONObject();
@@ -218,7 +214,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldConvertCategoryListToJSON() throws JSONException {
+	public void shouldConvertCategoryListToJSON() throws Exception {
 		JSONArray categoriesInJson = converter.convertCategoryListToJson(categories);
 		
 		JSONObject firstCategory = categoriesInJson.getJSONObject(0);
@@ -234,7 +230,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldConvertJSONArrayToCategoryList() throws JSONException {
+	public void shouldConvertJSONArrayToCategoryList() throws Exception {
 		JSONArray jsonArray = new JSONArray();
 		
 		JSONObject firstCategoryInJson = new JSONObject();
@@ -263,7 +259,7 @@ public class ConverterTest {
 	}
 	
 	@Test
-	public void shouldNotConvertJsonCategoryObjectWithoutName() throws JSONException {
+	public void shouldNotConvertJsonCategoryObjectWithoutName() throws Exception {
 		JSONArray jsonArray = new JSONArray();
 		
 		JSONObject firstCategoryInJson = new JSONObject();
@@ -276,7 +272,7 @@ public class ConverterTest {
 		assertEquals(1, converter.getNumOfCorruptedJsonCategoryObjects());	
 	}
 	
-	private void prepareTask() throws InvalidDateException {
+	private void prepareTask() throws Exception {
 		taskOne = new Task();
 		taskOne.setTitle(TASK_1_TITLE)
 			.setEndDate(new Date(1, 1, 2014))

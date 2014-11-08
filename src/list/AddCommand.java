@@ -6,8 +6,9 @@ import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
-import list.model.Task;
 import list.model.ITask.TaskStatus;
+import list.model.Task;
+import list.util.Constants;
 
 /**
  * An example implementation of ICommand.
@@ -94,7 +95,7 @@ public class AddCommand implements ICommand {
 	        throw new CommandExecutionException(MESSAGE_NO_TITLE);
 	    }
 	    
-		Task task = new Task();
+		ITask task = new Task();
 		task.setTitle(this.title)
 			.setStartDate(this.startDate)
 			.setEndDate(this.endDate)
@@ -108,6 +109,20 @@ public class AddCommand implements ICommand {
 		
 		taskManager.addTask(task);
 		
+		if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+		
 		taskManager.saveData();
 		
 		return MESSAGE_TASK_ADDED_SUCCESFULLY;
@@ -119,5 +134,4 @@ public class AddCommand implements ICommand {
         DeleteCommand deleteCommand = new DeleteCommand(this.task);
         return deleteCommand;
     }
-
 }

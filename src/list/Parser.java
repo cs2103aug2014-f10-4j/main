@@ -1,20 +1,21 @@
+//@author A0113672L unused
 package list;
 
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
-import list.model.ICategory;
 import list.model.Date.InvalidDateException;
+import list.model.ICategory;
 
 /**
  * A simple implementation of IParser using Regex. 
  * Supports LIST Syntax as specified in the README - Syntax and user guide.
- * 
+ * No longer used because it is substituted by the new CommandParser.
  * @author andhieka
  *
  */

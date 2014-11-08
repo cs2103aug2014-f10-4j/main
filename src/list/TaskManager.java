@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import list.model.Category;
-import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
 import list.model.ITask.TaskStatus;
@@ -44,7 +43,8 @@ public class TaskManager {
     
     private static TaskManager taskManagerInstance = null;
         
-    private TaskManager() { } ;
+    private TaskManager() {
+    }
     
     static TaskManager getInstance() {
     	if (taskManagerInstance == null) {
@@ -61,7 +61,7 @@ public class TaskManager {
      * @param categoryName
      * @return true if new category has successfully been added. false otherwise.
      */
-    boolean addCategory(String categoryName) {
+    private boolean addCategory(String categoryName) {
     	if (categoryName == null || categoryName.isEmpty()) {
     		return false;
     	} 
@@ -81,27 +81,20 @@ public class TaskManager {
     }
     
     /**
-     * Deletes a category as specified by <code>categoryName</code>
+     * Deletes the given category from the manager's category list.
      * 
-     * @param categoryName
-     * @return true if new category has successfully been deleted. false otherwise.
+     * @param category
      */
-    boolean deleteCategory(String categoryName) {
-    	if (categoryName == null || categoryName.isEmpty()) {
-    		return false;
-    	} 
-    	
-    	if (categories.containsKey(categoryName) && 
-    		categoryLists.containsKey(categoryName)) {
-    		
-    		categoryLists.remove(categoryName);
+    void deleteCategory(ICategory category) {
+        String categoryName = category.getName();
+    	if (categories.containsKey(categoryName)) {
     		categories.remove(categoryName);
-    		return true;
-    		
-    	} else {
-    		return false;
     	}
-    }    
+    	if (categoryLists.containsKey(categoryName)) {
+    	    categoryLists.remove(categoryName);
+    	}
+    }
+    
     
     /**
      * Accepts a string and returns a ICategory object with the same name as the input.
@@ -195,8 +188,8 @@ public class TaskManager {
     
     //METHODS FOR COMMANDS EXECUTION
     void addTask(ITask task) {
-        if (hasDeadline(task)) {
-            if (isOverdue(task)) {
+        if (task.hasDeadline()) {
+            if (task.isOverdue()) {
             	overdueTasks.add(task);
             	Collections.sort(overdueTasks);
             } else {
@@ -244,7 +237,7 @@ public class TaskManager {
     @Deprecated
     void deleteTask(Integer taskNumberShownOnScreen) {
         ITask task = getTask(taskNumberShownOnScreen);
-        if (hasDeadline(task)) {
+        if (task.hasDeadline()) {
             tasks.remove(task);
         } else {
             floatingTasks.remove(task);
@@ -253,8 +246,8 @@ public class TaskManager {
     }
 
     void deleteTask(ITask task) {
-        if (hasDeadline(task)) {
-        	if (isOverdue(task)) {
+        if (task.hasDeadline()) {
+        	if (task.isOverdue()) {
             	overdueTasks.remove(task);
             } else {
             	currentTasks.remove(task);
@@ -344,14 +337,14 @@ public class TaskManager {
     }
         
     //Private functions
-    private static boolean hasDeadline(ITask task) {
-        return !task.getEndDate().equals(Date.getFloatingDate());
-    }
-    
-    private static boolean isOverdue(ITask task) {
-    	Date today = new Date();
-    	return (task.getEndDate().compareTo(today) < 0);    	
-    }
+//    private static boolean hasDeadline(ITask task) {
+//        return !task.getEndDate().equals(Date.getFloatingDate());
+//    }
+//    
+//    private static boolean isOverdue(ITask task) {
+//    	Date today = new Date();
+//    	return (task.getEndDate().compareTo(today) < 0);    	
+//    }
     
     private static boolean hasCategory(ITask task) {
     	return (task.getCategory() != null && 

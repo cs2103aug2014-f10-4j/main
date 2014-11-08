@@ -8,8 +8,7 @@ public class UndoCommand implements ICommand {
     private static final String MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo.";
     
     @Override
-    public String execute() throws CommandExecutionException, IOException, InvalidTaskNumberException {
-        Controller.reportUndoRedoOperation();
+    public String execute() throws CommandExecutionException, IOException {
         Stack<ICommand> undoStack = Controller.getUndoStack();
         Stack<ICommand> redoStack = Controller.getRedoStack();
         if (undoStack.empty()) {
