@@ -76,6 +76,7 @@ public class RootWindowController implements IUserInterface {
     
     @Override
     public void displayCategories(List<ICategory> categories) {
+        categoriesController.clearAll();
     	categoriesController.setUpView(categories);
     	animateCategoryAndTextOverview(true);
     	isShowingCategories = true;

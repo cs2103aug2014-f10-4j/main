@@ -130,6 +130,7 @@ public class CategoriesController {
     public void clearAll() {
     	
     	// clear all the content in the ScrollPane
+        categoriesContainer.getChildren().clear();;
     	paneContainer.setContent(null);
     }
 	

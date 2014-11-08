@@ -1,6 +1,7 @@
 package list;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import list.model.Category;
@@ -18,7 +19,6 @@ public class DeleteCategoryCommand implements ICommand {
     UndeleteCategoryCommand invCommand;
     
     public DeleteCategoryCommand() {
-        // TODO Auto-generated constructor stub
     }
     
     public DeleteCategoryCommand(ICategory category) {
@@ -36,14 +36,14 @@ public class DeleteCategoryCommand implements ICommand {
         if (category == null) {
             throw new CommandExecutionException(ERROR_CATEGORY_NOT_SPECIFIED);
         }
-        affectedTasks = category.getList();
+        affectedTasks = new ArrayList<ITask>(category.getList());
         makeInverseCommand(); //make inverse command for undo
         for (ITask task: affectedTasks) {
             task.setCategory(Category.getDefaultCategory());
         }
         taskManager.deleteCategory(category);
-        Controller.displayCategories();
         taskManager.saveData();
+        Controller.displayCategories();
         return String.format(MESSAGE_CATEGORY_DELETED, category.getName());
     }
     
