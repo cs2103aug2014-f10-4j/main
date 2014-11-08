@@ -19,8 +19,8 @@ public class EditCategoryCommand implements ICommand {
     }
     
     public EditCategoryCommand(String selectedCategoryName, String categoryName, Color color) {
-        if (taskManager.hasCategory(categoryName)) {
-            category = taskManager.getCategory(categoryName);
+        if (taskManager.hasCategory(selectedCategoryName)) {
+            category = taskManager.getCategory(selectedCategoryName);
         }
         setCategoryName(categoryName);
         setColor(color);
@@ -32,8 +32,12 @@ public class EditCategoryCommand implements ICommand {
             throw new CommandExecutionException(ERROR_CATEGORY_IS_NOT_SPECIFIED);
         }
         makeInverseCommand();
-        category.setName(categoryName);
-        category.setColor(color);
+        if (categoryName != null && !categoryName.isEmpty()) {
+            category.setName(categoryName);
+        }
+        if (color != null) {
+            category.setColor(color);            
+        }
         taskManager.saveData();
         Controller.displayCategories();
         return MESSAGE_SUCCESS;

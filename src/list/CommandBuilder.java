@@ -25,6 +25,7 @@ public class CommandBuilder {
 	private ITask task = null;
 	private Color color = null;
 	private String selectedCategoryName = null;
+    private String keyword;
 	
 	@SuppressWarnings("serial")
     class CommandTypeNotSetException extends Exception { };
@@ -105,6 +106,11 @@ public class CommandBuilder {
 	    return this;
 	}
 	
+	CommandBuilder setKeyword(String keyword) {
+	    this.keyword = keyword;
+	    return this;
+	}
+	
 	/**
 	 * This method uses the given information to construct
 	 * the corresponding command object.
@@ -156,7 +162,7 @@ public class CommandBuilder {
 			    command = new HelpCommand();
 			    break;
 			case SEARCH:
-			    command = new SearchCommand();
+			    command = new SearchCommand(keyword);
 			    break;
 			case CATEGORY_ADD:
 			    command = new AddCategoryCommand(title, color);

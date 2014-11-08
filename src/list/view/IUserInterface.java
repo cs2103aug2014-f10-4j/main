@@ -14,7 +14,13 @@ public interface IUserInterface {
     
     void displayTaskDetail(ITask task);
             
-    void display(String pageTitle, List<ITask> tasks);
+    /**
+     * Sets the page title and list of tasks to display on the next refresh.
+     * Warning: change will not be reflected until <code>refreshUI</code> is called.
+     * @param pageTitle
+     * @param tasks
+     */
+    void setDisplayItems(String pageTitle, List<ITask> tasks);
         
     void clearDisplay();
         

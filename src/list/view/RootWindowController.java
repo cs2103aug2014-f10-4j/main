@@ -39,11 +39,14 @@ public class RootWindowController implements IUserInterface {
 	private Button buttonToNext;
 	@FXML
 	private Button buttonToPrev;
+	@FXML
+	private Label labelPageTitle;
 	
 	private Pane taskDetail;
 	private ScrollPane paneForCategories;
 	private Pane taskOverview;
 	private boolean isShowingCategories = false;
+	private String pageTitle;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
@@ -80,9 +83,9 @@ public class RootWindowController implements IUserInterface {
 	}
 
     @Override
-    public void display(String pageTitle, List<ITask> tasks) {
-        taskOverviewController.displayTasks(tasks);
-        
+    public void setDisplayItems(String pageTitle, List<ITask> tasks) {
+        this.pageTitle = pageTitle;
+        taskOverviewController.setDisplayTasks(tasks);
     }
 
     @Override
@@ -292,6 +295,15 @@ public class RootWindowController implements IUserInterface {
 
 	@Override
 	public void refreshUI() {
+	    updatePageTitle();
 		taskOverviewController.refresh();
 	}
+
+    private void updatePageTitle() {
+        String title = pageTitle;
+	    if (title == null) {
+	        title = "";
+	    }
+	    labelPageTitle.setText(title);
+    }
 }

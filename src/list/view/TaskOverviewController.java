@@ -64,10 +64,9 @@ public class TaskOverviewController {
     private List<Label> timelineDateLabel = new ArrayList<Label>();
     private List<ITask> oldDisplayedTasks;
     
-    public void displayTasks(List<ITask> newTasks) {
+    public void setDisplayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
         beginIndex = 0;
-        //refresh();
     }
     
     /**
