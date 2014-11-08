@@ -1,5 +1,7 @@
 package list.model;
 
+import java.util.List;
+
 import list.CommandBuilder.RepeatFrequency;
 
 public interface ITask extends Comparable<ITask> {
@@ -41,6 +43,10 @@ public interface ITask extends Comparable<ITask> {
 	public TaskStatus getStatus();
 
 	public void setStatus(TaskStatus status);
+	
+	public List<ITask> getList();
+	
+	public void setList(List<ITask> list);
 	
 	public boolean hasDeadline();
 	

@@ -126,6 +126,31 @@ public class TaskManager {
         return categoryList;
     }
     
+        
+    void addToFloatingTasks(ITask task) {
+    	floatingTasks.add(task);
+    }
+    
+    void addToCurrentTasks(ITask task) {
+    	currentTasks.add(task);
+    }
+    
+    void addToOverdueTasks(ITask task) {
+    	overdueTasks.add(task);
+    }
+    
+    void removeFromFloatingTasks(ITask task) {
+    	floatingTasks.remove(task);
+    }
+    
+    void removeFromCurrentTasks(ITask task) {
+    	floatingTasks.remove(task);
+    }
+    
+    void removeFromOverdueTasks(ITask task) {
+    	floatingTasks.remove(task);
+    }
+    
     //TASK GETTERS
     /**
      * Gets all tasks in the TaskManager. 
@@ -191,13 +216,16 @@ public class TaskManager {
         if (task.hasDeadline()) {
             if (task.isOverdue()) {
             	overdueTasks.add(task);
+            	task.setList(overdueTasks);
             	Collections.sort(overdueTasks);
             } else {
             	currentTasks.add(task);
+            	task.setList(currentTasks);
             	Collections.sort(currentTasks);
             }
         } else {
             floatingTasks.add(task);
+            task.setList(floatingTasks);
             Collections.sort(floatingTasks);
         }
         

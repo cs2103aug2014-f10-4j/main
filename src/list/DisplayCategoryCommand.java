@@ -1,8 +1,5 @@
 package list;
 
-import list.model.ICategory;
-import list.model.ITask;
-import list.util.Constants;
 
 /**
  * 
@@ -41,6 +38,6 @@ public class DisplayCategoryCommand implements ICommand {
         return null; // cannot be undone
     }
 
-	
+
 
 }

@@ -208,7 +208,7 @@ public class RootWindowController implements IUserInterface {
             taskDetailController = loader.getController();
             taskDetail.setEffect(new DropShadow(2.0d, Color.BLACK));
             taskDetail.setLayoutX(120);
-            taskDetail.setLayoutY(75);
+            taskDetail.setLayoutY(60);
             rootPane.getChildren().add(taskDetail);
             
         } catch (IOException e) {
@@ -266,8 +266,7 @@ public class RootWindowController implements IUserInterface {
     	}
     	
         String userInput = console.getText();
-        String reply = Controller.processUserInput(userInput);
-        displayMessageToUser(reply);
+        Controller.processUserInput(userInput);
         
         //labelTask1.requestFocus(); //set focus to something else
         console.setText("");
