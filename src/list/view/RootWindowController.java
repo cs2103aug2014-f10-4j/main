@@ -47,6 +47,7 @@ public class RootWindowController implements IUserInterface {
 	private ScrollPane help;
 	private ScrollPane paneForCategories;
 	private Pane taskOverview;
+	private Pane congratulations;
 	private boolean isShowingCategories = false;
 	private String pageTitle;
    
@@ -54,6 +55,7 @@ public class RootWindowController implements IUserInterface {
 	private TaskDetailController taskDetailController;
 	private CategoriesController categoriesController;
 	private HelpController helpController;
+	private CongratulationsController congratulationsController;
 	private CommandParser parser = new CommandParser();
 	
 	
@@ -94,6 +96,19 @@ public class RootWindowController implements IUserInterface {
     @Override
 	public void hideHelp() {
 		rootPane.getChildren().remove(help);
+		console.requestFocus();
+	}
+    
+    @Override
+    public void displayCongratulations(List<ITask> tasks) {
+    	congratulationsController.setUpView(tasks);
+    	showCongratulationsLayout();
+    	congratulationsController.getParentController(this);
+    };
+
+	@Override
+    public void hideCongratulations() {
+		rootPane.getChildren().remove(congratulations);
 		console.requestFocus();
 	}
 
@@ -243,7 +258,7 @@ public class RootWindowController implements IUserInterface {
             taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            taskDetail.setEffect(new DropShadow(2.0d, Color.WHITE));
+            taskDetail.setEffect(new DropShadow(3.0d, Color.WHITE));
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(60);
             rootPane.getChildren().add(taskDetail);
@@ -261,7 +276,7 @@ public class RootWindowController implements IUserInterface {
             help = (ScrollPane) loader.load();
             
             helpController = loader.getController();
-            help.setEffect(new DropShadow(2.0d, Color.BLACK));
+            help.setEffect(new DropShadow(3.0d, Color.BLACK));
             help.setLayoutX(50);
             help.setLayoutY(33);
             help.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -291,6 +306,24 @@ public class RootWindowController implements IUserInterface {
             e.printStackTrace();
         } 
     }
+    
+    private void showCongratulationsLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Congratulations.fxml"));
+            
+            congratulations = (Pane) loader.load();
+            
+            congratulationsController = loader.getController();
+            congratulations.setEffect(new DropShadow(3.0d, Color.WHITE));
+            congratulations.setLayoutX(120);
+            congratulations.setLayoutY(60);
+            rootPane.getChildren().add(congratulations);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
     
     private void animateCategoryAndTextOverview(boolean willDisplay) {
     	if (willDisplay) {
