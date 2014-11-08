@@ -45,7 +45,7 @@ public class CommandBuilder {
 	
 	static enum CommandType {
 		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
-		UNDO, REDO, PREV, NEXT, HELP, SEARCH,
+		UNDO, REDO, PREV, NEXT, HELP, SEARCH, HOME,
 		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY
 	}
 	
@@ -163,6 +163,9 @@ public class CommandBuilder {
 			    break;
 			case SEARCH:
 			    command = new SearchCommand(keyword);
+			    break;
+			case HOME:
+			    command = new HomeCommand();
 			    break;
 			case CATEGORY_ADD:
 			    command = new AddCategoryCommand(title, color);

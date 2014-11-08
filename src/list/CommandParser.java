@@ -89,7 +89,8 @@ public class CommandParser implements IParser {
     private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
-            "prev", "next", "search", "help"
+            "prev", "next", "search", "help",
+            "home"
     );
     
     //remember to reset these variables at clear()
@@ -383,7 +384,6 @@ public class CommandParser implements IParser {
             } else {
                 commandBuilder.setEndDate(endDate);
                 this.endDate = endDate;
-                System.out.println(endDate);
             }
         }
     }

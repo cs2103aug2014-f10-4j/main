@@ -129,7 +129,8 @@ public class RootWindowController implements IUserInterface {
     private void setUpButtons() {
     	buttonToHome.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	
+    	    	Controller.displayHome();
+    	    	Controller.refreshUI();
     	    }
     	});
     	buttonToCategory.setOnAction(new EventHandler<ActionEvent>() {

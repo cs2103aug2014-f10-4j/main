@@ -181,6 +181,10 @@ public class Controller extends Application {
 		displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
 	}
 	
+	public static void displayHome() {
+	    displayCurrentTasks();
+    }
+	
 	private static void displayTasksInCategory(ICategory category) {
 		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
 	}
