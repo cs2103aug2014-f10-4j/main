@@ -137,9 +137,9 @@ public class EditCommand implements ICommand {
 		}
 		
 		if (this.category != null) {
-			taskManager.removeFromCategoryList(taskToEdit);
+			//taskManager.removeFromCategoryList(taskToEdit);
 			taskToEdit.setCategory(category);
-			taskManager.addToCategoryList(taskToEdit);
+			//taskManager.addToCategoryList(taskToEdit);
 		}
 		
 		if (this.notes != null) {

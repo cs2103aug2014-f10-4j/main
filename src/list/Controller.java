@@ -183,7 +183,7 @@ public class Controller extends Application {
 	}
 	
 	private static void displayTasksInCategory(ICategory category) {
-		displayTasks(category.getName().toUpperCase(), taskManager.getTasksInCategory(category));
+		displayTasks(category.getName().toUpperCase(), category.getList());
 	}
 	
 //	public static boolean changeDisplayMode(String name) {

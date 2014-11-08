@@ -142,7 +142,9 @@ public class Task implements ITask {
 	@Override
 	public Task setCategory(ICategory category) {
 	    if (category != null) {
-	        this.category = category;
+	    	this.category.getList().remove(this);
+	        category.getList().add(this);
+	    	this.category = category;
 	    }
 	    
 		return this;
