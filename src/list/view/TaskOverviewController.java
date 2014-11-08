@@ -304,9 +304,9 @@ public class TaskOverviewController {
 		goToPageContaininingTask(task);
 		refresh();
 		Label label = taskLabels.get(task);
-		label.setStyle("-fx-background-color: yellow;");
+		//label.setStyle("-fx-background-color: yellow;");
 		//wait a few seconds
-		label.setStyle("-fx-background-color: none;");
+		//label.setStyle("-fx-background-color: none;");
 	}
 
 	private void goToPageContaininingTask(ITask task) {
