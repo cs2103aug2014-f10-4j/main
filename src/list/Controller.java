@@ -144,6 +144,15 @@ public class Controller extends Application {
     public static void hideCategories() {
         userInterface.hideCategories();
     }
+    
+    public static void displayHelp() {
+        userInterface.displayHelp();
+    }
+    
+    public static void hideHelp() {
+        userInterface.hideHelp();
+    }
+    
 
     private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
