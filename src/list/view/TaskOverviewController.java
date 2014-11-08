@@ -7,11 +7,9 @@ import java.util.Map;
 
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -19,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import list.model.Date;
@@ -38,6 +35,10 @@ public class TaskOverviewController {
         FEEDBACK_FADE_OUT.setFromValue(0.7);
         FEEDBACK_FADE_OUT.setToValue(0);
     }
+    
+    private static final String FLOATING_DAY = "X";
+    private static final String FLOATING_MONTH = "XXX";
+    private static final String HELVETICA_NEUE = "Helvetica Neue";
     
     private static final double TASK_LABEL_TRANSLATE_X = 42.5d;
     private static final double TASK_LABEL_WIDTH = 550.0d;
@@ -62,6 +63,7 @@ public class TaskOverviewController {
     private List<ImageView> timelineImageViews = new ArrayList<ImageView>();
     private List<Label> timelineMonthLabel = new ArrayList<Label>();
     private List<Label> timelineDateLabel = new ArrayList<Label>();
+	private List<Label> timelineYearLabel = new ArrayList<Label>();
     private List<ITask> oldDisplayedTasks;
     
     public void displayTasks(List<ITask> newTasks) {
@@ -186,8 +188,7 @@ public class TaskOverviewController {
         label.setTranslateY(positionIndex * TASK_LABEL_HEIGHT); 
         label.setPrefHeight(TASK_LABEL_HEIGHT);
         label.setPrefWidth(TASK_LABEL_WIDTH);
-        //label.setStyle("-fx-background-color: red;");
-        label.setFont(Font.font("Helvetica", 18.0d));
+        label.setFont(Font.font(HELVETICA_NEUE, 18.0d));
         return label;
     }
     
@@ -212,7 +213,9 @@ public class TaskOverviewController {
     	Date prevDate = Date.getFloatingDate();
     	for (int i = 0; i < newDisplayedTask.size(); i++) {
     		Date curDate = newDisplayedTask.get(i).getTimelineDate();
-    		if(prevDate.equals(curDate)) {
+    		if (curDate.equals(Date.getFloatingDate())) {
+    			displayFloatingDateAtPosition(i);
+    		} else if (prevDate.equals(curDate)) {
     			displayLineAtPosition(i);
     		} else {
     			displayDateAtPosition(curDate, i);
@@ -221,7 +224,43 @@ public class TaskOverviewController {
     	}
     }
     
-    private void clearTimeline() {
+	private void displayFloatingDateAtPosition(int positionIndex) {
+		Label labelDay = new Label();
+    	Label labelMonth = new Label();
+    	
+    	ImageView imageView = new ImageView();
+    	Image calendar = new Image("list/view/icon_calender.png");
+    	imageView.setImage(calendar);
+    	imageView.setFitHeight(TASK_LABEL_HEIGHT);
+    	imageView.setFitWidth(TIMELINE_WIDTH);
+    	imageView.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	timelineImageViews.add(imageView);
+    	
+    	labelDay.setPrefWidth(TIMELINE_WIDTH);
+    	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
+    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.25);
+    	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
+    	labelDay.setAlignment(Pos.CENTER);
+    	labelDay.setText(FLOATING_DAY);
+    	
+    	timelineDateLabel.add(labelDay);
+    	
+    	labelMonth.setPrefWidth(TIMELINE_WIDTH);
+    	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
+    	labelMonth.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
+    	labelMonth.setAlignment(Pos.CENTER);
+		labelMonth.setText(FLOATING_MONTH);
+    	
+    	timelineMonthLabel.add(labelMonth);
+    	
+    	tasksContainer.getChildren().add(imageView);
+    	tasksContainer.getChildren().add(labelDay);
+    	tasksContainer.getChildren().add(labelMonth);
+		
+	}
+
+	private void clearTimeline() {
     	for (int i = 0; i < timelineImageViews.size(); i++) {
     		tasksContainer.getChildren().remove(timelineImageViews.get(i));
     	}
@@ -232,6 +271,10 @@ public class TaskOverviewController {
     	
     	for (int i = 0; i < timelineMonthLabel.size(); i++) {
     		tasksContainer.getChildren().remove(timelineMonthLabel.get(i));
+    	}
+    	
+    	for (int i = 0; i < timelineYearLabel.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineYearLabel.get(i));
     	}
     }
     
@@ -250,30 +293,38 @@ public class TaskOverviewController {
     	
     	labelDay.setPrefWidth(TIMELINE_WIDTH);
     	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
-    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.25);
-    	labelDay.setText(date.getDay() + "");
-    	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
+    	labelDay.setFont(Font.font(HELVETICA_NEUE));
+    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.15);
+    	labelDay.setStyle("-fx-font-size:13pt;-fx-font-weight:bold");
     	labelDay.setAlignment(Pos.CENTER);
+    	labelDay.setText(date.getDay() + "");
+    	
     	timelineDateLabel.add(labelDay);
     	
     	labelMonth.setPrefWidth(TIMELINE_WIDTH);
     	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
     	labelMonth.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
-    	labelMonth.setText(date.getMonthName().toUpperCase());
+    	labelDay.setFont(Font.font(HELVETICA_NEUE));
     	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
     	labelMonth.setAlignment(Pos.CENTER);
+		labelMonth.setText(date.getMonthName().toUpperCase());
+    	
     	timelineMonthLabel.add(labelMonth);
     	
+    	labelYear.setPrefWidth(TIMELINE_WIDTH);
+    	labelYear.setPrefHeight(TASK_LABEL_HEIGHT / 6);
+    	labelYear.setStyle("-fx-font-size:5pt");
+    	labelDay.setFont(Font.font(HELVETICA_NEUE));
+    	labelYear.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.675);
+    	labelYear.setAlignment(Pos.CENTER_RIGHT);
+    	labelYear.setText(date.getYear() + "  ");
     	
-//    	labelYear.setPrefWidth(TIMELINE_WIDTH);
-//    	labelYear.setPrefHeight(LABEL_HEIGHT / 3);
-//    	labelYear.setLayoutY(positionIndex * LABEL_HEIGHT + LABEL_HEIGHT * 2 / 3);
-//    	labelYear.setText(date.getYear() + "");
+    	timelineYearLabel.add(labelYear);
     	
     	tasksContainer.getChildren().add(imageView);
     	tasksContainer.getChildren().add(labelDay);
     	tasksContainer.getChildren().add(labelMonth);
-//    	tasksContainer.getChildren().add(labelYear);
+    	tasksContainer.getChildren().add(labelYear);
     	
     	
     }
