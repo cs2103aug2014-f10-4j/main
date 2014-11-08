@@ -94,7 +94,7 @@ public class Converter {
 				ICategory category = convertJsonToCategory(categoryInJson);
 				
 				if (category != null) {
-					categories.put(category.getName(), category);
+					categories.put(category.getName().trim().toLowerCase(), category);
 				}
 				
 			} catch (CorruptedJsonObjectException e) {
