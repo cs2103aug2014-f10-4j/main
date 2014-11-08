@@ -366,6 +366,7 @@ public class RootWindowController implements IUserInterface {
 
 	@Override
 	public void refreshUI() {
+        updatePageTitle();
 		taskOverviewController.refresh();
 	}
 
