@@ -299,21 +299,6 @@ public class TaskManager {
     void loadData() throws IOException, JSONException {
     	loadCategories();
     	loadTasks();
-        setupDisplayModeAsCategory();
-    }
-
-    private void setupDisplayModeAsCategory() {
-        ICategory current = new Category().setName("Current Tasks");
-        categories.put("current", current);
-        categoryLists.put(current, currentTasks);
-        
-        ICategory floating = new Category().setName("Floating Tasks");
-        categories.put("floating", floating);
-        categoryLists.put(floating, currentTasks);
-        
-        ICategory overdue = new Category().setName("Overdue Tasks");
-        categories.put("overdue", overdue);
-        categoryLists.put(overdue, currentTasks);
     }
     
     void saveData() throws IOException {

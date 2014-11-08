@@ -1,9 +1,5 @@
 package list;
 
-import list.model.ICategory;
-import list.model.ITask;
-import list.util.Constants;
-
 /**
  * 
  * @author Shotaro
@@ -40,7 +36,5 @@ public class DisplayCategoryCommand implements ICommand {
     public ICommand getInverseCommand() {
         return null; // cannot be undone
     }
-
-	
 
 }
