@@ -136,7 +136,7 @@ public class Controller extends Application {
 	}
 
 	public static void displayTasks(String pageTitle, List<ITask> tasks) {
-		userInterface.display(pageTitle, tasks);
+		userInterface.setDisplayItems(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	}
 
@@ -192,6 +192,10 @@ public class Controller extends Application {
 	private static void displayOverdueTasks() {
 		displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
 	}
+	
+	public static void displayHome() {
+	    displayCurrentTasks();
+    }
 	
 	private static void displayTasksInCategory(ICategory category) {
 		displayTasks(category.getName().toUpperCase(), category.getList());

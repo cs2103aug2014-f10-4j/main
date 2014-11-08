@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -47,7 +48,12 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Region maxWidth="435.0" minWidth="33.0" prefHeight="30.0" prefWidth="215.0" />
+            <Region maxWidth="435.0" minWidth="33.0" prefHeight="30.0" prefWidth="173.0" />
+            <Label fx:id="labelPageTitle" alignment="CENTER_RIGHT" maxWidth="286.0" minWidth="286.0" prefHeight="23.0" prefWidth="286.0" textFill="#eeeeeebf">
+               <font>
+                  <Font name="Helvetica Neue Light" size="18.0" />
+               </font>
+            </Label>
          </items>
       </ToolBar>
       <TextField fx:id="console" layoutY="372.0" prefHeight="28.0" prefWidth="600.0" promptText="Enter command" style="-fx-background-color: #585858; -fx-text-fill: white;" />

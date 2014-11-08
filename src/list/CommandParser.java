@@ -89,7 +89,8 @@ public class CommandParser implements IParser {
     private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
-            "prev", "next", "search", "help"
+            "prev", "next", "search", "help",
+            "home"
     );
     
     //remember to reset these variables at clear()
@@ -102,6 +103,7 @@ public class CommandParser implements IParser {
     private Date startDate;
     private Date endDate;
     private StringBuilder generalArgument;
+    private CommandType commandType;
     
     private TaskManager taskManager = TaskManager.getInstance();
     
@@ -213,7 +215,8 @@ public class CommandParser implements IParser {
 
     private void setCommandType(CommandBuilder commandBuilder) throws ParseException {
         try {
-            commandBuilder.setCommandType(CommandType.valueOf(this.action.toUpperCase()));
+            commandType = CommandType.valueOf(this.action.toUpperCase());
+            commandBuilder.setCommandType(commandType);
         } catch (IllegalArgumentException e) {
             throw new ParseException(ERROR_AMBIGUOUS_COMMAND_TYPE);
         }
@@ -299,12 +302,19 @@ public class CommandParser implements IParser {
         setCategory(commandBuilder);
         setRepeatFrequency(commandBuilder);
         setGeneralArgumentAsTitle(commandBuilder);
+        setKeyword(commandBuilder);
         
         ensureEndDateIsNotEarlierThanStartDate();
     }
 
+    private void setKeyword(CommandBuilder commandBuilder) {
+        if (commandType == CommandType.SEARCH) {
+            commandBuilder.setKeyword(generalArgument.toString());            
+        }
+    }
+
     private void setGeneralArgumentAsTitle(CommandBuilder commandBuilder) {
-        if (parameters.get(MARKER_TITLE) == null && generalArgument.length() > 0) {
+        if (parameters.get(MARKER_TITLE) == null && generalArgument.length() > 0 && commandType == CommandType.ADD) {
             commandBuilder.setTitle(generalArgument.toString());
         }
 
@@ -374,7 +384,6 @@ public class CommandParser implements IParser {
             } else {
                 commandBuilder.setEndDate(endDate);
                 this.endDate = endDate;
-                System.out.println(endDate);
             }
         }
     }

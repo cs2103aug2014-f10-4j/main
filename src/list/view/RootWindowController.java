@@ -9,10 +9,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -39,12 +40,15 @@ public class RootWindowController implements IUserInterface {
 	private Button buttonToNext;
 	@FXML
 	private Button buttonToPrev;
+	@FXML
+	private Label labelPageTitle;
 	
 	private Pane taskDetail;
 	private ScrollPane help;
 	private ScrollPane paneForCategories;
 	private Pane taskOverview;
 	private boolean isShowingCategories = false;
+	private String pageTitle;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
@@ -94,9 +98,9 @@ public class RootWindowController implements IUserInterface {
 	}
 
     @Override
-    public void display(String pageTitle, List<ITask> tasks) {
-        taskOverviewController.displayTasks(tasks);
-        
+    public void setDisplayItems(String pageTitle, List<ITask> tasks) {
+        this.pageTitle = pageTitle;
+        taskOverviewController.setDisplayTasks(tasks);
     }
 
     @Override
@@ -140,7 +144,8 @@ public class RootWindowController implements IUserInterface {
     private void setUpButtons() {
     	buttonToHome.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	
+    	    	Controller.displayHome();
+    	    	Controller.refreshUI();
     	    }
     	});
     	buttonToCategory.setOnAction(new EventHandler<ActionEvent>() {
@@ -327,6 +332,15 @@ public class RootWindowController implements IUserInterface {
 
 	@Override
 	public void refreshUI() {
+	    updatePageTitle();
 		taskOverviewController.refresh();
 	}
+
+    private void updatePageTitle() {
+        String title = pageTitle;
+	    if (title == null) {
+	        title = "";
+	    }
+	    labelPageTitle.setText(title);
+    }
 }
