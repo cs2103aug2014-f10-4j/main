@@ -86,6 +86,11 @@ public class CommandParser implements IParser {
             "edit", "delete", "display",
             "mark", "unmark"
     );
+    private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
+            "add", "edit", "delete", "display", 
+            "mark", "unmark", "close", "undo", "redo",
+            "prev", "next", "search"
+    );
     
     //remember to reset these variables at clear()
     private ParseMode parseMode;
@@ -96,7 +101,7 @@ public class CommandParser implements IParser {
     private String action;
     private Date startDate;
     private Date endDate;
-    private String selectedCategory;
+    private StringBuilder generalArgument;
     
     private TaskManager taskManager = TaskManager.getInstance();
     
@@ -169,7 +174,7 @@ public class CommandParser implements IParser {
         this.action = "";
         this.startDate = null;
         this.endDate = null;
-        this.selectedCategory = null;
+        this.generalArgument = new StringBuilder();
     }
  
     public ICommand finish() throws ParseException {
@@ -247,8 +252,8 @@ public class CommandParser implements IParser {
     }
 
     private void setSelectedCategory(CommandBuilder commandBuilder) {
-        if (this.selectedCategory != null) {
-            commandBuilder.setSelectedCategory(selectedCategory);
+        if (this.generalArgument.length() > 0) {
+            commandBuilder.setSelectedCategory(generalArgument.toString());
         }
     }
 
@@ -293,8 +298,16 @@ public class CommandParser implements IParser {
         setPlace(commandBuilder);
         setCategory(commandBuilder);
         setRepeatFrequency(commandBuilder);
+        setGeneralArgumentAsTitle(commandBuilder);
         
         ensureEndDateIsNotEarlierThanStartDate();
+    }
+
+    private void setGeneralArgumentAsTitle(CommandBuilder commandBuilder) {
+        if (parameters.get(MARKER_TITLE) == null && generalArgument.length() > 0) {
+            commandBuilder.setTitle(generalArgument.toString());
+        }
+
     }
 
     private void ensureEndDateIsNotEarlierThanStartDate() throws ParseException {
@@ -424,23 +437,25 @@ public class CommandParser implements IParser {
                EXPECTATIONS_CATEGORY.containsKey(word);
     }
     
-    private void processNonParameterWord(String word) throws ParseException {
+    private void processNonParameterWord(String word) {
         if (KEYWORDS_CATEGORY.contains(word)) {
             this.parseMode = ParseMode.CATEGORY;
         } else if (isInteger(word)) {
             this.taskNumber = Integer.parseInt(word);
-        } else if (parseMode == ParseMode.CATEGORY && !action.isEmpty()) {
-            this.selectedCategory = word;
+        } else if (isCommandType(word)) {
+            this.action = word;
         } else {
-            if (this.action.isEmpty()) {
-                this.action = word;
-            } else {
-                throw new ParseException(ERROR_AMBIGUOUS_COMMAND_TYPE);
+            if (generalArgument.length() > 0) {
+                generalArgument.append(' ');
             }
+            generalArgument.append(word);
         }
-        
     }
     
+    private boolean isCommandType(String word) {
+        return ALLOWED_ACTIONS.contains(word.trim().toLowerCase());
+    }
+
     private boolean isInteger(String word) {
         try {
             Integer.parseInt(word);
