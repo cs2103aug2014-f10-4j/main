@@ -48,7 +48,8 @@ public class TaskOverviewController {
     private static final double TASK_LABEL_OPACITY = 1.0;
     private static final double TASK_LABEL_OPACITY_ZERO = 0.0;
     
-    private static final double TIMELINE_WIDTH = 37.5d;
+    private static final double DATE_COLUMN_WIDTH = 37.5d;
+    private static final double TIME_COLUMN_WIDTH = 75d;
     
     private static final int MAX_NO_OF_TASKS = 8;
     
@@ -65,6 +66,7 @@ public class TaskOverviewController {
     private List<Label> timelineMonthLabel = new ArrayList<Label>();
     private List<Label> timelineDateLabel = new ArrayList<Label>();
 	private List<Label> timelineYearLabel = new ArrayList<Label>();
+	private List<Label> timelineTimeLabel = new ArrayList<Label>();
     private List<ITask> oldDisplayedTasks;
     
     public void setDisplayTasks(List<ITask> newTasks) {
@@ -214,7 +216,6 @@ public class TaskOverviewController {
         }
     }
     
-    //ASSUME WE ARE DISPLAYING CURRENT TASKS, all tasks have deadline
     private void refreshTimeline() {
     	clearTimeline();
     	List<ITask> newDisplayedTask = getDisplayTasks();
@@ -230,45 +231,13 @@ public class TaskOverviewController {
     		}
     		prevDate = curDate;
     	}
+    	
+//    	for (int i = 0; i < newDisplayedTask.size(); i++) {
+//    		
+//    	}
     }
     
-	private void displayFloatingDateAtPosition(int positionIndex) {
-		Label labelDay = new Label();
-    	Label labelMonth = new Label();
-    	
-    	ImageView imageView = new ImageView();
-    	Image calendar = new Image("list/view/icon_calender.png");
-    	imageView.setImage(calendar);
-    	imageView.setFitHeight(TASK_LABEL_HEIGHT);
-    	imageView.setFitWidth(TIMELINE_WIDTH);
-    	imageView.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
-    	timelineImageViews.add(imageView);
-    	
-    	labelDay.setPrefWidth(TIMELINE_WIDTH);
-    	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
-    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.25);
-    	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
-    	labelDay.setAlignment(Pos.CENTER);
-    	labelDay.setText(FLOATING_DAY);
-    	
-    	timelineDateLabel.add(labelDay);
-    	
-    	labelMonth.setPrefWidth(TIMELINE_WIDTH);
-    	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
-    	labelMonth.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
-    	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
-    	labelMonth.setAlignment(Pos.CENTER);
-		labelMonth.setText(FLOATING_MONTH);
-    	
-    	timelineMonthLabel.add(labelMonth);
-    	
-    	tasksContainer.getChildren().add(imageView);
-    	tasksContainer.getChildren().add(labelDay);
-    	tasksContainer.getChildren().add(labelMonth);
-		
-	}
-
-	private void clearTimeline() {
+    private void clearTimeline() {
     	for (int i = 0; i < timelineImageViews.size(); i++) {
     		tasksContainer.getChildren().remove(timelineImageViews.get(i));
     	}
@@ -286,6 +255,42 @@ public class TaskOverviewController {
     	}
     }
     
+	private void displayFloatingDateAtPosition(int positionIndex) {
+		Label labelDay = new Label();
+    	Label labelMonth = new Label();
+    	
+    	ImageView imageView = new ImageView();
+    	Image calendar = new Image("list/view/icon_calender.png");
+    	imageView.setImage(calendar);
+    	imageView.setFitHeight(TASK_LABEL_HEIGHT);
+    	imageView.setFitWidth(DATE_COLUMN_WIDTH);
+    	imageView.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	timelineImageViews.add(imageView);
+    	
+    	labelDay.setPrefWidth(DATE_COLUMN_WIDTH);
+    	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
+    	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.25);
+    	labelDay.setStyle("-fx-font-size:12pt;-fx-font-weight:bold");
+    	labelDay.setAlignment(Pos.CENTER);
+    	labelDay.setText(FLOATING_DAY);
+    	
+    	timelineDateLabel.add(labelDay);
+    	
+    	labelMonth.setPrefWidth(DATE_COLUMN_WIDTH);
+    	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
+    	labelMonth.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	labelMonth.setStyle("-fx-font-size:7pt;-fx-text-fill:white;-fx-font-weight:bold");
+    	labelMonth.setAlignment(Pos.CENTER);
+		labelMonth.setText(FLOATING_MONTH);
+    	
+    	timelineMonthLabel.add(labelMonth);
+    	
+    	tasksContainer.getChildren().add(imageView);
+    	tasksContainer.getChildren().add(labelDay);
+    	tasksContainer.getChildren().add(labelMonth);
+		
+	}
+
     private void displayDateAtPosition(Date date, int positionIndex) {
     	Label labelDay = new Label();
     	Label labelMonth = new Label();
@@ -295,11 +300,11 @@ public class TaskOverviewController {
     	Image calendar = new Image("list/view/icon_calender.png");
     	imageView.setImage(calendar);
     	imageView.setFitHeight(TASK_LABEL_HEIGHT);
-    	imageView.setFitWidth(TIMELINE_WIDTH);
+    	imageView.setFitWidth(DATE_COLUMN_WIDTH);
     	imageView.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
     	timelineImageViews.add(imageView);
     	
-    	labelDay.setPrefWidth(TIMELINE_WIDTH);
+    	labelDay.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelDay.setPrefHeight(TASK_LABEL_HEIGHT / 2);
     	labelDay.setFont(Font.font(HELVETICA_NEUE));
     	labelDay.setLayoutY(positionIndex * TASK_LABEL_HEIGHT + TASK_LABEL_HEIGHT * 0.2);
@@ -309,7 +314,7 @@ public class TaskOverviewController {
     	
     	timelineDateLabel.add(labelDay);
     	
-    	labelMonth.setPrefWidth(TIMELINE_WIDTH);
+    	labelMonth.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
     	labelMonth.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
     	labelDay.setFont(Font.font(HELVETICA_NEUE));
@@ -319,7 +324,7 @@ public class TaskOverviewController {
     	
     	timelineMonthLabel.add(labelMonth);
     	
-    	labelYear.setPrefWidth(TIMELINE_WIDTH);
+    	labelYear.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelYear.setPrefHeight(TASK_LABEL_HEIGHT / 6);
     	labelYear.setStyle("-fx-font-size:5pt");
     	labelDay.setFont(Font.font(HELVETICA_NEUE));
@@ -334,7 +339,6 @@ public class TaskOverviewController {
     	tasksContainer.getChildren().add(labelMonth);
     	tasksContainer.getChildren().add(labelYear);
     	
-    	
     }
     
     private void displayLineAtPosition(int positionIndex) {
@@ -342,7 +346,7 @@ public class TaskOverviewController {
     	Image line = new Image("list/view/icon_bar.png");
     	imageView.setImage(line);
     	imageView.setFitHeight(TASK_LABEL_HEIGHT);
-    	imageView.setFitWidth(TIMELINE_WIDTH);
+    	imageView.setFitWidth(DATE_COLUMN_WIDTH);
     	imageView.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
     	timelineImageViews.add(imageView);
     	
