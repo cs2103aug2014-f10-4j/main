@@ -44,7 +44,7 @@ public class CommandBuilder {
 	
 	static enum CommandType {
 		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
-		UNDO, REDO, PREV, NEXT,
+		UNDO, REDO, PREV, NEXT, HELP, SEARCH,
 		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY
 	}
 	
@@ -128,9 +128,6 @@ public class CommandBuilder {
 			case DISPLAY:
 				command = new DisplayCommand(task);
 				break;
-			case CATEGORY_DISPLAY:
-				command = new DisplayCategoryCommand(selectedCategoryName);
-				break;
 			case DELETE:
 				command = new DeleteCommand(task);
 				break;
@@ -155,6 +152,12 @@ public class CommandBuilder {
 			case NEXT:
 			    command = new NextCommand();
 		        break;
+			case HELP:
+			    command = new HelpCommand();
+			    break;
+			case SEARCH:
+			    command = new SearchCommand();
+			    break;
 			case CATEGORY_ADD:
 			    command = new AddCategoryCommand(title, color);
                 break;
@@ -164,7 +167,10 @@ public class CommandBuilder {
 			case CATEGORY_DELETE:
 			    command = new DeleteCategoryCommand(selectedCategoryName);
 			    break;
-		    default:
+			case CATEGORY_DISPLAY:
+                command = new DisplayCategoryCommand(selectedCategoryName);
+                break;
+            default:
 			    throw new CommandTypeNotSetException();    
 		}
 		return command;

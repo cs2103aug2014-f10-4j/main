@@ -17,7 +17,7 @@ import list.model.ICategory;
 public class CommandParser implements IParser {
     
     private static final String ERROR_END_DATE_BEFORE_START_DATE = "End date cannot be earlier than start date.";
-    private static final String ERROR_COMMAND_TYPE_NOT_SPECIFIED = "Error: command type is not specified";
+    private static final String ERROR_COMMAND_TYPE_NOT_SPECIFIED = "Error: invalid command type.";
     private static final String ERROR_CANNOT_PARSE_START_DATE = "Error: unable to parse start date.";
     private static final String ERROR_END_DATE_NOT_SPECIFIED = "Error: if start date is specified, end date must also be specified.";
     private static final String ERROR_CANNOT_PARSE_END_DATE = "Error: unable to parse end date.";
@@ -89,7 +89,7 @@ public class CommandParser implements IParser {
     private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
-            "prev", "next", "search"
+            "prev", "next", "search", "help"
     );
     
     //remember to reset these variables at clear()
