@@ -8,9 +8,17 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.util.Callback;
 import list.Controller;
 import list.model.ITask;
 
@@ -22,8 +30,14 @@ public class CongratulationsController {
 	private static final String MESSAGE_EDITED_SUCCESS = "Task is successfully edited";
 	private static final String MESSAGE_ADDED_SUCCESS = "Task is successfully added";
 	
+	private static final String HELVETICA_NEUE = "Helvetica Neue";
+	
+	private static Glow glow = new Glow(0.5);
+	
 	ObservableList<String> listOfFloatingTaskString;
-	List<Integer> listOfIndexToAddToday = new ArrayList<Integer>();
+	List<String> listOfStringToAddToday = new ArrayList<String>();
+	List<ITask> floatingTaskList;
+	
 
 	@FXML
 	private ListView<String> listOfFloatingTaskView;
@@ -35,7 +49,8 @@ public class CongratulationsController {
 	}
 	
 	public void setUpView(List<ITask> floatingTasks) {
-		displayFloatingTaskList(floatingTasks);
+		floatingTaskList = floatingTasks;
+		displayFloatingTaskList(floatingTaskList);
 	}
 	
 	public void displayFloatingTaskList(List<ITask> floatingTasks) {
@@ -45,7 +60,39 @@ public class CongratulationsController {
 		}
 		listOfFloatingTaskString = FXCollections.observableArrayList(listOfTaskTitle);
 		listOfFloatingTaskView.setItems(listOfFloatingTaskString);
+		listOfFloatingTaskView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+			
+			@Override
+			public ListCell<String> call(ListView<String> param) {
+				return new makeLabelWithBackGround(listOfStringToAddToday);
+			}
+		});
 	}
+	
+	private static class makeLabelWithBackGround extends ListCell<String> {
+		
+		private List<String> listOfStringToAddToday;
+		
+		public makeLabelWithBackGround(List<String> listOfStringToAddToday) {
+			this.listOfStringToAddToday = listOfStringToAddToday;
+		}
+		
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            Label label = new Label(item);
+            if (item != null) {
+            	if(listOfStringToAddToday.contains(item)){
+            		label.setEffect(glow);
+            		label.setTextFill(Color.TURQUOISE);
+            	} else {
+            		label.setTextFill(Color.BLACK);
+            	}
+            	label.setFont(Font.font(HELVETICA_NEUE, 12.0d));
+                setGraphic(label);
+            }
+        }
+    }
 	
 	@FXML
 	private void initialize() {					
@@ -62,18 +109,18 @@ public class CongratulationsController {
 				} else if (event.getCode() == KeyCode.SPACE){
 					
 					// get the index of the selected cell
-					int selectedIndex = listOfFloatingTaskView.getFocusModel().getFocusedIndex();
+					String selectedString = listOfFloatingTaskView.getSelectionModel().getSelectedItem();
 					
 					// add and color the cell if it is not yet selected, and undo if it was
-					if(listOfIndexToAddToday.contains(selectedIndex)) {
-						listOfIndexToAddToday.remove(selectedIndex);
-						uncolorCellAtIndex(selectedIndex);
+					if(listOfStringToAddToday.contains(selectedString)) {
+						listOfStringToAddToday.remove(selectedString);
 					} else {
-						listOfIndexToAddToday.add(selectedIndex);
-						colorCellAtIndex(selectedIndex);
+						listOfStringToAddToday.add(selectedString);
 					}
+					updateCellColor();
 				} else if (event.getCode() == KeyCode.TAB) {
-					listOfFloatingTaskView.setEffect(null);
+					DropShadow dropShadow = new DropShadow(20,Color.WHITE);
+					buttonDone.setEffect(dropShadow);
 				} 
 			}
 		});
@@ -92,21 +139,17 @@ public class CongratulationsController {
 		});
 	}
 	
-	private void colorCellAtIndex(int indexOfCell) {
-		
-	}
-	
-	private void uncolorCellAtIndex(int indexOfCell) {
-		
+	private void updateCellColor() {
+		displayFloatingTaskList(floatingTaskList);
 	}
 
 	private void handleDoneAction() {
 		
 		String reply = "";
 		
-		for(int i = 0; i < listOfIndexToAddToday.size(); i++) {
+		for(int i = 0; i < listOfStringToAddToday.size(); i++) {
 			StringBuilder inputStringBuilder = new StringBuilder();
-			inputStringBuilder.append("edit " + (listOfIndexToAddToday.get(i) + 1) + " -d today");
+			inputStringBuilder.append("edit " + (listOfStringToAddToday.get(i) + 1) + " -d today");
 			reply = Controller.processUserInput(inputStringBuilder.toString());
 		}
 		if (reply.equals(MESSAGE_EDITED_SUCCESS)) {

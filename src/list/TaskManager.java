@@ -22,7 +22,7 @@ import org.json.JSONException;
  * This class modifies the user interface by the methods given in
  * <code>IUserInterface</code>.
  * 
- * @author andhieka, michael
+ * @author andhieka, michael, shotaro
  */
 public class TaskManager {
 
