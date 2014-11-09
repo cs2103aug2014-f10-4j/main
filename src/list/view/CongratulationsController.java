@@ -97,6 +97,7 @@ public class CongratulationsController {
             } else if (event.getCode() == KeyCode.TAB) {
                 DropShadow dropShadow = new DropShadow(20,Color.WHITE);
                 buttonDone.setEffect(dropShadow);
+                buttonDone.requestFocus();
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 exitWithoutMovingTask();
             }
@@ -106,6 +107,7 @@ public class CongratulationsController {
                 handleDoneAction();
             } else if (event.getCode() == KeyCode.TAB) {
                 buttonDone.setEffect(null);
+                listView.requestFocus();
             }
 		});
 		pane.setOnKeyPressed((event) -> {
@@ -154,7 +156,7 @@ public class CongratulationsController {
             if (item != null) {
                 if(selectedTitles.contains(item)){
                     label.setEffect(glow);
-                    label.setTextFill(Color.TURQUOISE);
+                    label.setTextFill(Color.ORANGE);
                 } else {
                     label.setTextFill(Color.BLACK);
                 }

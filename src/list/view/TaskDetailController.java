@@ -155,30 +155,11 @@ public class TaskDetailController {
 		StringBuilder inputStringBuilder = new StringBuilder();
 		inputStringBuilder.append("edit " + this.taskNumber + " ");
 		inputStringBuilder.append("-t " + taskTitle.getText() + " ");
-		
-		if (!taskTitle.getText().trim().isEmpty()) {
-		}
 		inputStringBuilder.append("-c " + taskCategory.getText() + " ");
-		
-		if (!taskCategory.getText().trim().isEmpty()) {
-		}
-		inputStringBuilder.append("-s " + taskStartDate.getText() + " ");
-		
-		if (!taskStartDate.getText().trim().isEmpty()) {
-		}
+		inputStringBuilder.append("-s " + taskStartDate.getText() + " ");		
 		inputStringBuilder.append("-d " + taskEndDate.getText() + " ");
-		
-		if (!taskEndDate.getText().trim().isEmpty()) {
-		}
 		inputStringBuilder.append("-p " + taskPlace.getText() + " ");
-		
-		if (!taskPlace.getText().trim().isEmpty()) {
-		}
 		inputStringBuilder.append("-n " + taskNotes.getText() + " ");
-		
-		if (!taskNotes.getText().trim().isEmpty()) {
-		}
-		
 		if (taskStatus.isSelected()) {
 			inputStringBuilder.append(" -status done");
 		} else {
