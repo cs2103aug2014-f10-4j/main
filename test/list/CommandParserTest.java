@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 import java.util.Scanner;
 
+import list.IParser.ParseException;
 import list.model.Date;
 
 import org.junit.Before;
@@ -51,6 +52,12 @@ public class CommandParserTest {
         parser.append("1");
         assertTrue(parser.getExpectedInputs().containsKey("-c"));
         assertTrue(parser.getExpectedInputs().containsKey("-t"));
+    }
+    
+    @Test(expected = ParseException.class)
+    public void shouldRejectTaskSpanningMoreThanOneDay() throws Exception {
+    	String commandString = "add -t long task -s Nov 12 4pm -d Nov 13 4pm";
+    	parser.parse(commandString);
     }
     
     @Test

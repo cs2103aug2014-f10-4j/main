@@ -20,18 +20,18 @@ public class Date implements Comparable<Date> {
     
     private static final int MINUTE_VALUE = 00;
     private static final int HOUR_VALUE = 12;
-    private static final String FORMAT_STRING_PRETTY = "d MMM y hh:mma";
+    private static final String FORMAT_STRING_PRETTY = "EEE, d MMM y hh:mma";
     private static final String FORMAT_STRING_DAY_NAME = "EEEE";
     private static final String FORMAT_STRING_MONTH_NAME = "MMM";
     private static final String FORMAT_STRING_TIME = "hh:mma";
-    private static final String STRING_TODAY = "Today";
-    private static final String STRING_TOMORROW = "Tomorrow";
+    private static final String FORMAT_STRING_DATE_ONLY = "dd-MM-yyyy";
     
     private static final DateTimeFormatter FORMATTER_PRETTY = DateTimeFormat.forPattern(FORMAT_STRING_PRETTY);
     private static final DateTimeFormatter FORMATTER_DAY_NAME = DateTimeFormat.forPattern(FORMAT_STRING_DAY_NAME);
     private static final DateTimeFormatter FORMATTER_MONTH_NAME = DateTimeFormat.forPattern(FORMAT_STRING_MONTH_NAME);
     private static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern(FORMAT_STRING_TIME);
     private static final DateTimeFormatter FORMATTER_STANDARD = ISODateTimeFormat.dateTime();
+    private static final DateTimeFormatter FORMATTER_DATE_ONLY = DateTimeFormat.forPattern(FORMAT_STRING_DATE_ONLY);
     
     private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
     private static final DateTimeComparator TIME_COMPARATOR = DateTimeComparator.getInstance(DateTimeFieldType.minuteOfDay());
@@ -66,7 +66,10 @@ public class Date implements Comparable<Date> {
                 this.isFloating = true;
                 this.dateTime = new DateTime();
             } else {
-                this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
+            	trySetDateUsingStandardFormat(dateString);
+                if (this.dateTime == null) {
+                	this.dateTime = FORMATTER_DATE_ONLY.parseDateTime(dateString);
+                }
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -113,6 +116,14 @@ public class Date implements Comparable<Date> {
         }
     }
     
+    private void trySetDateUsingStandardFormat(String dateString) {
+        try {
+            this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+    }
+    
     public static Date getFloatingDate() {
         if (DATE_FLOATING == null) {
             DATE_FLOATING = new Date();
@@ -150,13 +161,6 @@ public class Date implements Comparable<Date> {
         if (this.isFloating) {
             return DAY_FLOATING_PRETTY;
         }
-        DateTime today = new DateTime();
-        DateTime tomorrow = today.plusDays(1);
-    	if (DATE_ONLY_COMPARATOR.compare(today, this.dateTime) == 0) {
-    		return STRING_TODAY + " " + getTime();
-    	} else if (DATE_ONLY_COMPARATOR.compare(tomorrow, this.dateTime) == 0) {
-    		return STRING_TOMORROW + " " + getTime();
-    	}
         return FORMATTER_PRETTY.print(this.dateTime); 
     }
     
@@ -211,5 +215,14 @@ public class Date implements Comparable<Date> {
             return DAY_FLOATING;
         }
         return FORMATTER_STANDARD.print(dateTime);
+    }
+
+	public boolean withinOneDayFrom(Date startDate) {
+		if (this.isFloating || startDate.isFloating) {
+			return true;
+		} else {
+			DateTime endTime = startDate.dateTime.plusHours(24);
+			return this.dateTime.isBefore(endTime);
+		}
     }
 }

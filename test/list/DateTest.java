@@ -65,4 +65,12 @@ public class DateTest {
         assertEquals(date, date2);
     }
     
+    @Test
+    public void testWithinOneDayCompare() throws Exception {
+    	Date start = Date.tryParse("yesterday 23.59");
+    	Date end = Date.tryParse("today 23.58");
+    	Date over = Date.tryParse("today 23.59");
+    	assertTrue(end.withinOneDayFrom(start));
+    	assertFalse(over.withinOneDayFrom(start));
+    }
 }

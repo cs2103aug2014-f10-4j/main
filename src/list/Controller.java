@@ -48,6 +48,7 @@ public class Controller extends Application {
 	private static Stack<ICommand> undoStack = new Stack<ICommand>();
 	private static Stack<ICommand> redoStack = new Stack<ICommand>();
 	private static Controller singletonInstance = null;
+	private static ICategory categoryOnDisplay;
 	
 	public static Controller getInstance() {
 		return singletonInstance;
@@ -156,7 +157,13 @@ public class Controller extends Application {
         userInterface.hideHelp();
     }
     
-
+    public static void reportCategoryDelete(ICategory category) {
+    	if (categoryOnDisplay == category) {
+    		displayCurrentTasks();
+    		refreshUI();
+    	}
+    }
+    
     private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
     }
@@ -198,6 +205,7 @@ public class Controller extends Application {
     }
 	
 	private static void displayTasksInCategory(ICategory category) {
+		categoryOnDisplay = category;
 		displayTasks(category.getName().toUpperCase(), category.getList());
 	}
 	
@@ -220,6 +228,7 @@ public class Controller extends Application {
 //	}
 
 	public static boolean displayTasksBasedOnDisplayMode(String displayMode) {
+		categoryOnDisplay = null;
 		if (displayMode.equalsIgnoreCase("floating")) {
 			displayFloatingTasks();
 			return true;
