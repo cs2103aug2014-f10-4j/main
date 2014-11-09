@@ -8,7 +8,7 @@ public class PrevCommand implements ICommand {
 	private static final String MESSAGE_ERROR = "End of list";
     
 	@Override
-    public String execute() throws CommandExecutionException, IOException {
+    public String execute() {
         boolean success = Controller.back();
         if (success) {
         	return MESSAGE_SUCCESS;

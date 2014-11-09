@@ -1,6 +1,7 @@
 package list;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,10 +11,10 @@ import java.awt.Color;
 
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
-import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask.TaskStatus;
+import list.util.Suggestions;
 
 public class CommandParser implements IParser {
     
@@ -92,10 +93,6 @@ public class CommandParser implements IParser {
         EXPECTATIONS_NUMBER = new HashMap<String, String>();
         EXPECTATIONS_NUMBER.put("Number", "The object number you want to select.");
     }
-    private static final List<String> ACTIONS_REQUIRING_NUMBER = Arrays.asList(
-            "edit", "delete", "display",
-            "mark", "unmark"
-    );
     private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
@@ -114,6 +111,7 @@ public class CommandParser implements IParser {
     private Date endDate;
     private StringBuilder generalArgument;
     private CommandType commandType;
+    private List<String> suggestionKeywords;
     
     private TaskManager taskManager = TaskManager.getInstance();
     
@@ -135,46 +133,61 @@ public class CommandParser implements IParser {
         }
     }
     
-    public Map<String, String> getExpectedInputs() {
-        if (this.action.isEmpty()) {
-            return EXPECTATIONS_ACTION;
+    public String getExpectedInputs() {
+        StringBuilder keywordBuilder = new StringBuilder();
+        for (String word: suggestionKeywords) {
+            keywordBuilder.append(word).append(' ');
         }
-        if (this.requiresObjectNumber() && this.taskNumber == 0) {
-            return EXPECTATIONS_NUMBER;
+        String keyword = keywordBuilder.toString().trim().toLowerCase();
+        List<String> suggestionTokens = Suggestions.PARSER_SUGGESTIONS.get(keyword);
+        if (suggestionTokens == null) {
+            return "";
         }
-        if (this.parseMode == ParseMode.TASK) {
-            return unspecifiedTaskParameters();
-        } else {
-            return unspecifiedCategoryParameters();
+        StringBuilder suggestion = new StringBuilder();
+        for (String token: suggestionTokens) {
+            if (token.equals("catargs()")) {
+                suggestion.append(unspecifiedCategoryParameters());
+            } else if (token.equals("taskargs()")) {
+                suggestion.append(unspecifiedTaskParameters());
+            } else {
+                suggestion.append(token);
+            }
+            suggestion.append(" | ");
         }
+        return suggestion.toString();
     }
 
-    private Map<String, String> unspecifiedCategoryParameters() {
+    private String unspecifiedCategoryParameters() {
         HashMap<String, String> expectations = new HashMap<String, String>();
         for(Entry<String, String> entry: EXPECTATIONS_CATEGORY.entrySet()) {
             if (parameterNotSpecified(entry.getKey())) {
                 expectations.put(entry.getKey(), entry.getValue());
             }
         }
-        return expectations;
+        return printMap(expectations);
     }
 
+    private String printMap(Map<String, String> map) {
+        StringBuilder result = new StringBuilder();
+        for(Entry<String, String> entry: map.entrySet()) {
+            result.append(entry.getKey()).append(':').append(entry.getValue());
+            result.append(' ');
+        }
+        return result.toString();
+    }
+    
     private boolean parameterNotSpecified(String parameterName) {
         return !parameters.containsKey(parameterName);
     }
 
-    private Map<String, String> unspecifiedTaskParameters() {
+    private String unspecifiedTaskParameters() {
         HashMap<String, String> expectations = new HashMap<String, String>();
         for(Entry<String, String> entry: EXPECTATIONS_TASK.entrySet()) {
             if (parameterNotSpecified(entry.getKey())) {
                 expectations.put(entry.getKey(), entry.getValue());
             }
         }
-        return expectations;
-    }
-
-    private boolean requiresObjectNumber() {
-        return ACTIONS_REQUIRING_NUMBER.contains(this.action);
+        return printMap(expectations);
     }
     
     public void clear() {
@@ -187,6 +200,7 @@ public class CommandParser implements IParser {
         this.startDate = null;
         this.endDate = null;
         this.generalArgument = new StringBuilder();
+        this.suggestionKeywords = new ArrayList<String>();
     }
  
     public ICommand finish() throws ParseException {
@@ -478,15 +492,23 @@ public class CommandParser implements IParser {
     }
     
     private void processNonParameterWord(String word) {
+        if (word.isEmpty()) {
+            return;
+        }
         if (KEYWORDS_CATEGORY.contains(word)) {
             this.parseMode = ParseMode.CATEGORY;
+            suggestionKeywords.add(word);
         } else if (isInteger(word)) {
             this.taskNumber = Integer.parseInt(word);
+            suggestionKeywords.add("num()");
         } else if (isCommandType(word)) {
             this.action = word;
+            suggestionKeywords.add(word);
         } else {
             if (generalArgument.length() > 0) {
                 generalArgument.append(' ');
+            } else {
+                suggestionKeywords.add("ga()");                
             }
             generalArgument.append(word);
         }

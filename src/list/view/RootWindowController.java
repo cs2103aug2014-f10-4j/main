@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,6 +23,8 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import list.CommandParser;
 import list.Controller;
+import list.NextCommand;
+import list.PrevCommand;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
@@ -123,12 +126,6 @@ public class RootWindowController implements IUserInterface {
     }
 
     @Override
-    public void clearDisplay() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void displayMessageToUser(String message) {
         taskOverviewController.displayMessageToUser(message);
     }
@@ -159,6 +156,9 @@ public class RootWindowController implements IUserInterface {
         
         setConsoleKeyPressHandler();
         setWindowKeyPressHandler();
+        Platform.runLater(() -> {
+            console.requestFocus();
+        });
     }
     
     private void setUpButtons() {
@@ -179,15 +179,14 @@ public class RootWindowController implements IUserInterface {
     	});
     	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	boolean success = next();
-    	    	if (!success) {
-    	    	    //show something
-    	    	}
+    	    	NextCommand cmd = new NextCommand();
+    	    	displayMessageToUser(cmd.execute());
     	    }
     	});
     	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	back();
+    	    	PrevCommand cmd = new PrevCommand();
+    	    	displayMessageToUser(cmd.execute());
     	    }
     	});
     }
@@ -199,6 +198,9 @@ public class RootWindowController implements IUserInterface {
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.SPACE)) {
                     showSyntaxSuggestion();   
+                } else if (event.getCode() == KeyCode.TAB) {
+                    console.requestFocus();
+                    event.consume();
                 }
             }
 
@@ -206,12 +208,8 @@ public class RootWindowController implements IUserInterface {
                 try {
                     parser.clear();
                     parser.append(console.getText());
-                    Map<String, String> expected = parser.getExpectedInputs();
-                    StringBuilder expectedStr = new StringBuilder();
-                    for (String key: expected.keySet()) {
-                        expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
-                    }
-                    displayMessageToUser(expectedStr.toString());
+                    String expected = parser.getExpectedInputs();
+                    displayMessageToUser(expected);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
