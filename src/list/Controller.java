@@ -101,7 +101,7 @@ public class Controller extends Application {
                 undoStack.add(inverseCommand);
                 redoStack.clear();
             }            
-            
+            userInterface.clearConsole();
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {

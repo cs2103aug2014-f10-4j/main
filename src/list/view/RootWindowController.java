@@ -362,10 +362,6 @@ public class RootWindowController implements IUserInterface {
     	
         String userInput = console.getText();
         Controller.processUserInput(userInput);
-        
-        //labelTask1.requestFocus(); //set focus to something else
-        console.setText("");
-        //console.promptTextProperty();
     }
 
 	@Override
@@ -380,5 +376,10 @@ public class RootWindowController implements IUserInterface {
 	        title = "";
 	    }
 	    labelPageTitle.setText(title);
+    }
+
+    @Override
+    public void clearConsole() {
+        console.setText("");
     }
 }
