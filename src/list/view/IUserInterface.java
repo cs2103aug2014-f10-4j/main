@@ -44,7 +44,7 @@ public interface IUserInterface {
 	
 	void refreshUI();
 	
-	void displayCongratulations(List<ITask> tasks);
+	void displayCongratulations(List<ITask> floatingTasks);
 	
 	void hideCongratulations();
 
