@@ -115,6 +115,7 @@ public class ReaderWriter implements IStorage {
 			return tasksList;
 			
 		} else {
+			Controller.displayHelp();
 			return new ArrayList<ITask>();
 		}
 	}

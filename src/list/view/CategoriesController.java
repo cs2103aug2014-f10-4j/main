@@ -43,7 +43,7 @@ public class CategoriesController {
     private double PANE_HEIGHT;
     
     // fixed value for the string of labels and buttons
-    private static final String stringForLabelAllCategory = " All Task";
+    private static final String stringForLabelAllCategory = " Group by deadline";
     private static final String stringForLabelOtherCategory = " Categories";
     private static final String stringForButtonCurrentTask = "Current Task";
     private static final String stringForButtonFloatingTask = "Floating Task";

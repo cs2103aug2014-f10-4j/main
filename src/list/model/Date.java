@@ -20,7 +20,7 @@ public class Date implements Comparable<Date> {
     
     private static final int MINUTE_VALUE = 00;
     private static final int HOUR_VALUE = 12;
-    private static final String FORMAT_STRING_PRETTY = "EEE, d MMM y hh:mma";
+    private static final String FORMAT_STRING_PRETTY = "EEE, MMM d y hh:mma";
     private static final String FORMAT_STRING_DAY_NAME = "EEEE";
     private static final String FORMAT_STRING_MONTH_NAME = "MMM";
     private static final String FORMAT_STRING_TIME = "hh:mma";
