@@ -32,8 +32,6 @@ public class TaskManager {
 	private List<ITask> overdueTasks = new ArrayList<ITask>();
 
 	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
-
-	// private List<ITask> floatingTasks = new ArrayList<ITask>();
 	private List<ITask> tasks = new ArrayList<ITask>();
 	private Stack<ITask> deletedTasks = new Stack<ITask>();
 
@@ -237,17 +235,6 @@ public class TaskManager {
 		return tasks.get(getTaskId(taskNumberShownOnScreen));
 	}
 
-	@Deprecated
-	void deleteTask(Integer taskNumberShownOnScreen) {
-		ITask task = getTask(taskNumberShownOnScreen);
-		if (task.hasDeadline()) {
-			tasks.remove(task);
-		} else {
-			floatingTasks.remove(task);
-		}
-		deletedTasks.push(task);
-	}
-
 	void deleteTask(ITask task) {
 		if (task.hasDeadline()) {
 			if (task.isOverdue()) {
@@ -272,12 +259,6 @@ public class TaskManager {
 			addTask(task);
 			deletedTasks.remove(task);
 		}
-	}
-
-	@Deprecated
-	boolean hasTaskWithNumber(Integer taskNumberShownOnScreen) {
-		return taskNumberShownOnScreen > 0
-				&& taskNumberShownOnScreen <= tasks.size();
 	}
 
 	/**

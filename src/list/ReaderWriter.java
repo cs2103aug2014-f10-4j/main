@@ -17,8 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
+ * This class is responsible for saving and loading of both categories and tasks 
+ * that are stored persistently in the form of text files (in JSON format). 
+ * In order to convert from JSON format to Java Object, Converter class is used.
  * 
- * @author Michael
+ * @author A0094022R
  *
  */
 public class ReaderWriter implements IStorage {
@@ -26,7 +29,6 @@ public class ReaderWriter implements IStorage {
 	@SuppressWarnings("serial")
     class CorruptedFileException extends Exception { };
 	
-	//TODO: Better naming for messages
 	private static final String MESSAGE_IO_ERROR = "IO Error!";
 	private static final String TEXTFILE_NAME_TASKS = "list_tasks.json";
 	private static final String TEXTFILE_NAME_CATEGORIES = "list_categories.json";
@@ -38,7 +40,6 @@ public class ReaderWriter implements IStorage {
 	private BufferedWriter categoryWriter = null;
 	private BufferedReader categoryReader = null;
 	
-	//TODO: Better error handling, and how to give message to UI?
 	ReaderWriter() {
 		jsonConverter = new Converter();		
 	}
@@ -53,6 +54,9 @@ public class ReaderWriter implements IStorage {
 		taskWriter.close();
 	}
 	
+	/**
+	 * Loads data of categories from a text file into TaskManager
+	 */
 	@Override
 	public HashMap<String,ICategory> loadCategoriesFromFile() throws IOException, JSONException {
 		File categoryStorageInTextFile = new File(TEXTFILE_NAME_CATEGORIES);
@@ -77,6 +81,9 @@ public class ReaderWriter implements IStorage {
 		}
 	}
 
+	/**
+	 * Saves data of categories from TaskManager to a text file.
+	 */
 	@Override
 	public void saveCategoriesToFile(List<ICategory> categories) throws IOException {
 		JSONArray categoryListInJson = jsonConverter.convertCategoryListToJson(categories);
@@ -94,6 +101,9 @@ public class ReaderWriter implements IStorage {
 		
 	}
 	
+	/**
+	 * Loads data of tasks from a text file into TaskManager
+	 */
 	@Override
 	public List<ITask> loadTasksFromFile() throws IOException, JSONException {
 		
@@ -120,6 +130,9 @@ public class ReaderWriter implements IStorage {
 		}
 	}
 
+	/**
+	 * Saves data of tasks from TaskManager to a text file.
+	 */
 	@Override
 	public void saveTasksToFile(List<ITask> tasks) throws IOException {
 		JSONArray tasksListInJson = jsonConverter.convertTasksListToJson(tasks);

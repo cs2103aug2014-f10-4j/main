@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import list.model.ITask.TaskStatus;
 import list.model.Task;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +25,7 @@ import org.junit.Test;
 /**
  * This class is used to test the functionality of Converter Class
  * 
- * @author Michael
+ * @author A0094022R
  *
  */
 public class ConverterTest {
@@ -56,7 +54,6 @@ public class ConverterTest {
 	private static final String CATEGORY_1_NAME = "School";
 	private static final Color CATEGORY_1_COLOR = Color.BLUE;
 	private static final String CATEGORY_2_NAME = "Work";
-	
 	
 	private Converter converter;
 	private List<ITask> tasks;
@@ -188,8 +185,7 @@ public class ConverterTest {
 	}
 	
 	@Test(expected=CorruptedJsonObjectException.class)
-	public void shouldNotConvertJsonObjectWithoutTitleToTask() throws JSONException,
-			InvalidDateException, CorruptedJsonObjectException {
+	public void shouldNotConvertJsonObjectWithoutTitleToTask() throws Exception {
 		
 		JSONObject originalTaskInJson = new JSONObject();
 		JSONObject originalTaskDetail = new JSONObject();
@@ -250,12 +246,12 @@ public class ConverterTest {
 		
 		HashMap<String, ICategory> categories = converter.convertJsonToCategoryList(jsonArray);
 		
-		assertEquals(true, categories.containsKey(expectedCategoryOne.getName()));
-		assertEquals(CATEGORY_1_NAME, categories.get(expectedCategoryOne.getName()).getName());
-		assertEquals(CATEGORY_1_COLOR, categories.get(expectedCategoryOne.getName()).getColor());
-		assertEquals(true, categories.containsKey(expectedCategoryTwo.getName()));
-		assertEquals(CATEGORY_2_NAME, categories.get(expectedCategoryTwo.getName()).getName());
-		assertEquals(Color.BLACK, categories.get(expectedCategoryTwo.getName()).getColor());	
+		assertEquals(true, categories.containsKey(expectedCategoryOne.getName().toLowerCase()));
+		assertEquals(CATEGORY_1_NAME, categories.get(expectedCategoryOne.getName().toLowerCase()).getName());
+		assertEquals(CATEGORY_1_COLOR, categories.get(expectedCategoryOne.getName().toLowerCase()).getColor());
+		assertEquals(true, categories.containsKey(expectedCategoryTwo.getName().toLowerCase()));
+		assertEquals(CATEGORY_2_NAME, categories.get(expectedCategoryTwo.getName().toLowerCase()).getName());
+		assertEquals(Color.WHITE, categories.get(expectedCategoryTwo.getName().toLowerCase()).getColor());	
 	}
 	
 	@Test

@@ -13,7 +13,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     //AddCommandTest.class,
     CommandParserTest.class,
-    ControllerTest.class,
     ConverterTest.class,
     DateTest.class,
     //DeleteCommandTest.class,
