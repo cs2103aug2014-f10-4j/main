@@ -78,6 +78,7 @@ public class RootWindowController implements IUserInterface {
     public void displayCategories(List<ICategory> categories) {
         categoriesController.clearAll();
     	categoriesController.setUpView(categories);
+    	categoriesController.setParentController(this);
     	animateCategoryAndTextOverview(true);
     	isShowingCategories = true;
     }
@@ -91,7 +92,7 @@ public class RootWindowController implements IUserInterface {
     @Override
     public void displayHelp() {
         showHelpLayout();
-        helpController.getParentController(this);        
+        helpController.setParentController(this);        
     }
     
     @Override
@@ -246,6 +247,7 @@ public class RootWindowController implements IUserInterface {
             paneForCategories.setHbarPolicy(ScrollBarPolicy.NEVER);
             paneForCategories.setVbarPolicy(ScrollBarPolicy.NEVER);
             rootPane.getChildren().add(paneForCategories);
+            paneForCategories.requestFocus();
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -278,13 +280,13 @@ public class RootWindowController implements IUserInterface {
             help = (ScrollPane) loader.load();
             
             helpController = loader.getController();
-            help.setEffect(new DropShadow(3.0d, Color.BLACK));
+            help.setEffect(new DropShadow(3.0d, Color.WHITE));
             help.setLayoutX(50);
             help.setLayoutY(33);
             help.setHbarPolicy(ScrollBarPolicy.NEVER);
             help.setVbarPolicy(ScrollBarPolicy.NEVER);
             rootPane.getChildren().add(help);
-            
+            help.requestFocus();
         } catch (IOException e) {
             e.printStackTrace();
         } 
@@ -335,6 +337,7 @@ public class RootWindowController implements IUserInterface {
     		translateForTaskOverview.setCycleCount(1);
     		translateForTaskOverview.setAutoReverse(false);
     		translateForTaskOverview.play();
+    		taskOverview.requestFocus();
     	} else {
     		TranslateTransition translateForTaskOverview;
     		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);

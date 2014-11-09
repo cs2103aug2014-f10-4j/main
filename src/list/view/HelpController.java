@@ -3,25 +3,62 @@ package list.view;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 
 public class HelpController {
 	
+	private static final double VERTICAL_SCROLL_AMOUNT = 0.025;
+
 	private RootWindowController rootContoller;
 	
 	@FXML
+	private ScrollPane scrollPane;
+	@FXML
 	private Button buttonDone;
-
-	public void getParentController(RootWindowController rootController) {
+	@FXML
+	private ImageView imageHelp;
+	
+	public void setParentController(RootWindowController rootController) {
 		this.rootContoller = rootController;
 	}
 	
 	
 	@FXML
 	private void initialize() {					
-		buttonDone.setOnAction((event) -> {
+		setupButtonDoneAction();
+		scrollPane.setOnKeyPressed((event) -> {
+			handleScrollPaneKeyPress(event);
+		}); 
+		
+		cacheImageViewForPerformance();
+	}
+
+	private void handleScrollPaneKeyPress(KeyEvent event) {
+		double currentPosition = scrollPane.getVvalue();
+		double vmin = scrollPane.getVmin();
+		double vmax = scrollPane.getVmax();
+		if (event.getCode() == KeyCode.DOWN) {
+			scrollPane.setVvalue(Math.min(vmax, currentPosition + VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.UP) {
+			scrollPane.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.ESCAPE) {
+			handleDoneAction();
+		}
+		event.consume(); //to prevent further propagation
+	}
+
+	private void cacheImageViewForPerformance() {
+	    imageHelp.setCache(true);
+		imageHelp.setSmooth(true);
+    }
+
+
+	private void setupButtonDoneAction() {
+	    buttonDone.setOnAction((event) -> {
 			handleDoneAction();
 		});
 		
@@ -38,7 +75,7 @@ public class HelpController {
 			}
 		
 		});
-	}
+    }
 	
 	private void handleDoneAction() {		
 		rootContoller.hideHelp();

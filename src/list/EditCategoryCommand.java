@@ -33,13 +33,14 @@ public class EditCategoryCommand implements ICommand {
         }
         makeInverseCommand();
         if (categoryName != null && !categoryName.isEmpty()) {
+            taskManager.moveCategory(category.getName(), categoryName);
             category.setName(categoryName);
         }
         if (color != null) {
             category.setColor(color);            
         }
         taskManager.saveData();
-        Controller.displayCategories();
+        Controller.displayTasksBasedOnDisplayMode(category.getName());
         Controller.refreshUI();
         return MESSAGE_SUCCESS;
     }

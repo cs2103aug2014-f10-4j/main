@@ -226,7 +226,7 @@ public class ConverterTest {
 		
 		// Checking the second category
 		assertEquals(CATEGORY_2_NAME, secondCategory.get(KEY_NAME));
-		assertEquals(Integer.toHexString(Color.BLACK.getRGB()).substring(2,8), secondCategory.get(KEY_COLOR));
+		assertEquals(Integer.toHexString(Color.WHITE.getRGB()).substring(2,8), secondCategory.get(KEY_COLOR));
 	}
 	
 	@Test

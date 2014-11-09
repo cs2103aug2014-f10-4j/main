@@ -43,6 +43,7 @@ public class DeleteCategoryCommand implements ICommand {
         }
         taskManager.deleteCategory(category);
         taskManager.saveData();
+        Controller.reportCategoryDelete(category);
         Controller.displayCategories();
         return String.format(MESSAGE_CATEGORY_DELETED, category.getName());
     }
