@@ -157,6 +157,14 @@ public class Controller extends Application {
         userInterface.hideHelp();
     }
     
+    public static void displayCongratulations(List<ITask> floatingTasks) {
+		userInterface.displayCongratulations(floatingTasks);
+	}
+    
+    public static void hideCongratulations() {
+    	userInterface.hideCongratulations();
+    }
+    
     public static void reportCategoryDelete(ICategory category) {
     	if (categoryOnDisplay == category) {
     		displayCurrentTasks();
