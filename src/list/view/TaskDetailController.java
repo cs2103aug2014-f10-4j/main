@@ -40,11 +40,11 @@ public class TaskDetailController {
 	@FXML
 	private Button buttonDone;
 
-	public void getParentController(RootWindowController rootController) {
+	void getParentController(RootWindowController rootController) {
 		this.rootContoller = rootController;
 	}
 	
-	public void displayTaskDetail(ITask task, int taskNumber) {	
+	void displayTaskDetail(ITask task, int taskNumber) {	
 		this.taskNumber = taskNumber;
 		
 		taskTitle.requestFocus();

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Category;
@@ -18,11 +20,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * This class is responsible to convert Java Objects (Task and Category) into
+ * JSON or vice versa. It will be used by ReaderWriter class during both the process
+ * of loading data from text files and saving data to text files.
+ * 
+ * @author A0094022R
+ */
 public class Converter {
 	
 	@SuppressWarnings("serial")
     class CorruptedJsonObjectException extends Exception { };
 	
+    // Messages used in logging
+    private static final String LOG_CORRUPTED_TASK_OBJECT = "There are a total of %d corrupted JSON Task Object during conversion";
+    private static final String LOG_CORRUPTED_CATEGORY_OBJECT = "There are a total of %d corrupted JSON Category Object during conversion";
+    private static final String LOG_CORRUPTED_TASK_PROPERTY = "There are a total of %d corrupted Task Properties due to %s";
+    private static final String LOG_UNEXPECTED_ERROR = "Unexpected error during conversion";
+    
 	// Keys used to identify attributes of a task in JSON	
 	private static final String KEY_TITLE = "title";
 	private static final String KEY_DETAILS = "details";
@@ -38,26 +53,31 @@ public class Converter {
 	private static final String KEY_CAT_NAME = "name";
 	private static final String KEY_CAT_COLOR = "color";
 	
+	private Logger logger = Logger.getLogger("ConverterLogger");
 	private int numOfCorruptedTaskProperties = 0;
 	private int numOfCorruptedJsonTaskObjects = 0;
 	private int numOfCorruptedJsonCategoryObjects = 0;
 	
-	//TODO: Check JsonException 
+	/**
+	 * Converts an array of JSONObjects into a list of ITask objects.
+	 * 
+	 * @param jsonArray
+	 * @return list of tasks represented by jsonArray in JSON format
+	 */
 	List<ITask> convertJsonToTasksList(JSONArray jsonArray) {
-		
 		resetCorruptedJSONTaskObjectCounter();
 		
 		List<ITask> listOfTasks = new ArrayList<ITask>();
-		
 		for (int i = 0; i < jsonArray.length(); i++) {
 			try {
 				JSONObject taskInJson = jsonArray.getJSONObject(i);
 				ITask task = convertJsonToTask(taskInJson);
 				listOfTasks.add(task);
-								
 			} catch (CorruptedJsonObjectException e) {
 				numOfCorruptedJsonTaskObjects++;
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_OBJECT, numOfCorruptedJsonTaskObjects));
 			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
 				assert (false): e.getMessage();
 			}
 		}
@@ -65,6 +85,12 @@ public class Converter {
 		return listOfTasks;
 	}
 	
+	/**
+	 * Converts the list of tasks specified into its JSON representation for storage.
+	 * 
+	 * @param tasks
+	 * @return the JSON representation of list of tasks (in JSONArray)
+	 */
 	JSONArray convertTasksListToJson(List<ITask> tasks) {
 		JSONArray tasksListInJson = new JSONArray();
 		
@@ -73,6 +99,7 @@ public class Converter {
 				JSONObject taskInJson = convertTaskToJson(task);
 				tasksListInJson.put(taskInJson);
 			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
 				assert (false): e.getMessage();
 			}
 			
@@ -81,6 +108,14 @@ public class Converter {
 		return tasksListInJson;
 	}
 	
+	/**
+	 * Converts an array of JSONObjects into a HashMap with:
+	 * key - category name (in lower case), and
+	 * value - respective ICategory
+	 * 
+	 * @param jsonArray
+	 * @return HashMap of ICategory
+	 */
 	HashMap<String, ICategory> convertJsonToCategoryList(JSONArray jsonArray) {
 		
 		resetCorruptedJSONCategoryObjectCounter();
@@ -99,7 +134,9 @@ public class Converter {
 				
 			} catch (CorruptedJsonObjectException e) {
 				numOfCorruptedJsonCategoryObjects++;
+				logger.log(Level.INFO, LOG_CORRUPTED_CATEGORY_OBJECT);
 			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
 				assert (false): e.getMessage();
 			}
 		}
@@ -107,6 +144,12 @@ public class Converter {
 		return categories;
 	}
 	
+	/**
+	 * Converts the list of categories specified into its JSON representation for storage.
+	 * 
+	 * @param categories
+	 * @return the JSON representation of list of categories (in JSONArray)
+	 */
 	JSONArray convertCategoryListToJson(List<ICategory> categories) {
 		JSONArray categoryListInJson = new JSONArray();	
 		
@@ -123,7 +166,15 @@ public class Converter {
 		return categoryListInJson;		
 	}
 	
-	//TODO: make this private here and remove in JUnitTest
+	/**
+	 * This method converts a JSONObject representing a Task into
+	 * Task object with its attributes
+	 * 
+	 * @param jsonObject
+	 * @return ITask
+	 * @throws CorruptedJsonObjectException if task in JSON format has no title
+	 * @throws JSONException 
+	 */
 	ITask convertJsonToTask(JSONObject jsonObject) 
 			throws CorruptedJsonObjectException, JSONException {
 		if (!jsonObject.has(KEY_TITLE)) {
@@ -136,18 +187,26 @@ public class Converter {
 		
 		setTaskDetail(jsonObject, task);
 		
-		return task;
-		
+		return task;	
 	}
-	
+
+	/**
+	 * Returns the number of corrupted tasks attributes (in JSON format) during conversion.
+	 */
 	int getNumberOfCorruptedTaskProperties() {
 		return numOfCorruptedTaskProperties;
 	}
 	
+	/**
+	 * Returns the number of corrupted task objects (in JSON format) during conversion.
+	 */
 	int getNumberOfCorruptedJsonTaskObjects() {
 		return numOfCorruptedJsonTaskObjects;
 	}
 	
+	/**
+	 * Returns the number of corrupted category objects (in JSON format) during conversion.
+	 */
 	int getNumOfCorruptedJsonCategoryObjects() {
 		return numOfCorruptedJsonCategoryObjects;
 	}
@@ -224,6 +283,7 @@ public class Converter {
 					task.setStartDate(new Date(startDate));
 				}
 			} catch (InvalidDateException e) {
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_PROPERTY, e.getMessage()));
 				numOfCorruptedTaskProperties++;
 			}
 			
@@ -237,6 +297,7 @@ public class Converter {
 					task.setEndDate(new Date(endTime));
 				}
 			} catch (InvalidDateException e) {
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_PROPERTY, e.getMessage()));
 				numOfCorruptedTaskProperties++;
 			}
 			

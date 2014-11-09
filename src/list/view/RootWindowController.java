@@ -28,6 +28,8 @@ import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
 	
+	private static final double DURATION_CATEGORY = 0.2;
+	
 	@FXML
 	private Pane rootPane;
 	@FXML
@@ -57,7 +59,7 @@ public class RootWindowController implements IUserInterface {
 	private HelpController helpController;
 	private CongratulationsController congratulationsController;
 	private CommandParser parser = new CommandParser();
-	private double DURATION_CATEGORY = 0.2;
+	
 	
 	
     @Override
@@ -80,13 +82,13 @@ public class RootWindowController implements IUserInterface {
         categoriesController.clearAll();
     	categoriesController.setUpView(categories);
     	categoriesController.setParentController(this);
-    	animateCategoryAndTextOverview(true);
+    	animateCategoryAndTaskOverview(true);
     	isShowingCategories = true;
     }
     
     @Override
 	public void hideCategories() {
-    	animateCategoryAndTextOverview(false);    	
+    	animateCategoryAndTaskOverview(false);    	
     	isShowingCategories = false;
 	}
     
@@ -148,6 +150,17 @@ public class RootWindowController implements IUserInterface {
 		taskOverviewController.highlightTask(task);
 	}
 
+	@Override
+    public void clearConsole() {
+        console.setText("");
+    }
+    
+	@Override
+	public void refreshUI() {
+        updatePageTitle();
+		taskOverviewController.refresh();
+	}
+	
 	@FXML
     private void initialize() {
         showTaskOverviewLayout();
@@ -330,7 +343,7 @@ public class RootWindowController implements IUserInterface {
         }
 	}
     
-    private void animateCategoryAndTextOverview(boolean willDisplay) {
+    private void animateCategoryAndTaskOverview(boolean willDisplay) {
     	if (willDisplay) {
     		TranslateTransition translateForTaskOverview;
     		translateForTaskOverview = new TranslateTransition(Duration.seconds(DURATION_CATEGORY), taskOverview);
@@ -366,12 +379,6 @@ public class RootWindowController implements IUserInterface {
         Controller.processUserInput(userInput);
     }
 
-	@Override
-	public void refreshUI() {
-        updatePageTitle();
-		taskOverviewController.refresh();
-	}
-
     private void updatePageTitle() {
         String title = pageTitle;
 	    if (title == null) {
@@ -380,8 +387,5 @@ public class RootWindowController implements IUserInterface {
 	    labelPageTitle.setText(title);
     }
 
-    @Override
-    public void clearConsole() {
-        console.setText("");
-    }
+   
 }

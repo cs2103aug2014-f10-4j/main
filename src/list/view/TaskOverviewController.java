@@ -81,7 +81,7 @@ public class TaskOverviewController {
     private List<ITask> oldDisplayedTasks;
 	private Glow glow = new Glow(1.0);
     
-    public void setDisplayTasks(List<ITask> newTasks) {
+    void setDisplayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
         beginIndex = 0;
     }
@@ -93,7 +93,7 @@ public class TaskOverviewController {
      * @return an index of a task in the list currently displayed. It returns 0
      * if the task specified cannot be found in the list
      */
-    public int getTaskNumber(ITask task) {
+    int getTaskNumber(ITask task) {
     	for (int i = 1; i <= allTasks.size(); i++) {
     		if (task.equals(allTasks.get(i - 1))) {
     			return i;
@@ -417,7 +417,7 @@ public class TaskOverviewController {
     	tasksContainer.getChildren().add(checkBox);
     }
     
-    public void displayMessageToUser(String message) {
+    void displayMessageToUser(String message) {
         if (message == null || message.isEmpty()) {
             return;
         }
@@ -430,7 +430,7 @@ public class TaskOverviewController {
         this.feedbackAnimation = animation;
     }
 
-	public void highlightTask(ITask task) {
+	void highlightTask(ITask task) {
 		goToPageContaininingTask(task);
 		refresh();
 		
