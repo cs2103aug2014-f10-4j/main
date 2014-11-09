@@ -124,6 +124,7 @@ public class TaskManager {
 				categoryList.add(category);
 			}
 		}
+		Collections.sort(categoryList);
 		return categoryList;
 	}
 
