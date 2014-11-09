@@ -13,6 +13,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -20,12 +21,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import list.model.Date;
 import list.model.ITask;
+import list.model.ITask.TaskStatus;
 
 public class TaskOverviewController {
-    private static final FadeTransition FEEDBACK_FADE_IN;
+    
+	private static final FadeTransition FEEDBACK_FADE_IN;
     private static final FadeTransition FEEDBACK_FADE_OUT;
     private static final PauseTransition FEEDBACK_PAUSE;
     static {
@@ -42,15 +46,18 @@ public class TaskOverviewController {
     private static final String FLOATING_MONTH = "XXX";
     private static final String HELVETICA_NEUE = "Helvetica Neue";
     
-    private static final double TASK_LABEL_TRANSLATE_X = 42.5d;
-    private static final double TASK_LABEL_WIDTH = 550.0d;
+    private static final double DATE_COLUMN_WIDTH = 37.5d;
+    private static final double TIME_COLUMN_X_POS = 42.5d;
+    private static final double TIME_COLUMN_WIDTH = 100d;
+    private static final double CHECKBOX_COLUMN_X_POS = 147.5d;
+    private static final double CHECKBOX_COLUMN_WIDTH = 37.5d;
+    
+    private static final double TASK_LABEL_TRANSLATE_X = 177.5d;
+    private static final double TASK_LABEL_WIDTH = 422.5d;
     private static final double TASK_LABEL_HEIGHT = 37.5d;
     private static final double TASK_LABEL_ANIMATION_DURATION = 0.5d;
     private static final double TASK_LABEL_OPACITY = 1.0;
     private static final double TASK_LABEL_OPACITY_ZERO = 0.0;
-    
-    private static final double DATE_COLUMN_WIDTH = 37.5d;
-    private static final double TIME_COLUMN_WIDTH = 75d;
     
     private static final int MAX_NO_OF_TASKS = 8;
     
@@ -66,10 +73,11 @@ public class TaskOverviewController {
     private Integer beginIndex = 0;
     private Map<ITask, Label> taskLabels = new HashMap<ITask, Label>();
     private List<ImageView> timelineImageViews = new ArrayList<ImageView>();
-    private List<Label> timelineMonthLabel = new ArrayList<Label>();
-    private List<Label> timelineDateLabel = new ArrayList<Label>();
-	private List<Label> timelineYearLabel = new ArrayList<Label>();
-	private List<Label> timelineTimeLabel = new ArrayList<Label>();
+    private List<Label> timelineMonthLabels = new ArrayList<Label>();
+    private List<Label> timelineDateLabels = new ArrayList<Label>();
+	private List<Label> timelineYearLabels = new ArrayList<Label>();
+	private List<Label> timelineTimeLabels = new ArrayList<Label>();
+	private List<CheckBox> checkBoxes = new ArrayList<CheckBox>();
     private List<ITask> oldDisplayedTasks;
 	private Glow glow = new Glow(1.0);
     
@@ -224,38 +232,46 @@ public class TaskOverviewController {
     	clearTimeline();
     	List<ITask> newDisplayedTask = getDisplayTasks();
     	Date prevDate = Date.getFloatingDate();
-    	for (int i = 0; i < newDisplayedTask.size(); i++) {
-    		Date curDate = newDisplayedTask.get(i).getTimelineDate();
+    	for (int positionIndex = 0; positionIndex < newDisplayedTask.size(); positionIndex++) {
+    		ITask task = newDisplayedTask.get(positionIndex);
+    		Date curDate = task.getTimelineDate();
     		if (curDate.equals(Date.getFloatingDate())) {
-    			displayFloatingDateAtPosition(i);
+    			displayFloatingDateAtPosition(positionIndex);
     		} else if (prevDate.equalsDateOnly(curDate)) {
-    			displayLineAtPosition(i);
+    			displayLineAtPosition(positionIndex);
     		} else {
-    			displayDateAtPosition(curDate, i);
+    			displayDateAtPosition(curDate, positionIndex);
     		}
+    		
+    		displayTimeAtPosition(task, positionIndex);
+    		displayCheckBoxAtPosition(task, positionIndex);
     		prevDate = curDate;
     	}
-    	
-//    	for (int i = 0; i < newDisplayedTask.size(); i++) {
-//    		
-//    	}
     }
     
-    private void clearTimeline() {
+	private void clearTimeline() {
     	for (int i = 0; i < timelineImageViews.size(); i++) {
     		tasksContainer.getChildren().remove(timelineImageViews.get(i));
     	}
     	
-    	for (int i = 0; i < timelineDateLabel.size(); i++) {
-    		tasksContainer.getChildren().remove(timelineDateLabel.get(i));
+    	for (int i = 0; i < timelineDateLabels.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineDateLabels.get(i));
     	}
     	
-    	for (int i = 0; i < timelineMonthLabel.size(); i++) {
-    		tasksContainer.getChildren().remove(timelineMonthLabel.get(i));
+    	for (int i = 0; i < timelineMonthLabels.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineMonthLabels.get(i));
     	}
     	
-    	for (int i = 0; i < timelineYearLabel.size(); i++) {
-    		tasksContainer.getChildren().remove(timelineYearLabel.get(i));
+    	for (int i = 0; i < timelineYearLabels.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineYearLabels.get(i));
+    	}
+    	
+    	for (int i = 0; i < timelineTimeLabels.size(); i++) {
+    		tasksContainer.getChildren().remove(timelineTimeLabels.get(i));
+    	}
+    	
+    	for (int i = 0; i < checkBoxes.size(); i++) {
+    		tasksContainer.getChildren().remove(checkBoxes.get(i));
     	}
     }
     
@@ -278,7 +294,7 @@ public class TaskOverviewController {
     	labelDay.setAlignment(Pos.CENTER);
     	labelDay.setText(FLOATING_DAY);
     	
-    	timelineDateLabel.add(labelDay);
+    	timelineDateLabels.add(labelDay);
     	
     	labelMonth.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
@@ -287,7 +303,7 @@ public class TaskOverviewController {
     	labelMonth.setAlignment(Pos.CENTER);
 		labelMonth.setText(FLOATING_MONTH);
     	
-    	timelineMonthLabel.add(labelMonth);
+    	timelineMonthLabels.add(labelMonth);
     	
     	tasksContainer.getChildren().add(imageView);
     	tasksContainer.getChildren().add(labelDay);
@@ -316,7 +332,7 @@ public class TaskOverviewController {
     	labelDay.setAlignment(Pos.CENTER);
     	labelDay.setText(date.getDay() + "");
     	
-    	timelineDateLabel.add(labelDay);
+    	timelineDateLabels.add(labelDay);
     	
     	labelMonth.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelMonth.setPrefHeight(TASK_LABEL_HEIGHT / 5);
@@ -326,7 +342,7 @@ public class TaskOverviewController {
     	labelMonth.setAlignment(Pos.CENTER);
 		labelMonth.setText(date.getMonthName().toUpperCase());
     	
-    	timelineMonthLabel.add(labelMonth);
+    	timelineMonthLabels.add(labelMonth);
     	
     	labelYear.setPrefWidth(DATE_COLUMN_WIDTH);
     	labelYear.setPrefHeight(TASK_LABEL_HEIGHT / 6);
@@ -336,7 +352,7 @@ public class TaskOverviewController {
     	labelYear.setAlignment(Pos.CENTER_RIGHT);
     	labelYear.setText(date.getYear() + "  ");
     	
-    	timelineYearLabel.add(labelYear);
+    	timelineYearLabels.add(labelYear);
     	
     	tasksContainer.getChildren().add(imageView);
     	tasksContainer.getChildren().add(labelDay);
@@ -357,6 +373,50 @@ public class TaskOverviewController {
     	tasksContainer.getChildren().add(imageView);
     }
 
+    private void displayTimeAtPosition(ITask task, int positionIndex) {
+    	Label timeLabel = new Label();
+    	timeLabel.setLayoutX(TIME_COLUMN_X_POS);
+    	timeLabel.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	timeLabel.setPrefHeight(TASK_LABEL_HEIGHT);
+    	timeLabel.setPrefWidth(TIME_COLUMN_WIDTH);
+    	timeLabel.setTextFill(Color.WHITE);
+    	timeLabel.setFont(Font.font(HELVETICA_NEUE, FontWeight.BOLD, 10.0d));
+    	timeLabel.setAlignment(Pos.CENTER);
+    	
+    	if (task.hasDeadline()) {
+    		if (task.getStartDate().equals(Date.getFloatingDate())) {
+    			timeLabel.setText(task.getEndDate().getTime());
+    		} else {
+    			timeLabel.setText(task.getStartDate().getTime() + " - " +
+    							  task.getEndDate().getTime());
+    		}
+    	} else {
+    		timeLabel.setText("");
+    	}
+    	
+    	timelineTimeLabels.add(timeLabel);
+    	tasksContainer.getChildren().add(timeLabel);	
+	}
+    
+    private void displayCheckBoxAtPosition(ITask task, int positionIndex) {
+    	CheckBox checkBox = new CheckBox();
+    	checkBox.setDisable(true);
+    	checkBox.setPrefHeight(CHECKBOX_COLUMN_WIDTH);
+    	checkBox.setPrefWidth(TASK_LABEL_HEIGHT);
+    	checkBox.setLayoutX(CHECKBOX_COLUMN_X_POS);
+    	checkBox.setLayoutY(positionIndex * TASK_LABEL_HEIGHT);
+    	checkBox.setAlignment(Pos.CENTER);
+    	
+    	if (task.getStatus() == TaskStatus.DONE) {
+    		checkBox.setSelected(true);
+    	} else {
+    		checkBox.setSelected(false);
+    	}
+    	
+    	checkBoxes.add(checkBox);
+    	tasksContainer.getChildren().add(checkBox);
+    }
+    
     public void displayMessageToUser(String message) {
         if (message == null || message.isEmpty()) {
             return;
