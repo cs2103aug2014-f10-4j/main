@@ -28,7 +28,7 @@ public class CommandParser implements IParser {
     private static final String ERROR_PARAMETER_CONFLICT = "The parameter %s is specified multiple times.";
     
     private static final String MARKER_COLOR = "-c";
-    private static final String MARKER_REPEAT = "-r";
+    //private static final String MARKER_REPEAT = "-r";
     private static final String MARKER_CATEGORY = "-c";
     private static final String MARKER_PLACE = "-p";
     private static final String MARKER_NOTES = "-n";
@@ -42,17 +42,22 @@ public class CommandParser implements IParser {
     private static enum ParseMode {
         TASK, CATEGORY
     }
+    private static final List<String> PARAMETER_MARKERS = Arrays.asList(
+        MARKER_COLOR, MARKER_CATEGORY, MARKER_PLACE, MARKER_NOTES,
+        MARKER_END_DATE, MARKER_START_DATE, MARKER_TITLE, MARKER_STATUS
+    );
+    //The list of expectations to be shown to user
     private static final Map<String, String> EXPECTATIONS_TASK;
     static {
         EXPECTATIONS_TASK = new HashMap<String, String>();
         EXPECTATIONS_TASK.put(MARKER_TITLE, "Title");
         EXPECTATIONS_TASK.put(MARKER_CATEGORY, "Category");
         EXPECTATIONS_TASK.put(MARKER_END_DATE, "Deadline");
-        EXPECTATIONS_TASK.put(MARKER_START_DATE, "Start date");
+        EXPECTATIONS_TASK.put(MARKER_START_DATE, "Start time");
         EXPECTATIONS_TASK.put(MARKER_PLACE, "Place");
         EXPECTATIONS_TASK.put(MARKER_NOTES, "Notes");
-        EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
-        EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
+        //EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
+        //EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
     }
     private static final Map<String, String> EXPECTATIONS_CATEGORY;
     static {
@@ -308,7 +313,7 @@ public class CommandParser implements IParser {
         setNotes(commandBuilder);
         setPlace(commandBuilder);
         setCategory(commandBuilder);
-        setRepeatFrequency(commandBuilder);
+        //setRepeatFrequency(commandBuilder);
         setGeneralArgumentAsTitle(commandBuilder);
         setKeyword(commandBuilder);
         setStatus(commandBuilder);
@@ -355,7 +360,7 @@ public class CommandParser implements IParser {
         }
     }
     
-    private void setRepeatFrequency(CommandBuilder commandBuilder)
+    /*private void setRepeatFrequency(CommandBuilder commandBuilder)
             throws ParseException {
         //repeat frequency
         if (parameters.containsKey(MARKER_REPEAT)) {
@@ -367,7 +372,7 @@ public class CommandParser implements IParser {
                 throw new ParseException("Error: invalid repeat frequency.");
             }
         }
-    }
+    }*/
 
     private void setCategory(CommandBuilder commandBuilder) {
         //category
@@ -468,8 +473,7 @@ public class CommandParser implements IParser {
     }
     
     private boolean isParameterMarker(String word) {
-        return EXPECTATIONS_TASK.containsKey(word) ||
-               EXPECTATIONS_CATEGORY.containsKey(word);
+        return PARAMETER_MARKERS.contains(word);
     }
     
     private void processNonParameterWord(String word) {
