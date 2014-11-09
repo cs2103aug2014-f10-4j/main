@@ -6,8 +6,7 @@ public class TestCongCommand implements ICommand {
 
 	@Override
 	public String execute() throws CommandExecutionException, IOException {
-		TaskManager taskManager = TaskManager.getInstance();
-		Controller.displayCongratulations(taskManager.getFloatingTasks());
+		Controller.displayCongratulations();
 		return null;
 	}
 

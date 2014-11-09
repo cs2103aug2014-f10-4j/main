@@ -343,10 +343,11 @@ public class CommandParser implements IParser {
     }
 
     private void ensureEndDateIsNotEarlierThanStartDate() throws ParseException {
-        if (startDate == null || endDate == null) {
+        if (startDate == null || endDate == null || 
+            startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
             return;
         }
-        if (startDate.compareTo(this.endDate) > 0) {
+        if (startDate.compareTo(endDate) > 0) {
             throw new ParseException(ERROR_END_DATE_BEFORE_START_DATE);
         }
     }

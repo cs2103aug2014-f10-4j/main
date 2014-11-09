@@ -28,7 +28,8 @@ import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
 	
-	@FXML
+	private static final DropShadow DROP_SHADOW = new DropShadow(3.0d, Color.WHITE);
+    @FXML
 	private Pane rootPane;
 	@FXML
     private TextField console;
@@ -263,7 +264,7 @@ public class RootWindowController implements IUserInterface {
             taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            taskDetail.setEffect(new DropShadow(3.0d, Color.WHITE));
+            taskDetail.setEffect(DROP_SHADOW);
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(60);
             rootPane.getChildren().add(taskDetail);
@@ -281,7 +282,7 @@ public class RootWindowController implements IUserInterface {
             help = (ScrollPane) loader.load();
             
             helpController = loader.getController();
-            help.setEffect(new DropShadow(3.0d, Color.WHITE));
+            help.setEffect(DROP_SHADOW);
             help.setLayoutX(50);
             help.setLayoutY(33);
             help.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -320,7 +321,7 @@ public class RootWindowController implements IUserInterface {
             congratulations = (Pane) loader.load();
             
             congratulationsController = loader.getController();
-            congratulations.setEffect(new DropShadow(3.0d, Color.WHITE));
+            congratulations.setEffect(DROP_SHADOW);
             congratulations.setLayoutX(120);
             congratulations.setLayoutY(60);
             rootPane.getChildren().add(congratulations);

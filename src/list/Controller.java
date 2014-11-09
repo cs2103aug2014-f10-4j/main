@@ -94,13 +94,19 @@ public class Controller extends Application {
 	public static String processUserInput(String userInput) {
 	    String reply;
         try {
+            boolean hasPendingOld = taskManager.hasPendingTodayTasks();
             ICommand commandMadeByParser = parser.parse(userInput);
             reply = commandMadeByParser.execute();
             ICommand inverseCommand = commandMadeByParser.getInverseCommand();
             if (inverseCommand != null) {
                 undoStack.add(inverseCommand);
                 redoStack.clear();
-            }            
+            }
+            Boolean hasPendingNew = taskManager.hasPendingTodayTasks();
+            if (hasPendingOld && !hasPendingNew) {
+                displayCongratulations();
+            }
+            hasPendingOld = hasPendingNew;
             userInterface.clearConsole();
         } catch (ParseException e) {
             reply = e.getMessage();
@@ -157,8 +163,8 @@ public class Controller extends Application {
         userInterface.hideHelp();
     }
     
-    public static void displayCongratulations(List<ITask> floatingTasks) {
-		userInterface.displayCongratulations(floatingTasks);
+    public static void displayCongratulations() {
+		userInterface.displayCongratulations(taskManager.getFloatingTasks());
 	}
     
     public static void hideCongratulations() {

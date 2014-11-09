@@ -352,4 +352,14 @@ public class TaskManager {
 	private static int getTaskId(Integer taskNumberShownOnScreen) {
 		return taskNumberShownOnScreen - 1;
 	}
+
+    public boolean hasPendingTodayTasks() {
+        Date today = Date.getTodayMidnight();
+        for (ITask task: this.currentTasks) {
+            if (task.getStatus() == TaskStatus.PENDING && task.getTimelineDate().equalsDateOnly(today)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

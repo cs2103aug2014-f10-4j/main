@@ -1,8 +1,10 @@
 package list.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -15,6 +17,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -25,21 +28,24 @@ import list.model.ITask;
 public class CongratulationsController {
 
     @FXML
+    private Pane pane;
+    @FXML
     private ListView<String> listView;
     @FXML
     private Button buttonDone;
     
 	private RootWindowController rootController;
 	
-	private static final String MESSAGE_EDITED_SUCCESS = "Task is successfully edited";
-	private static final String MESSAGE_ADDED_SUCCESS = "Task is successfully added";
-	private static final String HELVETICA_NEUE = "Helvetica Neue";	
+	private static final String MESSAGE_MOVED_SUCCESS = "%d tasks moved to today midnight. Keep it up!";
+	private static final String MESSAGE_DONE_FOR_THE_DAY = "Congratulations! You are done for the day!";
+	private static final String FONT = "Helvetica Neue";	
 	
 	private static Glow glow = new Glow(0.5);
 	
 	private ObservableList<String> observableTaskTitles;
 	private List<String> selectedTitles = new ArrayList<String>();
 	private List<ITask> floatingTasks;
+	private HashMap<String, ITask> taskMap = new HashMap<String, ITask>();
 	
 	
 	public void setUpView(List<ITask> floatingTasks) {
@@ -54,17 +60,16 @@ public class CongratulationsController {
 	public void populateListView() {
 		List<String> taskTitles = new ArrayList<String>();
 		for(int i = 0; i < floatingTasks.size(); i++) {
-			taskTitles.add(floatingTasks.get(i).getTitle());
+		    ITask task = floatingTasks.get(i);
+		    String title = task.getTitle();
+			taskTitles.add(title);
+			taskMap.put(title, task);
 		}
 		observableTaskTitles = FXCollections.observableArrayList(taskTitles);
 		listView.setItems(observableTaskTitles);
-		listView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-			
-			@Override
-			public ListCell<String> call(ListView<String> param) {
-				return new CellFactory(selectedTitles);
-			}
-		});
+		listView.setCellFactory((callback) -> {
+		    return new CellFactory(selectedTitles);
+		}); 
 	}
     
     private void updateCellColor() {
@@ -77,19 +82,23 @@ public class CongratulationsController {
 			handleDoneAction();
 		});
 		listView.setOnKeyPressed((event) -> {
-		    if (event.getCode() == KeyCode.ENTER) {
-                handleDoneAction();
-            } else if (event.getCode() == KeyCode.SPACE) {
+            if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+                if (listView.getSelectionModel().getSelectedItem() == null) {
+                    listView.getSelectionModel().select(0);
+                } 
                 String selectedString = listView.getSelectionModel().getSelectedItem();
-                if(selectedTitles.contains(selectedString)) {
+                
+                if (selectedTitles.contains(selectedString)) {
                     selectedTitles.remove(selectedString);
                 } else {
                     selectedTitles.add(selectedString);
                 }
-                updateCellColor();
+                updateCellColor();                    
             } else if (event.getCode() == KeyCode.TAB) {
                 DropShadow dropShadow = new DropShadow(20,Color.WHITE);
                 buttonDone.setEffect(dropShadow);
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                exitWithoutMovingTask();
             }
 		});
 		buttonDone.setOnKeyPressed((event) -> {
@@ -99,19 +108,36 @@ public class CongratulationsController {
                 buttonDone.setEffect(null);
             }
 		});
+		pane.setOnKeyPressed((event) -> {
+		    if (event.getCode() == KeyCode.ESCAPE) {
+		        exitWithoutMovingTask();
+		    }
+		    event.consume();
+		}); 
+		Platform.runLater(() -> {
+		    listView.requestFocus();
+		});
 	}
 
 	private void handleDoneAction() {
-		String reply = "";
-		for(int i = 0; i < selectedTitles.size(); i++) {
-			StringBuilder inputStringBuilder = new StringBuilder();
-			inputStringBuilder.append("edit " + (selectedTitles.get(i) + 1) + " -d today");
-			reply = Controller.processUserInput(inputStringBuilder.toString());
+	    List<ITask> selectedTasks = new ArrayList<ITask>();
+		for(String title: selectedTitles) {
+			selectedTasks.add(taskMap.get(title));
 		}
-		if (reply.equals(MESSAGE_EDITED_SUCCESS)) {
-			rootController.displayMessageToUser(MESSAGE_ADDED_SUCCESS);
-			rootController.hideCongratulations();
+		Controller.moveTasksToTodayMidnight(selectedTasks);
+		if (selectedTasks.isEmpty()) {
+		    exitWithoutMovingTask();
+		} else {
+	        rootController.hideCongratulations();
+		    Controller.displayHome();
+		    Controller.refreshUI();
+		    rootController.displayMessageToUser(String.format(MESSAGE_MOVED_SUCCESS, selectedTasks.size()));		    
 		}
+	}
+	
+	private void exitWithoutMovingTask() {
+        rootController.hideCongratulations();
+        rootController.displayMessageToUser(MESSAGE_DONE_FOR_THE_DAY);
 	}
 	
     private static class CellFactory extends ListCell<String> {
@@ -132,7 +158,7 @@ public class CongratulationsController {
                 } else {
                     label.setTextFill(Color.BLACK);
                 }
-                label.setFont(Font.font(HELVETICA_NEUE, 12.0d));
+                label.setFont(Font.font(FONT, 12.0d));
                 setGraphic(label);
             }
         }
