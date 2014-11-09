@@ -1,7 +1,10 @@
 package list.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,6 +25,8 @@ public class CongratulationsController {
 	
 	
 	private RootWindowController rootContoller;
+	
+	ObservableList<String> listOfFloatingTaskString;
 
 	@FXML
 	private ListView<String> listOfFloatingTaskView;
@@ -32,12 +37,17 @@ public class CongratulationsController {
 		this.rootContoller = rootController;
 	}
 	
-	public void displayFloatingTaskList() {	
-		
+	public void setUpView(List<ITask> floatingTasks) {
+		displayFloatingTaskList(floatingTasks);
 	}
 	
-	public void setUpView(List<ITask> tasks) {
-		
+	public void displayFloatingTaskList(List<ITask> floatingTasks) {
+		List<String> listOfTaskTitle = new ArrayList<String>();
+		for(int i = 0; i < floatingTasks.size(); i++) {
+			listOfTaskTitle.add(floatingTasks.get(i).getTitle());
+		}
+		listOfFloatingTaskString = FXCollections.observableArrayList(listOfTaskTitle);
+		listOfFloatingTaskView.setItems(listOfFloatingTaskString);
 	}
 	
 	@FXML
