@@ -221,23 +221,9 @@ public class Controller extends Application {
 		displayTasks(category.getName().toUpperCase(), category.getList());
 	}
 	
-//	public static boolean changeDisplayMode(String name) {
-//		String viewingMode = name.toLowerCase().trim();
-//		
-//		if (viewingMode.equalsIgnoreCase("floating") ||
-//			viewingMode.equalsIgnoreCase("overdue") || 
-//			viewingMode.equalsIgnoreCase("current")) {
-//			displayMode = viewingMode;
-//			return true;
-//		} else {
-//			if (taskManager.hasCategory(viewingMode)) {
-//				displayMode = viewingMode;
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		}
-//	}
+	public static void moveTasksToTodayMidnight(List<ITask> tasks) {
+	    taskManager.moveTasksToTodayMidnight(tasks);
+	}
 
 	public static boolean displayTasksBasedOnDisplayMode(String displayMode) {
 		categoryOnDisplay = null;

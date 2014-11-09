@@ -132,6 +132,12 @@ public class Date implements Comparable<Date> {
         return DATE_FLOATING;
     }
     
+    public static Date getTodayMidnight() {
+        Date today = new Date();
+        today.dateTime = today.dateTime.withTime(23, 59, 59, 999);
+        return today;
+    }
+    
     public int getDay() {
         return this.dateTime.getDayOfMonth();
     }

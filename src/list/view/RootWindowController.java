@@ -106,7 +106,7 @@ public class RootWindowController implements IUserInterface {
     public void displayCongratulations(List<ITask> floatingTasks) {
     	showCongratulationsLayout();
     	congratulationsController.setUpView(floatingTasks);
-    	congratulationsController.getParentController(this);
+    	congratulationsController.setParentController(this);
     };
 
 	@Override
