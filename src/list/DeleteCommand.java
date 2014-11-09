@@ -45,6 +45,8 @@ public class DeleteCommand implements ICommand {
     		} else {
     			Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
     		}
+        } else {
+            Controller.getDisplayedTasks().remove(task);
         }
         
         Controller.refreshUI();
