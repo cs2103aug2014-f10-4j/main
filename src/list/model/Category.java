@@ -37,6 +37,9 @@ public class Category implements ICategory {
 
 	@Override
 	public ICategory setColor(Color color) {
+		if (color == null) {
+			color = DEFAULT_COLOR;
+		}
 		this.color = color;
 		return this;
 	}

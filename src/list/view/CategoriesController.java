@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -18,6 +20,8 @@ import list.model.ICategory;
  * @author Shotaro
  */
 public class CategoriesController {
+	
+	private RootWindowController rootController;
 	
 	// fixed value for the size and number of buttons
     private static final double BUTTON_X = 1.0d;
@@ -54,7 +58,8 @@ public class CategoriesController {
     // ScrollPane to make the categories to be able to scroll
     @FXML
     ScrollPane paneContainer;
-    
+    private static final double VERTICAL_SCROLL_AMOUNT = 0.2;
+
     // Pane to hold the buttons and labels
     Pane categoriesContainer = new Pane();
     
@@ -92,6 +97,11 @@ public class CategoriesController {
         
         // set the Pane on the ScrollPane
         paneContainer.setContent(categoriesContainer);
+        
+        //set ScrollPane key handler
+        paneContainer.setOnKeyPressed((event) -> {
+        	handleScrollPaneKeyPress(event);
+        });
     }
     
     private Label setUpLabel(String title, double xPos, double yPos) {
@@ -158,4 +168,20 @@ public class CategoriesController {
 		        currentPosition++;
 		}
     }
+
+	public void setParentController(RootWindowController rootController) {
+		this.rootController = rootController;
+	}
+	
+	private void handleScrollPaneKeyPress(KeyEvent event) {
+		double currentPosition = paneContainer.getVvalue();
+		double vmin = paneContainer.getVmin();
+		double vmax = paneContainer.getVmax();
+		if (event.getCode() == KeyCode.DOWN) {
+			paneContainer.setVvalue(Math.min(vmax, currentPosition + VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.UP) {
+			paneContainer.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
+		}
+		//do not consume event. must propagate to root
+	}
 }

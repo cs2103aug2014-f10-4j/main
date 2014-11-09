@@ -7,13 +7,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.ScrollPane?>
 
-<ScrollPane prefHeight="333.0" prefWidth="500.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.HelpController">
+<ScrollPane fx:id="scrollPane" prefHeight="333.0" prefWidth="500.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.HelpController">
    <content>
       <Pane prefHeight="1903.0" prefWidth="498.0">
          <children>
-            <ImageView fitHeight="1903.0" fitWidth="498.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imageHelp" cache="true" fitHeight="1903.0" fitWidth="498.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@help_page.png" />
+                  <Image url="@help_page_small.png" />
                </image></ImageView>
             <Button fx:id="buttonDone" layoutX="416.0" layoutY="1849.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
                <font>
