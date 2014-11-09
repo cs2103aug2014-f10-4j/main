@@ -53,10 +53,12 @@ public class TaskDetailController {
 		
 		if (task.getCategory().getName().isEmpty()) {
 			taskCategory.setText("");
+			taskCategory.setStyle("-fx-background-color:#333333;-fx-text-fill:white");
 		} else {
 			taskCategory.setText(task.getCategory().getName());
 			String rgbString = Integer.toHexString(task.getCategory().getColor().getRGB());
-	        taskCategory.setStyle("-fx-background-color:#333333;-fx-text-fill:#" + rgbString.substring(2, 8));
+	        taskCategory.setStyle("-fx-background-color:#333333;-fx-text-fill:#" + 
+	        					  rgbString.substring(2, 8));
 		}
 		
 		if (task.getStartDate().equals(Date.getFloatingDate())) {

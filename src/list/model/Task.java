@@ -117,18 +117,6 @@ public class Task implements ITask {
 		} else {
 			return Date.getFloatingDate();
 		}
-		
-//		if (this.startDate.equals(Date.getFloatingDate())) { //if there is not start date
-//			return this.endDate; //can be a floating date
-//		} else { //has both start date and end date
-//			if (today.compareTo(this.startDate) > 0 && today.compareTo(this.endDate) > 0) {
-//				return this.endDate;
-//			} else if (today.compareTo(this.startDate) > 0 && today.compareTo(this.endDate) <= 0) {
-//				return today;
-//			} else {
-//				return this.startDate;
-//			}
-//		}
 	}
 	
 	@Override
