@@ -48,17 +48,17 @@
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskCategory" layoutX="88.0" layoutY="124.0" prefHeight="20.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
+      <TextField fx:id="taskCategory" layoutX="88.0" layoutY="124.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskPlace" layoutX="88.0" layoutY="150.0" prefHeight="20.0" prefWidth="280.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
+      <TextField fx:id="taskPlace" layoutX="88.0" layoutY="150.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>
       </TextField>
-      <TextField fx:id="taskNotes" layoutX="87.0" layoutY="176.0" prefHeight="20.0" prefWidth="280.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
+      <TextField fx:id="taskNotes" layoutX="87.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
          <font>
             <Font name="Helvetica Neue Light" size="16.0" />
          </font>

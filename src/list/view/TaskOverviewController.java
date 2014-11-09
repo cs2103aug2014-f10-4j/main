@@ -48,12 +48,12 @@ public class TaskOverviewController {
     
     private static final double DATE_COLUMN_WIDTH = 37.5d;
     private static final double TIME_COLUMN_X_POS = 42.5d;
-    private static final double TIME_COLUMN_WIDTH = 100d;
-    private static final double CHECKBOX_COLUMN_X_POS = 147.5d;
+    private static final double TIME_COLUMN_WIDTH = 75d;
+    private static final double CHECKBOX_COLUMN_X_POS = 122.5d;
     private static final double CHECKBOX_COLUMN_WIDTH = 37.5d;
     
-    private static final double TASK_LABEL_TRANSLATE_X = 177.5d;
-    private static final double TASK_LABEL_WIDTH = 422.5d;
+    private static final double TASK_LABEL_TRANSLATE_X = 152.5d;
+    private static final double TASK_LABEL_WIDTH = 447.5d;
     private static final double TASK_LABEL_HEIGHT = 37.5d;
     private static final double TASK_LABEL_ANIMATION_DURATION = 0.5d;
     private static final double TASK_LABEL_OPACITY = 1.0;
@@ -387,11 +387,11 @@ public class TaskOverviewController {
     		if (task.getStartDate().equals(Date.getFloatingDate())) {
     			timeLabel.setText(task.getEndDate().getTime());
     		} else {
-    			timeLabel.setText(task.getStartDate().getTime() + " - " +
+    			timeLabel.setText(task.getStartDate().getTime() + " - \n" +
     							  task.getEndDate().getTime());
     		}
     	} else {
-    		timeLabel.setText("");
+    		timeLabel.setText("no deadline");
     	}
     	
     	timelineTimeLabels.add(timeLabel);

@@ -101,7 +101,7 @@ public class Controller extends Application {
                 undoStack.add(inverseCommand);
                 redoStack.clear();
             }            
-            
+            userInterface.clearConsole();
         } catch (ParseException e) {
             reply = e.getMessage();
         } catch (CommandExecutionException e) {
@@ -175,7 +175,11 @@ public class Controller extends Application {
     private static void rememberDisplayedTasks(List<ITask> tasks) {
         displayedTasks = tasks;
     }
-	 
+	
+    public static List<ITask> getDisplayedTasks() {
+        return displayedTasks;
+    }
+    
     public static boolean next() {
     	return userInterface.next();
     }

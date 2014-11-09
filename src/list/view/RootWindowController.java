@@ -57,6 +57,7 @@ public class RootWindowController implements IUserInterface {
 	private HelpController helpController;
 	private CongratulationsController congratulationsController;
 	private CommandParser parser = new CommandParser();
+	private double DURATION_CATEGORY = 0.2;
 	
 	
     @Override
@@ -332,7 +333,7 @@ public class RootWindowController implements IUserInterface {
     private void animateCategoryAndTextOverview(boolean willDisplay) {
     	if (willDisplay) {
     		TranslateTransition translateForTaskOverview;
-    		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(DURATION_CATEGORY), taskOverview);
     		translateForTaskOverview.setToX(140);
     		translateForTaskOverview.setCycleCount(1);
     		translateForTaskOverview.setAutoReverse(false);
@@ -340,7 +341,7 @@ public class RootWindowController implements IUserInterface {
     		taskOverview.requestFocus();
     	} else {
     		TranslateTransition translateForTaskOverview;
-    		translateForTaskOverview = new TranslateTransition(Duration.seconds(1), taskOverview);
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(DURATION_CATEGORY), taskOverview);
     		translateForTaskOverview.setToX(0);
     		translateForTaskOverview.setCycleCount(1);
     		translateForTaskOverview.setAutoReverse(false);
@@ -359,13 +360,10 @@ public class RootWindowController implements IUserInterface {
     	if (isShowingCategories) {
     		hideCategories();
     	}
-    	
+    	hideHelp();
+    	hideTaskDetail();
         String userInput = console.getText();
         Controller.processUserInput(userInput);
-        
-        //labelTask1.requestFocus(); //set focus to something else
-        console.setText("");
-        //console.promptTextProperty();
     }
 
 	@Override
@@ -380,5 +378,10 @@ public class RootWindowController implements IUserInterface {
 	        title = "";
 	    }
 	    labelPageTitle.setText(title);
+    }
+
+    @Override
+    public void clearConsole() {
+        console.setText("");
     }
 }

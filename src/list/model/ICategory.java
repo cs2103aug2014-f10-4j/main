@@ -3,7 +3,7 @@ package list.model;
 import java.awt.Color;
 import java.util.List;
 
-public interface ICategory {
+public interface ICategory extends Comparable<ICategory> {
     
     public Color getColor();
     
