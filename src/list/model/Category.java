@@ -75,4 +75,18 @@ public class Category implements ICategory {
 		this.list = list;
 	}
 
+    @Override
+    public int compareTo(ICategory o) {
+        return name.compareToIgnoreCase(o.getName());
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (this == o) return true;
+        if (!(o instanceof ICategory)) return false;
+        ICategory other = (ICategory) o;
+        return name.equalsIgnoreCase(other.getName());
+    }
+
 }

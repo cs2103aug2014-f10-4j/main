@@ -47,5 +47,7 @@ public interface IUserInterface {
 	void displayCongratulations(List<ITask> floatingTasks);
 	
 	void hideCongratulations();
+	
+	void clearConsole();
 
 }
