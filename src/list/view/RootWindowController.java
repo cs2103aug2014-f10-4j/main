@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,13 +23,16 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import list.CommandParser;
 import list.Controller;
+import list.NextCommand;
+import list.PrevCommand;
 import list.IParser.ParseException;
 import list.model.ICategory;
 import list.model.ITask;
 
 public class RootWindowController implements IUserInterface {
 	
-	@FXML
+	private static final DropShadow DROP_SHADOW = new DropShadow(3.0d, Color.WHITE);
+    @FXML
 	private Pane rootPane;
 	@FXML
     private TextField console;
@@ -106,7 +110,7 @@ public class RootWindowController implements IUserInterface {
     public void displayCongratulations(List<ITask> floatingTasks) {
     	showCongratulationsLayout();
     	congratulationsController.setUpView(floatingTasks);
-    	congratulationsController.getParentController(this);
+    	congratulationsController.setParentController(this);
     };
 
 	@Override
@@ -119,12 +123,6 @@ public class RootWindowController implements IUserInterface {
     public void setDisplayItems(String pageTitle, List<ITask> tasks) {
         this.pageTitle = pageTitle;
         taskOverviewController.setDisplayTasks(tasks);
-    }
-
-    @Override
-    public void clearDisplay() {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -158,6 +156,9 @@ public class RootWindowController implements IUserInterface {
         
         setConsoleKeyPressHandler();
         setWindowKeyPressHandler();
+        Platform.runLater(() -> {
+            console.requestFocus();
+        });
     }
     
     private void setUpButtons() {
@@ -178,15 +179,14 @@ public class RootWindowController implements IUserInterface {
     	});
     	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	boolean success = next();
-    	    	if (!success) {
-    	    	    //show something
-    	    	}
+    	    	NextCommand cmd = new NextCommand();
+    	    	displayMessageToUser(cmd.execute());
     	    }
     	});
     	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
-    	    	back();
+    	    	PrevCommand cmd = new PrevCommand();
+    	    	displayMessageToUser(cmd.execute());
     	    }
     	});
     }
@@ -196,8 +196,11 @@ public class RootWindowController implements IUserInterface {
 
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.SPACE)) {
+                if (event.getCode().equals(KeyCode.SPACE) || console.getText().isEmpty()) {
                     showSyntaxSuggestion();   
+                } else if (event.getCode() == KeyCode.TAB) {
+                    console.requestFocus();
+                    event.consume();
                 }
             }
 
@@ -205,12 +208,8 @@ public class RootWindowController implements IUserInterface {
                 try {
                     parser.clear();
                     parser.append(console.getText());
-                    Map<String, String> expected = parser.getExpectedInputs();
-                    StringBuilder expectedStr = new StringBuilder();
-                    for (String key: expected.keySet()) {
-                        expectedStr.append(key).append(": ").append(expected.get(key)).append(" | ");
-                    }
-                    displayMessageToUser(expectedStr.toString());
+                    String expected = parser.getExpectedInputs();
+                    displayMessageToUser(expected);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -263,7 +262,7 @@ public class RootWindowController implements IUserInterface {
             taskDetail = (Pane) loader.load();
             
             taskDetailController = loader.getController();
-            taskDetail.setEffect(new DropShadow(3.0d, Color.WHITE));
+            taskDetail.setEffect(DROP_SHADOW);
             taskDetail.setLayoutX(120);
             taskDetail.setLayoutY(60);
             rootPane.getChildren().add(taskDetail);
@@ -281,7 +280,7 @@ public class RootWindowController implements IUserInterface {
             help = (ScrollPane) loader.load();
             
             helpController = loader.getController();
-            help.setEffect(new DropShadow(3.0d, Color.WHITE));
+            help.setEffect(DROP_SHADOW);
             help.setLayoutX(50);
             help.setLayoutY(33);
             help.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -320,7 +319,7 @@ public class RootWindowController implements IUserInterface {
             congratulations = (Pane) loader.load();
             
             congratulationsController = loader.getController();
-            congratulations.setEffect(new DropShadow(3.0d, Color.WHITE));
+            congratulations.setEffect(DROP_SHADOW);
             congratulations.setLayoutX(120);
             congratulations.setLayoutY(60);
             rootPane.getChildren().add(congratulations);

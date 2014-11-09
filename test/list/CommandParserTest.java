@@ -23,35 +23,25 @@ public class CommandParserTest {
     
     @Test
     public void expectingCommandTypes() throws Exception {
-        Map<String, String> actions = parser.getExpectedInputs();
+        String actions = parser.getExpectedInputs();
         assertNotNull(actions);        
         
         parser.append("add");
         
-        Map<String, String> parameters = parser.getExpectedInputs();
+        String parameters = parser.getExpectedInputs();
         assertNotNull(parameters);
-        
-        parser.append("-t testing");
-        assertEquals(parameters.size() - 1, parser.getExpectedInputs().size());
         
         parser.append("-d on saturday 8pm");
         parser.finish();
         
         parser.clear();
-        parser.append("edit");
-        assertEquals(1, parser.getExpectedInputs().size());
         
-        parser.append("1");
-        
-        
-        
-        parser.clear();
         parser.append("cat edit");
-        assertTrue(parser.getExpectedInputs().containsKey("Number"));
+        assertTrue(parser.getExpectedInputs().contains("category name"));
 
-        parser.append("1");
-        assertTrue(parser.getExpectedInputs().containsKey("-c"));
-        assertTrue(parser.getExpectedInputs().containsKey("-t"));
+        parser.append("student exchange");
+        assertTrue(parser.getExpectedInputs().contains("-c"));
+        assertTrue(parser.getExpectedInputs().contains("-t"));
     }
     
     @Test(expected = ParseException.class)

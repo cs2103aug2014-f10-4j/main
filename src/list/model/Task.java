@@ -29,25 +29,11 @@ public class Task implements ITask {
 	
 	@Override
 	public int compareTo(ITask o) {
-		
 		if (this.getTimelineDate().compareTo(o.getTimelineDate()) == 0) {
-			return this.getTitle().compareTo(o.getTitle());
+			return this.getTitle().compareToIgnoreCase(o.getTitle());
 		} else {
 			return this.getTimelineDate().compareTo(o.getTimelineDate());
 		}
-		
-//	    if (!this.getEndDate().equals(Date.getFloatingDate()) && 
-//	    	!o.getEndDate().equals(Date.getFloatingDate())) {
-//	    	
-//	        int result = this.getTimelineDate().compareTo(o.getTimelineDate());
-//	        if (result != 0) {
-//	            return result;
-//	        } else {
-//	            return this.getTitle().compareTo(o.getTitle());
-//	        }
-//	    } else {
-//	        return this.getTitle().compareTo(o.getTitle());
-//	    }
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package list;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,10 +11,10 @@ import java.awt.Color;
 
 import list.CommandBuilder.CommandType;
 import list.CommandBuilder.CommandTypeNotSetException;
-import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask.TaskStatus;
+import list.util.Suggestions;
 
 public class CommandParser implements IParser {
     
@@ -28,7 +29,7 @@ public class CommandParser implements IParser {
     private static final String ERROR_PARAMETER_CONFLICT = "The parameter %s is specified multiple times.";
     
     private static final String MARKER_COLOR = "-c";
-    private static final String MARKER_REPEAT = "-r";
+    //private static final String MARKER_REPEAT = "-r";
     private static final String MARKER_CATEGORY = "-c";
     private static final String MARKER_PLACE = "-p";
     private static final String MARKER_NOTES = "-n";
@@ -42,17 +43,22 @@ public class CommandParser implements IParser {
     private static enum ParseMode {
         TASK, CATEGORY
     }
+    private static final List<String> PARAMETER_MARKERS = Arrays.asList(
+        MARKER_COLOR, MARKER_CATEGORY, MARKER_PLACE, MARKER_NOTES,
+        MARKER_END_DATE, MARKER_START_DATE, MARKER_TITLE, MARKER_STATUS
+    );
+    //The list of expectations to be shown to user
     private static final Map<String, String> EXPECTATIONS_TASK;
     static {
         EXPECTATIONS_TASK = new HashMap<String, String>();
         EXPECTATIONS_TASK.put(MARKER_TITLE, "Title");
         EXPECTATIONS_TASK.put(MARKER_CATEGORY, "Category");
         EXPECTATIONS_TASK.put(MARKER_END_DATE, "Deadline");
-        EXPECTATIONS_TASK.put(MARKER_START_DATE, "Start date");
+        EXPECTATIONS_TASK.put(MARKER_START_DATE, "Start time");
         EXPECTATIONS_TASK.put(MARKER_PLACE, "Place");
         EXPECTATIONS_TASK.put(MARKER_NOTES, "Notes");
-        EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
-        EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
+        //EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
+        //EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
     }
     private static final Map<String, String> EXPECTATIONS_CATEGORY;
     static {
@@ -87,10 +93,6 @@ public class CommandParser implements IParser {
         EXPECTATIONS_NUMBER = new HashMap<String, String>();
         EXPECTATIONS_NUMBER.put("Number", "The object number you want to select.");
     }
-    private static final List<String> ACTIONS_REQUIRING_NUMBER = Arrays.asList(
-            "edit", "delete", "display",
-            "mark", "unmark"
-    );
     private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
@@ -109,6 +111,7 @@ public class CommandParser implements IParser {
     private Date endDate;
     private StringBuilder generalArgument;
     private CommandType commandType;
+    private List<String> suggestionKeywords;
     
     private TaskManager taskManager = TaskManager.getInstance();
     
@@ -130,46 +133,61 @@ public class CommandParser implements IParser {
         }
     }
     
-    public Map<String, String> getExpectedInputs() {
-        if (this.action.isEmpty()) {
-            return EXPECTATIONS_ACTION;
+    public String getExpectedInputs() {
+        StringBuilder keywordBuilder = new StringBuilder();
+        for (String word: suggestionKeywords) {
+            keywordBuilder.append(word).append(' ');
         }
-        if (this.requiresObjectNumber() && this.taskNumber == 0) {
-            return EXPECTATIONS_NUMBER;
+        String keyword = keywordBuilder.toString().trim().toLowerCase();
+        List<String> suggestionTokens = Suggestions.PARSER_SUGGESTIONS.get(keyword);
+        if (suggestionTokens == null) {
+            return "";
         }
-        if (this.parseMode == ParseMode.TASK) {
-            return unspecifiedTaskParameters();
-        } else {
-            return unspecifiedCategoryParameters();
+        StringBuilder suggestion = new StringBuilder();
+        for (String token: suggestionTokens) {
+            if (token.equals("catargs()")) {
+                suggestion.append(unspecifiedCategoryParameters());
+            } else if (token.equals("taskargs()")) {
+                suggestion.append(unspecifiedTaskParameters());
+            } else {
+                suggestion.append(token);
+            }
+            suggestion.append(" | ");
         }
+        return suggestion.toString();
     }
 
-    private Map<String, String> unspecifiedCategoryParameters() {
+    private String unspecifiedCategoryParameters() {
         HashMap<String, String> expectations = new HashMap<String, String>();
         for(Entry<String, String> entry: EXPECTATIONS_CATEGORY.entrySet()) {
             if (parameterNotSpecified(entry.getKey())) {
                 expectations.put(entry.getKey(), entry.getValue());
             }
         }
-        return expectations;
+        return printMap(expectations);
     }
 
+    private String printMap(Map<String, String> map) {
+        StringBuilder result = new StringBuilder();
+        for(Entry<String, String> entry: map.entrySet()) {
+            result.append(entry.getKey()).append(':').append(entry.getValue());
+            result.append(' ');
+        }
+        return result.toString();
+    }
+    
     private boolean parameterNotSpecified(String parameterName) {
         return !parameters.containsKey(parameterName);
     }
 
-    private Map<String, String> unspecifiedTaskParameters() {
+    private String unspecifiedTaskParameters() {
         HashMap<String, String> expectations = new HashMap<String, String>();
         for(Entry<String, String> entry: EXPECTATIONS_TASK.entrySet()) {
             if (parameterNotSpecified(entry.getKey())) {
                 expectations.put(entry.getKey(), entry.getValue());
             }
         }
-        return expectations;
-    }
-
-    private boolean requiresObjectNumber() {
-        return ACTIONS_REQUIRING_NUMBER.contains(this.action);
+        return printMap(expectations);
     }
     
     public void clear() {
@@ -182,6 +200,7 @@ public class CommandParser implements IParser {
         this.startDate = null;
         this.endDate = null;
         this.generalArgument = new StringBuilder();
+        this.suggestionKeywords = new ArrayList<String>();
     }
  
     public ICommand finish() throws ParseException {
@@ -308,7 +327,7 @@ public class CommandParser implements IParser {
         setNotes(commandBuilder);
         setPlace(commandBuilder);
         setCategory(commandBuilder);
-        setRepeatFrequency(commandBuilder);
+        //setRepeatFrequency(commandBuilder);
         setGeneralArgumentAsTitle(commandBuilder);
         setKeyword(commandBuilder);
         setStatus(commandBuilder);
@@ -338,10 +357,11 @@ public class CommandParser implements IParser {
     }
 
     private void ensureEndDateIsNotEarlierThanStartDate() throws ParseException {
-        if (startDate == null || endDate == null) {
+        if (startDate == null || endDate == null || 
+            startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
             return;
         }
-        if (startDate.compareTo(this.endDate) > 0) {
+        if (startDate.compareTo(endDate) > 0) {
             throw new ParseException(ERROR_END_DATE_BEFORE_START_DATE);
         }
     }
@@ -355,7 +375,7 @@ public class CommandParser implements IParser {
         }
     }
     
-    private void setRepeatFrequency(CommandBuilder commandBuilder)
+    /*private void setRepeatFrequency(CommandBuilder commandBuilder)
             throws ParseException {
         //repeat frequency
         if (parameters.containsKey(MARKER_REPEAT)) {
@@ -367,7 +387,7 @@ public class CommandParser implements IParser {
                 throw new ParseException("Error: invalid repeat frequency.");
             }
         }
-    }
+    }*/
 
     private void setCategory(CommandBuilder commandBuilder) {
         //category
@@ -468,20 +488,27 @@ public class CommandParser implements IParser {
     }
     
     private boolean isParameterMarker(String word) {
-        return EXPECTATIONS_TASK.containsKey(word) ||
-               EXPECTATIONS_CATEGORY.containsKey(word);
+        return PARAMETER_MARKERS.contains(word);
     }
     
     private void processNonParameterWord(String word) {
+        if (word.isEmpty()) {
+            return;
+        }
         if (KEYWORDS_CATEGORY.contains(word)) {
             this.parseMode = ParseMode.CATEGORY;
+            suggestionKeywords.add(word);
         } else if (isInteger(word)) {
             this.taskNumber = Integer.parseInt(word);
+            suggestionKeywords.add("num()");
         } else if (isCommandType(word)) {
             this.action = word;
+            suggestionKeywords.add(word);
         } else {
             if (generalArgument.length() > 0) {
                 generalArgument.append(' ');
+            } else {
+                suggestionKeywords.add("ga()");                
             }
             generalArgument.append(word);
         }

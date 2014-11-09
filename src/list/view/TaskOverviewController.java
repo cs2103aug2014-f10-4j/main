@@ -36,8 +36,8 @@ public class TaskOverviewController {
         FEEDBACK_FADE_IN = new FadeTransition(Duration.seconds(1));
         FEEDBACK_FADE_IN.setFromValue(0);
         FEEDBACK_FADE_IN.setToValue(0.7);
-        FEEDBACK_PAUSE = new PauseTransition(Duration.seconds(2));
-        FEEDBACK_FADE_OUT = new FadeTransition(Duration.seconds(2));
+        FEEDBACK_PAUSE = new PauseTransition(Duration.seconds(3));
+        FEEDBACK_FADE_OUT = new FadeTransition(Duration.seconds(3));
         FEEDBACK_FADE_OUT.setFromValue(0.7);
         FEEDBACK_FADE_OUT.setToValue(0);
     }
@@ -443,8 +443,8 @@ public class TaskOverviewController {
 	}
 
 	private void goToPageContaininingTask(ITask task) {
-		int taskNumber = getTaskNumber(task);
-		beginIndex = (taskNumber / MAX_NO_OF_TASKS) * MAX_NO_OF_TASKS;
+		int taskIndex = getTaskNumber(task) - 1;
+		beginIndex = (taskIndex / MAX_NO_OF_TASKS) * MAX_NO_OF_TASKS;
 	}
 
 	

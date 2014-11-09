@@ -122,8 +122,6 @@ public class EditCommand implements ICommand {
         
 	    ITask taskToEdit = this.task;
 	    
-	    taskToEdit.getList().remove(taskToEdit);	    
-	    
 		if (this.title != null) {
 			taskToEdit.setTitle(title);	
 		}
@@ -156,18 +154,8 @@ public class EditCommand implements ICommand {
 			taskToEdit.setStatus(status);
 		}
 		
-		if (taskToEdit.hasDeadline()) {
-			if (taskToEdit.isOverdue()) {
-				taskManager.addToOverdueTasks(taskToEdit);
-				taskToEdit.setList(taskManager.getOverdueTasks());
-			} else {
-				taskManager.addToCurrentTasks(taskToEdit);
-				taskToEdit.setList(taskManager.getCurrentTasks());
-			}
-		} else {
-			taskManager.addToFloatingTasks(taskToEdit);
-			taskToEdit.setList(taskManager.getFloatingTasks());
-		}
+        taskToEdit.getList().remove(taskToEdit);        
+		taskManager.addTask(taskToEdit);
 				
 		if (Controller.hasTask(taskToEdit)) {
 			Controller.highlightTask(taskToEdit);

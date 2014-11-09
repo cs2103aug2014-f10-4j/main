@@ -18,7 +18,7 @@ public class TaskDetailController {
 	
 	private static final String MESSAGE_EDIT_SUCCESS = "Task is successfully edited";
 	
-	private RootWindowController rootContoller;
+	private RootWindowController rootController;
 	private int taskNumber = 0;
 	
 	@FXML
@@ -41,7 +41,7 @@ public class TaskDetailController {
 	private Button buttonDone;
 
 	public void getParentController(RootWindowController rootController) {
-		this.rootContoller = rootController;
+		this.rootController = rootController;
 	}
 	
 	public void displayTaskDetail(ITask task, int taskNumber) {	
@@ -136,7 +136,7 @@ public class TaskDetailController {
 	
 	private void handlePaneKeyEvent(KeyEvent event) {
 		if (event.getCode() == KeyCode.ESCAPE) {
-			rootContoller.hideTaskDetail();
+			rootController.hideTaskDetail();
 		}
 
 		event.consume();
@@ -154,42 +154,23 @@ public class TaskDetailController {
 	private void handleDoneAction() {
 		StringBuilder inputStringBuilder = new StringBuilder();
 		inputStringBuilder.append("edit " + this.taskNumber + " ");
-		
-		if (!taskTitle.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-t " + taskTitle.getText() + " ");
-		}
-		
-		if (!taskCategory.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-c " + taskCategory.getText() + " ");
-		}
-		
-		if (!taskStartDate.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-s " + taskStartDate.getText() + " ");
-		}
-		
-		if (!taskEndDate.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-d " + taskEndDate.getText() + " ");
-		}
-		
-		if (!taskPlace.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-p " + taskPlace.getText() + " ");
-		}
-		
-		if (!taskNotes.getText().trim().isEmpty()) {
-			inputStringBuilder.append("-n " + taskNotes.getText());
-		}
-		
+		inputStringBuilder.append("-t " + taskTitle.getText() + " ");
+		inputStringBuilder.append("-c " + taskCategory.getText() + " ");
+		inputStringBuilder.append("-s " + taskStartDate.getText() + " ");		
+		inputStringBuilder.append("-d " + taskEndDate.getText() + " ");
+		inputStringBuilder.append("-p " + taskPlace.getText() + " ");
+		inputStringBuilder.append("-n " + taskNotes.getText() + " ");
 		if (taskStatus.isSelected()) {
-			inputStringBuilder.append("-status done");
+			inputStringBuilder.append(" -status done");
 		} else {
-			inputStringBuilder.append("-status pending");
+			inputStringBuilder.append(" -status pending");
 		}
 		
 		String reply = Controller.processUserInput(inputStringBuilder.toString());
-		rootContoller.displayMessageToUser(reply);
+		rootController.displayMessageToUser(reply);
 		
 		if (reply.equals(MESSAGE_EDIT_SUCCESS)) {
-			rootContoller.hideTaskDetail();
+			rootController.hideTaskDetail();
 		} 
 	}
 

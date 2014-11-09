@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import list.model.Category;
+import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
 import list.model.ITask.TaskStatus;
@@ -195,6 +196,14 @@ public class TaskManager {
 
 		return this.overdueTasks;
 	}
+	
+	void moveTasksToTodayMidnight(List<ITask> tasks) {
+	    for (ITask task: tasks) {
+	        task.getList().remove(task);
+	        task.setEndDate(Date.getTodayMidnight());
+	        addTask(task);
+	    }
+	}
 
 	// METHODS FOR COMMANDS EXECUTION
 	void addTask(ITask task) {
@@ -343,4 +352,14 @@ public class TaskManager {
 	private static int getTaskId(Integer taskNumberShownOnScreen) {
 		return taskNumberShownOnScreen - 1;
 	}
+
+    public boolean hasPendingTodayTasks() {
+        Date today = Date.getTodayMidnight();
+        for (ITask task: this.currentTasks) {
+            if (task.getStatus() == TaskStatus.PENDING && task.getTimelineDate().equalsDateOnly(today)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

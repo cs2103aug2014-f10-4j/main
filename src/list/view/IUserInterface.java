@@ -22,8 +22,6 @@ public interface IUserInterface {
      */
     void setDisplayItems(String pageTitle, List<ITask> tasks);
         
-    void clearDisplay();
-        
     void displayMessageToUser(String message);
     
     void displayCategories(List<ICategory> categories);

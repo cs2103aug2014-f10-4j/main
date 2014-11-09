@@ -2,6 +2,8 @@ package list.view;
 
 import java.util.List;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import list.Controller;
 import list.model.ICategory;
 
 /**
@@ -85,6 +88,11 @@ public class CategoriesController {
     	Button buttonForFloatingTask = setUpButton(stringForButtonFloatingTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 1);
     	Button buttonForOverDueTask = setUpButton(stringForButtonOverDueTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 2);
     
+    	// create onAction event handler for buttons
+        associateButtonWithViewMode(buttonForCurrentTask, "current");
+        associateButtonWithViewMode(buttonForFloatingTask, "floating");
+        associateButtonWithViewMode(buttonForOverDueTask, "overdue");
+    	
         // add the labels and buttons into the Pane
         categoriesContainer.getChildren().add(labelForAllCategory);
         categoriesContainer.getChildren().add(labelForOtherCategory);
@@ -162,6 +170,7 @@ public class CategoriesController {
 		        button.setStyle("-fx-background-color: #333333;");
 		        String s = Integer.toHexString(listOfCategories.get(i).getColor().getRGB());
 		        button.setTextFill(Color.web("#" + s.substring(2, 8)));
+		        associateButtonWithViewMode(button, listOfCategories.get(i).getName());
 		        // add the button on the Pane
 		        categoriesContainer.getChildren().add(button);
 			
@@ -183,5 +192,24 @@ public class CategoriesController {
 			paneContainer.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
 		}
 		//do not consume event. must propagate to root
+	}
+	
+	private void associateButtonWithViewMode(Button button, String viewMode) {
+	    button.setOnAction(new ButtonActionHandler(viewMode));
+	}
+	
+	class ButtonActionHandler implements EventHandler<ActionEvent> {
+	    String viewMode;
+	    
+	    public ButtonActionHandler(String viewMode) {
+	        this.viewMode = viewMode;
+        }
+	    
+        @Override
+        public void handle(ActionEvent event) {
+            Controller.displayTasksBasedOnDisplayMode(viewMode);	                    
+            Controller.refreshUI();
+        }
+	    
 	}
 }
