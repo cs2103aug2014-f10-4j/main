@@ -196,7 +196,7 @@ public class RootWindowController implements IUserInterface {
 
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.SPACE)) {
+                if (event.getCode().equals(KeyCode.SPACE) || console.getText().isEmpty()) {
                     showSyntaxSuggestion();   
                 } else if (event.getCode() == KeyCode.TAB) {
                     console.requestFocus();
