@@ -391,7 +391,7 @@ public class TaskOverviewController {
     							  task.getEndDate().getTime());
     		}
     	} else {
-    		timeLabel.setText("");
+    		timeLabel.setText("no deadline");
     	}
     	
     	timelineTimeLabels.add(timeLabel);
