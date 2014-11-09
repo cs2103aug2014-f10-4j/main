@@ -11,19 +11,18 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    AddCommandTest.class,
+    //AddCommandTest.class,
+    CommandParserTest.class,
     ControllerTest.class,
     ConverterTest.class,
     DateTest.class,
-    DeleteCommandTest.class,
-    DisplayCommandTest.class,
-    EditCommandTest.class,
-    FlexiCommandParserTest.class,
+    //DeleteCommandTest.class,
+    //DisplayCommandTest.class,
+    //EditCommandTest.class,
     JodaTimeTest.class,
-    MarkCommandTest.class,
-    //ParserTest.class,
+    //MarkCommandTest.class,
     TaskTest.class,
-    UnmarkCommandTest.class,
+    //UnmarkCommandTest.class,
     UndoRedoTest.class
 })
 public class ListTestSuite {

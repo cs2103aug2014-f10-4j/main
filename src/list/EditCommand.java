@@ -3,6 +3,7 @@ package list;
 import java.io.IOException;
 
 import list.CommandBuilder.RepeatFrequency;
+import list.IParser.ParseException;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
@@ -22,6 +23,7 @@ public class EditCommand implements ICommand {
     												  		"start date but no end date";
     private static final String MESSAGE_ERROR_INVALID_START_DATE = "Unable to edit because end date " + 
     												  		       "cannot be later than start date";
+    private static final String MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY = "End time must be less than 24 hours after start time.";
     
     private TaskManager taskManager = TaskManager.getInstance(); 
     private ITask task;
@@ -107,13 +109,10 @@ public class EditCommand implements ICommand {
 	public String execute() throws CommandExecutionException, IOException {
 	    if (this.task == null) {
             throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
-        } else if (!task.getStartDate().equals(Date.getFloatingDate()) &&
-        		   this.endDate != null && this.endDate.equals(Date.getFloatingDate())) {
-        	throw new CommandExecutionException(MESSAGE_ERROR_NO_END_TIME);
-        } else if (this.endDate != null && this.startDate != null &&
-        		   this.startDate.compareTo(endDate) > 0) {
-        	throw new CommandExecutionException(MESSAGE_ERROR_INVALID_START_DATE);
-        }
+        } 
+	    ensureStartDateIsAccompaniedByEndDate(); 
+	    ensureEndDateIsNotEarlierThanStartDate();
+	    ensureTaskLengthLessThanOneDay();
 	    
 	    if (isExecuted) {
 	        assert(false);
@@ -188,8 +187,56 @@ public class EditCommand implements ICommand {
 		
 		return MESSAGE_SUCCESS;
 	}
+
+	private void ensureStartDateIsAccompaniedByEndDate()
+            throws CommandExecutionException {
+		Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (!startDate.equals(Date.getFloatingDate()) &&
+		    endDate.equals(Date.getFloatingDate())) {
+        	throw new CommandExecutionException(MESSAGE_ERROR_NO_END_TIME);
+        }
+    }
 	
-	
+	private void ensureEndDateIsNotEarlierThanStartDate() throws CommandExecutionException {
+        Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
+            return;
+        }
+        if (startDate.compareTo(endDate) > 0) {
+            throw new CommandExecutionException(MESSAGE_ERROR_INVALID_START_DATE);
+        }
+    }
+
+    private void ensureTaskLengthLessThanOneDay() throws CommandExecutionException {
+    	Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
+            return;
+        }
+        if (!endDate.withinOneDayFrom(startDate)) {
+            throw new CommandExecutionException(MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY);
+        }
+    }
 	public String getTitle() {
 	    return this.title;
 	}

@@ -87,6 +87,14 @@ public class TaskManager {
 			categories.remove(categoryName);
 		}
 	}
+	
+	void moveCategory(String oldName, String newName) {
+		if (categories.containsKey(oldName.trim().toLowerCase())) {
+			ICategory category = categories.get(oldName.trim().toLowerCase());
+			categories.remove(oldName.trim().toLowerCase());
+			categories.put(newName.trim().toLowerCase(), category);
+		}
+	}
 
 	/**
 	 * Accepts a string and returns a ICategory object with the same name as the
