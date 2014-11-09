@@ -66,12 +66,13 @@ public class TaskManager {
 
 		ICategory category = new Category();
 		category.setName(categoryName);
-		categories.put(categoryName, category);
+		categories.put(categoryName.trim().toLowerCase(), category);
 
 		return true;
 	}
 
 	boolean hasCategory(String categoryName) {
+        categoryName = categoryName.trim().toLowerCase();
 		return categories.containsKey(categoryName);
 	}
 
@@ -81,9 +82,17 @@ public class TaskManager {
 	 * @param category
 	 */
 	void deleteCategory(ICategory category) {
-		String categoryName = category.getName();
+		String categoryName = category.getName().trim().toLowerCase();
 		if (categories.containsKey(categoryName)) {
 			categories.remove(categoryName);
+		}
+	}
+	
+	void moveCategory(String oldName, String newName) {
+		if (categories.containsKey(oldName.trim().toLowerCase())) {
+			ICategory category = categories.get(oldName.trim().toLowerCase());
+			categories.remove(oldName.trim().toLowerCase());
+			categories.put(newName.trim().toLowerCase(), category);
 		}
 	}
 
@@ -101,11 +110,11 @@ public class TaskManager {
 			return Category.getDefaultCategory();
 		}
 
-		if (!categories.containsKey(categoryName)) {
+		if (!categories.containsKey(categoryName.trim().toLowerCase())) {
 			addCategory(categoryName);
 		}
 
-		return categories.get(categoryName);
+		return categories.get(categoryName.trim().toLowerCase());
 	}
 
 	List<ICategory> getAllCategories() {

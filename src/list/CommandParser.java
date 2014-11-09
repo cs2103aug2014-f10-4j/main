@@ -17,7 +17,9 @@ import list.model.ITask.TaskStatus;
 
 public class CommandParser implements IParser {
     
-    private static final String ERROR_END_DATE_BEFORE_START_DATE = "End date cannot be earlier than start date.";
+    private static final String MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY = "End time must be less than 24 hours after start time.";
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Please enter a valid task number.";
+	private static final String ERROR_END_DATE_BEFORE_START_DATE = "End date cannot be earlier than start date.";
     private static final String ERROR_COMMAND_TYPE_NOT_SPECIFIED = "Error: invalid command type.";
     private static final String ERROR_CANNOT_PARSE_START_DATE = "Error: unable to parse start date.";
     private static final String ERROR_END_DATE_NOT_SPECIFIED = "Error: if start date is specified, end date must also be specified.";
@@ -93,7 +95,7 @@ public class CommandParser implements IParser {
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
             "prev", "next", "search", "help",
-            "home"
+            "home", "testcong"
     );
     
     //remember to reset these variables at clear()
@@ -153,7 +155,7 @@ public class CommandParser implements IParser {
     }
 
     private boolean parameterNotSpecified(String parameterName) {
-        return !this.parameters.containsKey(parameterName);
+        return !parameters.containsKey(parameterName);
     }
 
     private Map<String, String> unspecifiedTaskParameters() {
@@ -172,7 +174,7 @@ public class CommandParser implements IParser {
     
     public void clear() {
         this.parseMode = ParseMode.TASK;
-        this.parameters = new HashMap<String, StringBuilder>();
+        parameters = new HashMap<String, StringBuilder>();
         this.currentMarker = "";
         this.currentParameterValue = null;
         this.taskNumber = 0;
@@ -209,10 +211,13 @@ public class CommandParser implements IParser {
         }
     }
 
-    private void setTaskNumber(CommandBuilder commandBuilder) {
-        //set task number
+    private void setTaskNumber(CommandBuilder commandBuilder) throws ParseException {
         if (this.taskNumber != 0) {
-            commandBuilder.setObjectNumber(this.taskNumber);
+            try {
+            	commandBuilder.setObjectNumber(this.taskNumber);
+            } catch (IndexOutOfBoundsException e) {
+            	throw new ParseException(MESSAGE_INVALID_TASK_NUMBER);
+            }
         }
     }
 
@@ -264,8 +269,8 @@ public class CommandParser implements IParser {
     }
 
     private void setColor(CommandBuilder commandBuilder) throws ParseException {
-        if (this.parameters.containsKey(MARKER_COLOR)) {
-            String str = this.parameters.get(MARKER_COLOR).toString().trim();
+        if (parameters.containsKey(MARKER_COLOR)) {
+            String str = parameters.get(MARKER_COLOR).toString().trim();
             if (str.indexOf('#') == 0) {
                 setColorFromHex(commandBuilder, str);
             } else {
@@ -309,10 +314,11 @@ public class CommandParser implements IParser {
         setStatus(commandBuilder);
        
         ensureEndDateIsNotEarlierThanStartDate();
+        ensureTaskLengthLessThanOneDay();
     }
 
     private void setStatus(CommandBuilder commandBuilder) {
-    	if (commandType == CommandType.EDIT) {
+    	if (commandType == CommandType.EDIT && parameters.containsKey(MARKER_STATUS)) {
     		TaskStatus status = TaskStatus.valueOf(parameters.get(MARKER_STATUS).toString().trim().toUpperCase());
     		commandBuilder.setStatus(status);
     	}
@@ -332,19 +338,28 @@ public class CommandParser implements IParser {
     }
 
     private void ensureEndDateIsNotEarlierThanStartDate() throws ParseException {
-        if (this.startDate == null || this.endDate == null) {
+        if (startDate == null || endDate == null) {
             return;
         }
-        if (this.startDate.compareTo(this.endDate) > 0) {
+        if (startDate.compareTo(this.endDate) > 0) {
             throw new ParseException(ERROR_END_DATE_BEFORE_START_DATE);
         }
     }
 
+    private void ensureTaskLengthLessThanOneDay() throws ParseException {
+        if (startDate == null || endDate == null) {
+            return;
+        }
+        if (!endDate.withinOneDayFrom(startDate)) {
+            throw new ParseException(MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY);
+        }
+    }
+    
     private void setRepeatFrequency(CommandBuilder commandBuilder)
             throws ParseException {
         //repeat frequency
-        if (this.parameters.containsKey(MARKER_REPEAT)) {
-            String str = this.parameters.get(MARKER_REPEAT).toString();
+        if (parameters.containsKey(MARKER_REPEAT)) {
+            String str = parameters.get(MARKER_REPEAT).toString();
             try {
                 RepeatFrequency repeatFrequency = RepeatFrequency.valueOf(str.toUpperCase());
                 commandBuilder.setRepeatFrequency(repeatFrequency);
@@ -356,8 +371,8 @@ public class CommandParser implements IParser {
 
     private void setCategory(CommandBuilder commandBuilder) {
         //category
-        if (this.parameters.containsKey(MARKER_CATEGORY)) {
-            String categoryName = this.parameters.get(MARKER_CATEGORY).toString();
+        if (parameters.containsKey(MARKER_CATEGORY)) {
+            String categoryName = parameters.get(MARKER_CATEGORY).toString();
             ICategory category = taskManager.getCategory(categoryName);
             commandBuilder.setCategory(category);
         }
@@ -365,16 +380,16 @@ public class CommandParser implements IParser {
 
     private void setPlace(CommandBuilder commandBuilder) {
         //place
-        if (this.parameters.containsKey(MARKER_PLACE)) {
-            String place = this.parameters.get(MARKER_PLACE).toString();
+        if (parameters.containsKey(MARKER_PLACE)) {
+            String place = parameters.get(MARKER_PLACE).toString();
             commandBuilder.setPlace(place);
         }
     }
 
     private void setNotes(CommandBuilder commandBuilder) {
         //notes
-        if (this.parameters.containsKey(MARKER_NOTES)) {
-            String notes = this.parameters.get(MARKER_NOTES).toString();
+        if (parameters.containsKey(MARKER_NOTES)) {
+            String notes = parameters.get(MARKER_NOTES).toString();
             commandBuilder.setNotes(notes);
         }
     }
@@ -382,8 +397,8 @@ public class CommandParser implements IParser {
     private void setEndDate(CommandBuilder commandBuilder)
             throws ParseException {
         //end date
-        if (this.parameters.containsKey(MARKER_END_DATE)) {
-            String str = this.parameters.get(MARKER_END_DATE).toString();
+        if (parameters.containsKey(MARKER_END_DATE)) {
+            String str = parameters.get(MARKER_END_DATE).toString();
             Date endDate;
             if (str.isEmpty()) {
                 endDate = Date.getFloatingDate();
@@ -402,8 +417,8 @@ public class CommandParser implements IParser {
     private void setStartDate(CommandBuilder commandBuilder)
             throws ParseException {
         //start date
-        if (this.parameters.containsKey(MARKER_START_DATE)) {
-            String str = this.parameters.get(MARKER_START_DATE).toString();
+        if (parameters.containsKey(MARKER_START_DATE)) {
+            String str = parameters.get(MARKER_START_DATE).toString();
             Date startDate;
             if (str.isEmpty()) {
                 startDate = Date.getFloatingDate();
@@ -417,7 +432,7 @@ public class CommandParser implements IParser {
                 this.startDate = startDate;
             }
             //if there is start time, there must be end time
-            if (!this.parameters.containsKey(MARKER_END_DATE) && this.action.equalsIgnoreCase("ADD")) {
+            if (!parameters.containsKey(MARKER_END_DATE) && this.action.equalsIgnoreCase("ADD")) {
                 throw new ParseException(ERROR_END_DATE_NOT_SPECIFIED);
             }
         }
@@ -425,8 +440,8 @@ public class CommandParser implements IParser {
 
     private void setTitle(CommandBuilder commandBuilder) {
         //set title
-        if (this.parameters.containsKey(MARKER_TITLE)) {
-            String title = this.parameters.get(MARKER_TITLE).toString();
+        if (parameters.containsKey(MARKER_TITLE)) {
+            String title = parameters.get(MARKER_TITLE).toString();
             commandBuilder.setTitle(title);
         }
     }
@@ -438,7 +453,7 @@ public class CommandParser implements IParser {
             } else {
                 this.currentMarker = word;
                 this.currentParameterValue = new StringBuilder();
-                this.parameters.put(word, this.currentParameterValue);
+                parameters.put(word, this.currentParameterValue);
             }
         } else {
             if (this.currentMarker.isEmpty()) {

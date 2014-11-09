@@ -48,7 +48,8 @@ public class CommandBuilder {
 	static enum CommandType {
 		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
 		UNDO, REDO, PREV, NEXT, HELP, SEARCH, HOME,
-		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY
+		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY,
+		TESTCONG
 	}
 	
 	CommandBuilder setCommandType(CommandType commandType) {
@@ -186,6 +187,9 @@ public class CommandBuilder {
 			case CATEGORY_DISPLAY:
                 command = new DisplayCategoryCommand(selectedCategoryName);
                 break;
+			case TESTCONG:
+				command = new TestCongCommand();
+				break;
             default:
 			    throw new CommandTypeNotSetException();    
 		}

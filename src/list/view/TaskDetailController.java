@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import list.Controller;
 import list.model.Date;
@@ -22,7 +22,7 @@ public class TaskDetailController {
 	private int taskNumber = 0;
 	
 	@FXML
-	private AnchorPane anchorPane;
+	private Pane pane;
 	@FXML
 	private TextField taskTitle;
 	@FXML
@@ -96,7 +96,7 @@ public class TaskDetailController {
 			handleDoneAction();
 		});
 		
-		anchorPane.setOnKeyPressed((event) -> {
+		pane.setOnKeyPressed((event) -> {
 			handlePaneKeyEvent(event);
 		});
 		

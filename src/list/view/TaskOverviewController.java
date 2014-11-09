@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -59,6 +60,8 @@ public class TaskOverviewController {
     @FXML
     private Label labelFeedback;
     private Animation feedbackAnimation;
+    
+    private Label highlightedTaskLabel;
    
     private List<ITask> allTasks;
     private Integer beginIndex = 0;
@@ -69,6 +72,7 @@ public class TaskOverviewController {
 	private List<Label> timelineYearLabels = new ArrayList<Label>();
 	private List<Label> timelineTimeLabels = new ArrayList<Label>();
     private List<ITask> oldDisplayedTasks;
+	private Glow glow = new Glow(1.0);
     
     public void setDisplayTasks(List<ITask> newTasks) {
         this.allTasks = newTasks;
@@ -401,10 +405,13 @@ public class TaskOverviewController {
 	public void highlightTask(ITask task) {
 		goToPageContaininingTask(task);
 		refresh();
+		
+		if (highlightedTaskLabel != null) {
+			highlightedTaskLabel.setEffect(null);
+		}
 		Label label = taskLabels.get(task);
-		label.setStyle("-fx-background-color: yellow;");
-		//wait a few seconds
-		label.setStyle("-fx-background-color: none;");
+		label.setEffect(glow);
+		highlightedTaskLabel = label;
 	}
 
 	private void goToPageContaininingTask(ITask task) {
