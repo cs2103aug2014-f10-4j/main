@@ -22,7 +22,7 @@ public class HelpController {
 	@FXML
 	private ImageView imageHelp;
 	
-	public void setParentController(RootWindowController rootController) {
+	void setParentController(RootWindowController rootController) {
 		this.rootContoller = rootController;
 	}
 	

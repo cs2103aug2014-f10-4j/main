@@ -43,7 +43,7 @@ public class CategoriesController {
     private static final double PANE_X = 1.0d;
     private static final double PANE_Y = 0.0d;
     private static final double PANE_WIDTH = 138.0d;
-    private double PANE_HEIGHT;
+    private double paneHeight;
     
     // fixed value for the string of labels and buttons
     private static final String stringForLabelAllCategory = " Group by deadline";
@@ -56,7 +56,7 @@ public class CategoriesController {
     private List<ICategory> listOfCategories;
     
     // position to start displaying the categories made by user
-    private double positonToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON;
+    private double positionToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON;
     
     // ScrollPane to make the categories to be able to scroll
     @FXML
@@ -66,27 +66,27 @@ public class CategoriesController {
     // Pane to hold the buttons and labels
     Pane categoriesContainer = new Pane();
     
-    public void setUpView(List<ICategory> categories) {
+    void setUpView(List<ICategory> categories) {
     	
     	listOfCategories = categories;
     	
-    	PANE_HEIGHT = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFAULT_BUTTON + categories.size());
+    	paneHeight = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFAULT_BUTTON + categories.size());
     	
     	// set the style, layout and the size of the Pane
     	categoriesContainer.setLayoutX(PANE_X);
         categoriesContainer.setLayoutY(PANE_Y);
         categoriesContainer.setPrefWidth(PANE_WIDTH);
-        categoriesContainer.setPrefHeight(PANE_HEIGHT);
+        categoriesContainer.setPrefHeight(paneHeight);
         categoriesContainer.setStyle("-fx-background-color: #333333;");
         
         // create the default label to be displayed
-    	Label labelForAllCategory = setUpLabel(stringForLabelAllCategory, LABEL_X, LABEL_Y);
-    	Label labelForOtherCategory = setUpLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON);
+    	Label labelForAllCategory = createNewLabel(stringForLabelAllCategory, LABEL_X, LABEL_Y);
+    	Label labelForOtherCategory = createNewLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON);
     	
     	// create the default button to be displayed
-    	Button buttonForCurrentTask = setUpButton(stringForButtonCurrentTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT);
-    	Button buttonForFloatingTask = setUpButton(stringForButtonFloatingTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 1);
-    	Button buttonForOverDueTask = setUpButton(stringForButtonOverDueTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 2);
+    	Button buttonForCurrentTask = createNewButton(stringForButtonCurrentTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT);
+    	Button buttonForFloatingTask = createNewButton(stringForButtonFloatingTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 1);
+    	Button buttonForOverDueTask = createNewButton(stringForButtonOverDueTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 2);
     
     	// create onAction event handler for buttons
         associateButtonWithViewMode(buttonForCurrentTask, "current");
@@ -112,7 +112,7 @@ public class CategoriesController {
         });
     }
     
-    private Label setUpLabel(String title, double xPos, double yPos) {
+    private Label createNewLabel(String title, double xPos, double yPos) {
     	
     	// set up the label according to the title, layout, and size
     	Label label = new Label();
@@ -129,7 +129,7 @@ public class CategoriesController {
         return label;
     }
     
-    private Button setUpButton(String title, double xPos, double yPos) {
+    private Button createNewButton(String title, double xPos, double yPos) {
     	
     	// set up the button according to the title, layout, and size
     	Button button = new Button();
@@ -145,7 +145,7 @@ public class CategoriesController {
         return button;
     }
     
-    public void clearAll() {
+    void clearAll() {
     	
     	// clear all the content in the ScrollPane
         categoriesContainer.getChildren().clear();;
@@ -163,7 +163,7 @@ public class CategoriesController {
 				Button button = new Button();
 		        button.setText(listOfCategories.get(i).getName());
 		        button.setLayoutX(BUTTON_X);
-		        button.setLayoutY(positonToDisplayOthers + BUTTON_HEIGHT * currentPosition);
+		        button.setLayoutY(positionToDisplayOthers + BUTTON_HEIGHT * currentPosition);
 		        button.setPrefHeight(BUTTON_HEIGHT);
 		        button.setPrefWidth(BUTTON_WIDTH);
 		        button.setFont(Font.font("Helvetica", 14.0d));
@@ -178,7 +178,7 @@ public class CategoriesController {
 		}
     }
 
-	public void setParentController(RootWindowController rootController) {
+	void setParentController(RootWindowController rootController) {
 		this.rootController = rootController;
 	}
 	

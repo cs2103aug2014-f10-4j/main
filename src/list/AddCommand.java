@@ -11,11 +11,10 @@ import list.model.Task;
 import list.util.Constants;
 
 /**
- * An example implementation of ICommand.
- * Other commands (Edit, Delete, etc.) should follow
- * this sample.
+ * This class handles the execution of 'add' command, which adds a new task into the
+ * application.
  * 
- * @author Michael
+ * @author A0094022R
  */
 public class AddCommand implements ICommand {
 	private static final String MESSAGE_TASK_ADDED_SUCCESFULLY = "Task added succesfully";
@@ -87,6 +86,8 @@ public class AddCommand implements ICommand {
 	/**
 	 * This method will create a new Task object, complete with its attributes
 	 * (e.g. title, startDate, endDate, etc.). A task object should always have title. 
+	 * Upon addition of the new task, it will give feedback through controller to UI 
+	 * accordingly.
 	 */
 	@Override
 	public String execute() throws CommandExecutionException, IOException {
@@ -128,6 +129,9 @@ public class AddCommand implements ICommand {
 		return MESSAGE_TASK_ADDED_SUCCESFULLY;
 	}
 
+	/** 
+	 * @author A0113672L
+	 */
     @Override
     public ICommand getInverseCommand() {
         assert(this.task != null);

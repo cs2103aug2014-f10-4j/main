@@ -12,7 +12,7 @@ import org.json.JSONException;
 /**
  * This class handles persistent storage of tasks (save and load).
  * 
- * @author andhieka, michael
+ * @author A0094022R
  */
 interface IStorage {
     
