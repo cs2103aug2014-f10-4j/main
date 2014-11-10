@@ -26,7 +26,6 @@ import org.json.JSONObject;
  * JSON or vice versa. It will be used by ReaderWriter class during both the process
  * of loading data from text files and saving data to text files.
  * 
- * @author A0094022R
  */
 public class Converter {
 	

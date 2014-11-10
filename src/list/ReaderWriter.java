@@ -21,8 +21,6 @@ import org.json.JSONException;
  * This class is responsible for saving and loading of both categories and tasks 
  * that are stored persistently in the form of text files (in JSON format). 
  * In order to convert from JSON format to Java Object, Converter class is used.
- * 
- * @author A0094022R
  *
  */
 public class ReaderWriter implements IStorage {

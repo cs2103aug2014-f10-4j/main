@@ -6,11 +6,6 @@ import java.io.IOException;
 import list.model.ITask;
 import list.util.Constants;
 
-/**
- * 
- * @author Michael
- *
- */
 public class DeleteCommand implements ICommand {
     private static final String MESSAGE_SUCCESS = "Task is deleted successfully";
     private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";

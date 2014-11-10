@@ -1,11 +1,6 @@
 //@author A0126722L
 package list;
 
-/**
- * 
- * @author Shotaro
- *
- */
 public class DisplayCategoryCommand implements ICommand {
     private static final String MESSAGE_DISPLAYING = "Displaying...";
     private static final String MESSAGE_INVALID_CATEGORY = "No such category exists";
