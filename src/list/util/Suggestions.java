@@ -9,7 +9,7 @@ public class Suggestions {
     static {
         PARSER_SUGGESTIONS = new HashMap<String, List<String>>();
         
-        PARSER_SUGGESTIONS.put("", Arrays.asList("add, edit, display, delete, search, mark, unmark, close, cat"));
+        PARSER_SUGGESTIONS.put("", Arrays.asList("help", "cat", "add, edit, display, delete, search, mark, unmark, close"));
         
         PARSER_SUGGESTIONS.put("cat", Arrays.asList("add", "edit", "display", "delete"));
         PARSER_SUGGESTIONS.put("cat add", Arrays.asList("catargs()"));
@@ -31,6 +31,7 @@ public class Suggestions {
         
         PARSER_SUGGESTIONS.put("add", Arrays.asList("cat", "taskargs()"));
         PARSER_SUGGESTIONS.put("add cat", Arrays.asList("catargs()"));
+        PARSER_SUGGESTIONS.put("add ga()", Arrays.asList("taskargs()"));
         
         PARSER_SUGGESTIONS.put("edit", Arrays.asList("task number", "cat"));
         PARSER_SUGGESTIONS.put("edit num()", Arrays.asList("taskargs()"));

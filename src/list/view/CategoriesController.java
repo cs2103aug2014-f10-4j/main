@@ -56,7 +56,7 @@ public class CategoriesController {
     private List<ICategory> listOfCategories;
     
     // position to start displaying the categories made by user
-    private double positionToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON;
+    private double positionToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON + 2;
     
     // ScrollPane to make the categories to be able to scroll
     @FXML
@@ -81,7 +81,7 @@ public class CategoriesController {
         
         // create the default label to be displayed
     	Label labelForAllCategory = createNewLabel(stringForLabelAllCategory, LABEL_X, LABEL_Y);
-    	Label labelForOtherCategory = createNewLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON);
+    	Label labelForOtherCategory = createNewLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON + 2);
     	
     	// create the default button to be displayed
     	Button buttonForCurrentTask = createNewButton(stringForButtonCurrentTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT);
