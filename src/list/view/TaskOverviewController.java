@@ -11,6 +11,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -23,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
+import list.Controller;
+import list.MarkCommand;
 import list.model.Date;
 import list.model.ITask;
 import list.model.ITask.TaskStatus;
@@ -400,7 +403,7 @@ public class TaskOverviewController {
     
     private void displayCheckBoxAtPosition(ITask task, int positionIndex) {
     	CheckBox checkBox = new CheckBox();
-    	checkBox.setDisable(true);
+    	checkBox.setDisable(false);
     	checkBox.setPrefHeight(CHECKBOX_COLUMN_WIDTH);
     	checkBox.setPrefWidth(TASK_LABEL_HEIGHT);
     	checkBox.setLayoutX(CHECKBOX_COLUMN_X_POS);
@@ -413,8 +416,30 @@ public class TaskOverviewController {
     		checkBox.setSelected(false);
     	}
     	
+    	associateCheckBoxWithTaskNumber(checkBox, positionIndex + 1);
     	checkBoxes.add(checkBox);
     	tasksContainer.getChildren().add(checkBox);
+    }
+    
+    private void associateCheckBoxWithTaskNumber(CheckBox checkBox, Integer taskNumber) {
+        checkBox.setOnAction(new CheckBoxActionHandler(taskNumber));
+    }
+
+    class CheckBoxActionHandler implements EventHandler<ActionEvent> {
+        private Integer taskNumber;
+        
+        CheckBoxActionHandler(Integer taskNumber) {
+            this.taskNumber = taskNumber;
+        }
+        @Override
+        public void handle(ActionEvent event) {
+            CheckBox checkBox = (CheckBox) event.getSource();
+            if (checkBox.isSelected()) {
+                Controller.processUserInput("mark " + taskNumber);
+            } else {
+                Controller.processUserInput("unmark " + taskNumber);
+            }
+        }
     }
     
     void displayMessageToUser(String message) {
