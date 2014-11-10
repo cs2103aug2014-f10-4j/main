@@ -1,6 +1,6 @@
+//@author A0113672L
 package list;
 
-import static org.junit.Assert.*;
 import list.model.Task;
 
 import org.junit.Test;
@@ -16,9 +16,7 @@ public class TaskTest {
     public void shouldNotThrowExceptionEvenWhenNotesIsNull() throws Exception {
         Task task = new Task();
         task.setNotes(null);
-        assertNull(task.getNotes());
     }
-    
     
 
 }

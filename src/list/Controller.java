@@ -143,7 +143,7 @@ public class Controller extends Application {
 	}
 
 	public static void displayTasks(String pageTitle, List<ITask> tasks) {
-		userInterface.setDisplayItems(pageTitle, tasks);
+	    userInterface.setDisplayItems(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	}
 
@@ -199,6 +199,9 @@ public class Controller extends Application {
 	}
     
     public static boolean hasTask(ITask task) {
+        if (displayedTasks == null) {
+            return false;
+        }
     	return displayedTasks.contains(task);
     }
     

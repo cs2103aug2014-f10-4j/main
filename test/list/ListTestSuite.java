@@ -1,5 +1,6 @@
 package list;
 
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -22,8 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
     //MarkCommandTest.class,
     TaskTest.class,
     //UnmarkCommandTest.class,
-    UndoRedoTest.class
+    //UndoRedoTest.class
 })
-public class ListTestSuite {
-    
+public class ListTestSuite {    
 }

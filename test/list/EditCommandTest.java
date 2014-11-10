@@ -1,6 +1,8 @@
+//@author A0094022R
 package list;
 
 import static org.junit.Assert.assertEquals;
+import javafx.application.Application;
 import list.AddCommand;
 import list.EditCommand;
 import list.TaskManager;
@@ -11,6 +13,8 @@ import list.model.ITask;
 import list.util.Utilities;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -23,21 +27,33 @@ public class EditCommandTest {
 	
 	private TaskManager taskManager = TaskManager.getInstance();
 	private final String TITLE = "test";
-	private final Date START_TIME = null;
-	private Date END_TIME = null; //01-01-2014
-	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
-	private final String PLACE = null;
-	private final ICategory CATEGORY = null;
-	private final String NOTES = null;
-	
+
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+     
 	@Before
 	public void initializeTest() throws Exception {
 		taskManager.clearTasks();
-		END_TIME = new Date(1,1,1);
 
-		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
-											   REPEAT_FREQUENCY, PLACE, 
-											   CATEGORY, NOTES);		
+		AddCommand addCommand = new AddCommand().setTitle(TITLE);
 		addCommand.execute();
 	}
 	
@@ -52,15 +68,10 @@ public class EditCommandTest {
 		
 		editCommand.execute();
 						
-		ITask modifiedTask = taskManager.getTask(taskNumber);
+		ITask modifiedTask = taskManager.getAllTasks().get(0);
 		
 		assertEquals(newTitle, modifiedTask.getTitle());
-		assertEquals(START_TIME, modifiedTask.getStartDate());
-		assertEquals(END_TIME, modifiedTask.getEndDate());
-		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
-		assertEquals(PLACE, modifiedTask.getPlace());
-		assertEquals(CATEGORY, modifiedTask.getCategory());
-		assertEquals(NOTES, modifiedTask.getNotes());
+		
 	}
 	
 	@Test
@@ -72,16 +83,11 @@ public class EditCommandTest {
 		        setTask(Controller.getTaskWithNumber(taskNumber)).
 		        setStartDate(newStartDate);
 		editCommand.execute();
-		
-		ITask modifiedTask = taskManager.getTask(taskNumber);
+
+        ITask modifiedTask = taskManager.getAllTasks().get(0);
 		
 		assertEquals(TITLE, modifiedTask.getTitle());
 		assertEquals(newStartDate, modifiedTask.getStartDate());
-		assertEquals(END_TIME, modifiedTask.getEndDate());
-		assertEquals(REPEAT_FREQUENCY, modifiedTask.getRepeatFrequency());
-		assertEquals(PLACE, modifiedTask.getPlace());
-		assertEquals(CATEGORY, modifiedTask.getCategory());
-		assertEquals(NOTES, modifiedTask.getNotes());
 	}
 	
 	@Test
