@@ -48,16 +48,16 @@ public class CongratulationsController {
 	private HashMap<String, ITask> taskMap = new HashMap<String, ITask>();
 	
 	
-	public void setUpView(List<ITask> floatingTasks) {
+	void setUpView(List<ITask> floatingTasks) {
 	    this.floatingTasks = floatingTasks;
 	    populateListView();
 	}
 
-	public void setParentController(RootWindowController rootController) {
+	void setParentController(RootWindowController rootController) {
 		this.rootController = rootController;
 	}
 	
-	public void populateListView() {
+	private void populateListView() {
 		List<String> taskTitles = new ArrayList<String>();
 		for(int i = 0; i < floatingTasks.size(); i++) {
 		    ITask task = floatingTasks.get(i);
