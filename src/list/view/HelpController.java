@@ -56,7 +56,6 @@ public class HelpController {
 		imageHelp.setSmooth(true);
     }
 
-
 	private void setupButtonDoneAction() {
 	    buttonDone.setOnAction((event) -> {
 			handleDoneAction();
