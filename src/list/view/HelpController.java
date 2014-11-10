@@ -45,7 +45,7 @@ public class HelpController {
 			scrollPane.setVvalue(Math.min(vmax, currentPosition + VERTICAL_SCROLL_AMOUNT));
 		} else if (event.getCode() == KeyCode.UP) {
 			scrollPane.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
-		} else if (event.getCode() == KeyCode.ESCAPE) {
+		} else if (event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.ENTER) {
 			handleDoneAction();
 		}
 		event.consume(); //to prevent further propagation
