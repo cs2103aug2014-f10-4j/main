@@ -1,3 +1,4 @@
+//@author A0126722L
 package list.view;
 
 import javafx.event.EventHandler;
@@ -80,3 +81,4 @@ public class HelpController {
 		rootContoller.hideHelp();
 	}	
 }
+//@author A0126722L

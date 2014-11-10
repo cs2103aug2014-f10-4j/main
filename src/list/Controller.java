@@ -146,7 +146,7 @@ public class Controller extends Application {
 		userInterface.setDisplayItems(pageTitle, tasks);
 		rememberDisplayedTasks(tasks);
 	}
-
+	//@author A0126722L
     public static void displayCategories() {
         userInterface.displayCategories(taskManager.getAllCategories());
     }
@@ -170,7 +170,7 @@ public class Controller extends Application {
     public static void hideCongratulations() {
     	userInterface.hideCongratulations();
     }
-    
+  //@author A0126722L
     public static void reportCategoryDelete(ICategory category) {
     	if (categoryOnDisplay == category) {
     		displayCurrentTasks();
