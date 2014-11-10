@@ -263,4 +263,28 @@ public class FxmlFiles {
 //	   </children>
 //	</Pane>
 	//@author A0126722L
+	
+	//@author A0126722L
+	/*
+	 * design of congratulations.png
+	 * 
+	 * design of help_page_small.png
+	 * 
+	 * design of help_page.png
+	 * 
+	 * design of icon_bar.png
+	 * 
+	 * design of icon_calender.png
+	 * 
+	 * design of icon_home.png
+	 * 
+	 * design of icon_left.png
+	 * 
+	 * design of icon_menu.png
+	 * 
+	 * design of icon_right.png
+	 * 
+	 * design of list_logo.png
+	 */
+	//@author A0126722L
 }
