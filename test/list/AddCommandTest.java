@@ -2,6 +2,7 @@ package list;
 
 import static org.junit.Assert.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import list.AddCommand;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
@@ -11,6 +12,7 @@ import list.model.ICategory;
 import list.model.ITask;
 import list.util.Utilities;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -42,7 +44,7 @@ public class AddCommandTest {
         thread.start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();

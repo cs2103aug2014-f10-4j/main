@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import list.AddCommand;
 import list.DeleteCommand;
 import list.TaskManager;
@@ -14,6 +15,7 @@ import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -44,13 +46,13 @@ public class DeleteCommandTest {
         thread.start();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
-     
+
 	@Before
 	public void initializeTest() throws Exception {
 		taskManager.clearTasks();

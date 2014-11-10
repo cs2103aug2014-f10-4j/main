@@ -1,6 +1,5 @@
 package list;
 
-import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -12,18 +11,12 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    //AddCommandTest.class,
     CommandParserTest.class,
     ConverterTest.class,
     DateTest.class,
-    //DeleteCommandTest.class,
-    //DisplayCommandTest.class,
-    //EditCommandTest.class,
     JodaTimeTest.class,
-    //MarkCommandTest.class,
-    TaskTest.class,
-    //UnmarkCommandTest.class,
-    //UndoRedoTest.class
+    JChronicTest.class,
+    TaskTest.class
 })
-public class ListTestSuite {    
+public class ListUnitTestSuite {    
 }
