@@ -1,3 +1,4 @@
+//@author A0126722L
 package list.view;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class CongratulationsController {
 		    listView.requestFocus();
 		});
 	}
-
+	//@author A0126722L
 	private void handleDoneAction() {
 	    List<ITask> selectedTasks = new ArrayList<ITask>();
 		for(String title: selectedTitles) {
@@ -136,7 +137,7 @@ public class CongratulationsController {
 		    rootController.displayMessageToUser(String.format(MESSAGE_MOVED_SUCCESS, selectedTasks.size()));		    
 		}
 	}
-	
+	//@author A0126722L
 	private void exitWithoutMovingTask() {
         rootController.hideCongratulations();
         rootController.displayMessageToUser(MESSAGE_DONE_FOR_THE_DAY);
@@ -166,3 +167,4 @@ public class CongratulationsController {
         }
     }
 }
+//@author A0126722L

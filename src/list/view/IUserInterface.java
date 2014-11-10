@@ -23,7 +23,7 @@ public interface IUserInterface {
     void setDisplayItems(String pageTitle, List<ITask> tasks);
         
     void displayMessageToUser(String message);
-    
+    //@author A0126722L
     void displayCategories(List<ICategory> categories);
     
     void hideCategories();
@@ -31,21 +31,21 @@ public interface IUserInterface {
     void displayHelp();
     
     void hideHelp();
-    
+
     boolean back();
     
     boolean next();
-
+    //@author A0126722L
 	void hideTaskDetail();
 	
 	void highlightTask(ITask task);
 	
 	void refreshUI();
-	
+	//@author A0126722L
 	void displayCongratulations(List<ITask> floatingTasks);
 	
 	void hideCongratulations();
-	
+	//@author A0126722L
 	void clearConsole();
 
 }

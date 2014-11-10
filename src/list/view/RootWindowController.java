@@ -39,6 +39,7 @@ public class RootWindowController implements IUserInterface {
 	private Pane rootPane;
 	@FXML
     private TextField console;
+	//@author A0126722L
 	@FXML
 	private Button buttonToHome;
 	@FXML
@@ -47,22 +48,29 @@ public class RootWindowController implements IUserInterface {
 	private Button buttonToNext;
 	@FXML
 	private Button buttonToPrev;
+	//@author A0126722L
 	@FXML
 	private Label labelPageTitle;
 	
 	private Pane taskDetail;
+	//@author A0126722L
 	private ScrollPane help;
 	private ScrollPane paneForCategories;
+	//@author A0126722L
 	private Pane taskOverview;
+	//@author A0126722L
 	private Pane congratulations;
+	//@author A0126722L
 	private boolean isShowingCategories = false;
 	private String pageTitle;
    
 	private TaskOverviewController taskOverviewController;
 	private TaskDetailController taskDetailController;
+	//@author A0126722L
 	private CategoriesController categoriesController;
 	private HelpController helpController;
 	private CongratulationsController congratulationsController;
+	//@author A0126722L
 	private CommandParser parser = new CommandParser();
 	
 	
@@ -81,7 +89,7 @@ public class RootWindowController implements IUserInterface {
 		rootPane.getChildren().remove(taskDetail);
 		console.requestFocus();
 	}
-    
+    //@author A012//@author A0126722L6722L
     @Override
     public void displayCategories(List<ICategory> categories) {
         categoriesController.clearAll();
@@ -96,7 +104,6 @@ public class RootWindowController implements IUserInterface {
     	animateCategoryAndTaskOverview(false);    	
     	isShowingCategories = false;
 	}
-    
     @Override
     public void displayHelp() {
         showHelpLayout();
@@ -121,7 +128,7 @@ public class RootWindowController implements IUserInterface {
 		rootPane.getChildren().remove(congratulations);
 		console.requestFocus();
 	}
-
+	//@author A0126722L
     @Override
     public void setDisplayItems(String pageTitle, List<ITask> tasks) {
         this.pageTitle = pageTitle;
@@ -174,7 +181,7 @@ public class RootWindowController implements IUserInterface {
             console.requestFocus();
         });
     }
-    
+	//@author A0126722L
     private void setUpButtons() {
     	buttonToHome.setOnAction(new EventHandler<ActionEvent>() {
     	    @Override public void handle(ActionEvent e) {
@@ -204,7 +211,7 @@ public class RootWindowController implements IUserInterface {
     	    }
     	});
     }
-
+    //@author A0126722L
     private void setConsoleKeyPressHandler() {
         EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
 
@@ -246,7 +253,7 @@ public class RootWindowController implements IUserInterface {
         };
         rootPane.setOnKeyPressed(handler);
     }
-    
+    //@author A0126722L
     private void showCategoriesLayout() {
     	try {
             FXMLLoader loader = new FXMLLoader();
@@ -267,7 +274,7 @@ public class RootWindowController implements IUserInterface {
             e.printStackTrace();
         } 
     }
-    
+    //@author A0126722L
     private void showTaskDetailLayout() {
     	try {
             FXMLLoader loader = new FXMLLoader();
@@ -285,7 +292,7 @@ public class RootWindowController implements IUserInterface {
             e.printStackTrace();
         } 
     }
-    
+    //@author A0126722L
     private void showHelpLayout() {
     	try {
             FXMLLoader loader = new FXMLLoader();
@@ -305,6 +312,7 @@ public class RootWindowController implements IUserInterface {
             e.printStackTrace();
         } 
     }
+    //@author A0126722L
     
     private void showTaskOverviewLayout() {
         try {
@@ -325,6 +333,7 @@ public class RootWindowController implements IUserInterface {
         } 
     }
     
+    //@author A0126722L
     private void showCongratulationsLayout() {
     	try {
             FXMLLoader loader = new FXMLLoader();
@@ -342,7 +351,7 @@ public class RootWindowController implements IUserInterface {
             e.printStackTrace();
         }
 	}
-    
+    //@author A0126722L
     private void animateCategoryAndTaskOverview(boolean willDisplay) {
     	if (willDisplay) {
     		TranslateTransition translateForTaskOverview;
