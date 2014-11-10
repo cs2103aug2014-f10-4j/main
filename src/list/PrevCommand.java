@@ -1,6 +1,5 @@
+//@author A0113672L
 package list;
-
-import java.io.IOException;
 
 public class PrevCommand implements ICommand {
 	

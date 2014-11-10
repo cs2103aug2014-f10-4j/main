@@ -1,3 +1,4 @@
+//@author A0113672L
 package list;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ public class TestCongCommand implements ICommand {
 
 	@Override
 	public ICommand getInverseCommand() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
