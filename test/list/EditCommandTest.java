@@ -3,8 +3,10 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import javafx.application.Application;
+import javafx.application.Platform;
 import list.AddCommand;
 import list.EditCommand;
+import list.ICommand.CommandExecutionException;
 import list.TaskManager;
 import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
@@ -12,6 +14,7 @@ import list.model.ICategory;
 import list.model.ITask;
 import list.util.Utilities;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -42,13 +45,13 @@ public class EditCommandTest {
         thread.start();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
-     
+    
 	@Before
 	public void initializeTest() throws Exception {
 		taskManager.clearTasks();
@@ -74,8 +77,8 @@ public class EditCommandTest {
 		
 	}
 	
-	@Test
-	public void shouldOnlyEditTheStartTime() throws Exception {
+	@Test(expected = CommandExecutionException.class)
+	public void cannotEditTaskWithOnlyStartDate() throws Exception {
 		int taskNumber = 1;
 		Date newStartDate = new Date(1,1,2014);
 		
@@ -97,14 +100,16 @@ public class EditCommandTest {
 		        setEndDate(new Date(2,1,2014));
 		
 		addCommand.execute();
-				
-		int taskNumber = 2;
+		
+		int taskNumber = 1;
+		Controller.displayTasksBasedOnDisplayMode("overdue");
+		
 		EditCommand editCommand = new EditCommand().
 		        setTask(Controller.getTaskWithNumber(taskNumber)).
 		        setEndDate(new Date(2,1,2013));
 		
 		editCommand.execute();
 				
-		assertEquals(true, Utilities.isSorted(taskManager.getAllTasks()));
+		assertEquals(true, Utilities.isSorted(taskManager.getOverdueTasks()));
 	}
 }

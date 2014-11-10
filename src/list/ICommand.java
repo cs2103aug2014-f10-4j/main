@@ -5,7 +5,7 @@ import java.io.IOException;
 
 interface ICommand {	
 	@SuppressWarnings("serial")
-    class CommandExecutionException extends Exception {
+    public class CommandExecutionException extends Exception {
 	    public CommandExecutionException(String message) {
 	        super(message);
 	    }

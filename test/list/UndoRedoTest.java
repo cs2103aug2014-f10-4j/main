@@ -3,7 +3,9 @@ package list;
 
 import static org.junit.Assert.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -37,7 +39,7 @@ public class UndoRedoTest {
         thread.start();
         
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();

@@ -3,12 +3,14 @@ package list;
 
 import static org.junit.Assert.assertEquals;
 import javafx.application.Application;
+import javafx.application.Platform;
 import list.AddCommand;
 import list.DisplayCommand;
 import list.TaskManager;
 import list.model.Date;
 import list.model.ITask;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -34,13 +36,13 @@ public class DisplayCommandTest {
         thread.start();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
-	
+
 	@Before
 	public void initializeTest() throws Exception {
 		taskManager.clearTasks();
