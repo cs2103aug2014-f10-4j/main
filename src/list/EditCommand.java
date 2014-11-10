@@ -11,10 +11,6 @@ import list.model.ITask;
 import list.model.ITask.TaskStatus;
 import list.util.Constants;
 
-/**
- * 
- *
- */
 public class EditCommand implements ICommand {
 		
     private static final String MESSAGE_SUCCESS = "Task is successfully edited";

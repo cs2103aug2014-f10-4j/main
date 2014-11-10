@@ -5,11 +5,6 @@ import java.util.List;
 import list.model.ICategory;
 import list.model.ITask;
 
-/**
- * 
- * 
- * @author andhieka, michael, shotaro
- */
 public interface IUserInterface { 
     
     void displayTaskDetail(ITask task);

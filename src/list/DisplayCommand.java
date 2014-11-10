@@ -3,11 +3,6 @@ package list;
 
 import list.model.ITask;
 
-/**
- * 
- * @author Michael
- *
- */
 public class DisplayCommand implements ICommand {
     private static final String MESSAGE_DISPLAYING = "Displaying ...";
     private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";

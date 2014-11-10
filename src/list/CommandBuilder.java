@@ -13,7 +13,6 @@ import list.model.ITask.TaskStatus;
  * which implements ICommand. This class should only be used by 
  * Parser.
  * 
- * @author andhieka, michael, shotaro
  */
 public class CommandBuilder {
 	private CommandType commandType = null;

@@ -21,7 +21,6 @@ import list.model.ICategory;
  * Handle all GUI of the Categories
  * There are buttons and labels
  * 
- * @author Shotaro
  */
 public class CategoriesController {
 	
