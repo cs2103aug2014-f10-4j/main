@@ -1,9 +1,11 @@
+//@author A0113672L
 package list;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import javafx.application.Application;
 import list.AddCommand;
 import list.DeleteCommand;
 import list.TaskManager;
@@ -11,7 +13,10 @@ import list.CommandBuilder.RepeatFrequency;
 import list.model.Date;
 import list.model.ICategory;
 import list.model.ITask;
+
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class DeleteCommandTest {
@@ -24,7 +29,28 @@ public class DeleteCommandTest {
 	private final String PLACE = null;
 	private final ICategory CATEGORY = null;
 	private final String NOTES = null;
-	
+
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+     
 	@Before
 	public void initializeTest() throws Exception {
 		taskManager.clearTasks();

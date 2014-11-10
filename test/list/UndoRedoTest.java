@@ -1,9 +1,13 @@
+//@author Å0113672L
 package list;
 
 import static org.junit.Assert.*;
+import javafx.application.Application;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import list.AddCommand;
@@ -17,8 +21,28 @@ public class UndoRedoTest {
     
     private static AddCommand addCommand;
     
+    private static boolean uiReady = false;
+    
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
     @BeforeClass
     public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+        
         addCommand = new AddCommand()
             .setCategory(taskManager.getCategory("Friends"))
             .setTitle("Hang out with the awesome")
@@ -31,7 +55,7 @@ public class UndoRedoTest {
     }
     
     @Before
-    public void clearTaskManager() {
+    public void clearTaskManager() throws InterruptedException {
         taskManager.clearTasks();
     }
     
@@ -73,7 +97,7 @@ public class UndoRedoTest {
             .setNotes("Studying is more important than friends")
             .setPlace("PC Commons")
             .setStartDate(new Date("01-01-2014"))
-            .setEndDate(new Date("31-12-2014"))
+            .setEndDate(new Date("01-01-2014"))
             .setRepeatFrequency(RepeatFrequency.NONE)
             .setTask(task)
             .setCategory(taskManager.getCategory("School"));
