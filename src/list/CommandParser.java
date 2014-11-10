@@ -1,3 +1,4 @@
+//@author A0113672L
 package list;
 
 import java.lang.reflect.Field;
@@ -97,7 +98,7 @@ public class CommandParser implements IParser {
             "add", "edit", "delete", "display", 
             "mark", "unmark", "close", "undo", "redo",
             "prev", "next", "search", "help",
-            "home", "testcong"
+            "home"
     );
     
     //remember to reset these variables at clear()
