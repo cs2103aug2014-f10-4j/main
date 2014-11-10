@@ -9,7 +9,7 @@
 
 <ScrollPane fx:id="scrollPane" prefHeight="333.0" prefWidth="500.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.HelpController">
    <content>
-      <Pane prefHeight="1903.0" prefWidth="498.0">
+      <Pane prefHeight="1883.0" prefWidth="498.0">
          <children>
             <ImageView fx:id="imageHelp" cache="true" fitHeight="1903.0" fitWidth="498.0" pickOnBounds="true" preserveRatio="true">
                <image>
