@@ -1,0 +1,1716 @@
+//@author: a0126722l
+
+
+
+	/**
+	 * origin: list\src\list\Controller.java
+	 */
+
+    public static void displayCategories() {
+        userInterface.displayCategories(taskManager.getAllCategories());
+    }
+    
+    public static void hideCategories() {
+        userInterface.hideCategories();
+    }
+    
+    public static void displayHelp() {
+        userInterface.displayHelp();
+    }
+    
+    public static void hideHelp() {
+        userInterface.hideHelp();
+    }
+    
+    public static void displayCongratulations() {
+		userInterface.displayCongratulations(taskManager.getFloatingTasks());
+	}
+    
+    public static void hideCongratulations() {
+    	userInterface.hideCongratulations();
+    }
+	// End of segment: list\src\list\Controller.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\Controller.java
+	 */
+
+    public static void reportCategoryDelete(ICategory category) {
+    	if (categoryOnDisplay == category) {
+    		displayCurrentTasks();
+    		refreshUI();
+    	}
+    }
+    
+    private static void rememberDisplayedTasks(List<ITask> tasks) {
+        displayedTasks = tasks;
+    }
+	
+    public static List<ITask> getDisplayedTasks() {
+        return displayedTasks;
+    }
+    
+    public static boolean next() {
+    	return userInterface.next();
+    }
+    
+    public static boolean back() {
+    	return userInterface.back();
+    }
+    
+    public static void highlightTask(ITask task) {
+    	userInterface.highlightTask(task);
+	}
+    
+    public static boolean hasTask(ITask task) {
+        if (displayedTasks == null) {
+            return false;
+        }
+    	return displayedTasks.contains(task);
+    }
+    
+    public static void refreshUI() {
+    	userInterface.refreshUI();
+    }
+    
+	private static void displayCurrentTasks() {
+		displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+	}
+	
+	private static void displayFloatingTasks() {
+		displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+	}
+	
+	private static void displayOverdueTasks() {
+		displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+	}
+	
+	public static void displayHome() {
+	    displayCurrentTasks();
+    }
+	
+	private static void displayTasksInCategory(ICategory category) {
+		categoryOnDisplay = category;
+		displayTasks(category.getName().toUpperCase(), category.getList());
+	}
+	
+	public static void moveTasksToTodayMidnight(List<ITask> tasks) {
+	    taskManager.moveTasksToTodayMidnight(tasks);
+	}
+
+	public static boolean displayTasksBasedOnDisplayMode(String displayMode) {
+		categoryOnDisplay = null;
+		if (displayMode.equalsIgnoreCase("floating")) {
+			displayFloatingTasks();
+			return true;
+		} else if (displayMode.equalsIgnoreCase("overdue")) {
+			displayOverdueTasks();
+			return true;
+		} else if (displayMode.equalsIgnoreCase("current")) {
+			displayCurrentTasks();
+			return true;
+		} else {
+			if (taskManager.hasCategory(displayMode)) {
+				ICategory category = taskManager.getCategory(displayMode);
+				displayTasksInCategory(category);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	
+	public static void updateUiWithTaskDetail(ITask selectedTask) {
+		userInterface.displayTaskDetail(selectedTask);
+	}
+	
+	static Stack<ICommand> getUndoStack() {
+	    return undoStack;
+	}
+	
+	static Stack<ICommand> getRedoStack() {
+	    return redoStack;
+	}
+	
+	//TODO: Error with UI when loading
+	public static void loadInitialData() {
+		try {
+			taskManager.loadData();
+		} catch (IOException e) {
+		    e.printStackTrace();
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_LOADING);
+		} catch (JSONException e) {
+			showError(LOAD_ERROR_MASTHEAD, MESSAGE_ERROR_INVALID_JSON_FORMAT);
+		    e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+    @SuppressWarnings("deprecation")
+    private static void showError(String title, String errorMessage) {
+        Dialogs.create()
+            .title("LIST")
+            .masthead(title)
+            .message(errorMessage)
+            .styleClass(Dialog.STYLE_CLASS_UNDECORATED)
+            .showError();
+    }
+	
+	public static void main(String[] args) {
+	    launch(args);
+	    
+	}
+}
+
+	// End of segment: list\src\list\Controller.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\DisplayCategoryCommand.java
+	 */
+
+package list;
+
+public class DisplayCategoryCommand implements ICommand {
+    private static final String MESSAGE_DISPLAYING = "Displaying...";
+    private static final String MESSAGE_INVALID_CATEGORY = "No such category exists";
+    
+    private String categoryName;
+    
+    
+    public DisplayCategoryCommand(String categoryName) {
+        this.categoryName = categoryName;
+	}
+    
+	@Override
+	public String execute() throws CommandExecutionException {
+		if (categoryName == null) {
+			Controller.displayCategories();
+			return MESSAGE_DISPLAYING;
+		} else {
+			boolean success = Controller.displayTasksBasedOnDisplayMode(categoryName);
+			if (success) {
+				Controller.refreshUI();
+				return MESSAGE_DISPLAYING;
+			} else {
+				return MESSAGE_INVALID_CATEGORY;
+			}
+		}		
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; // cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\DisplayCategoryCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CategoriesController.java
+	 */
+
+package list.view;
+
+import java.util.List;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import list.Controller;
+import list.model.ICategory;
+
+/**
+ * Handle all GUI of the Categories
+ * There are buttons and labels
+ * 
+ */
+public class CategoriesController {
+	
+	private RootWindowController rootController;
+	
+	// fixed value for the size and number of buttons
+    private static final double BUTTON_X = 1.0d;
+    private static final double BUTTON_WIDTH = 138.0d;
+    private static final double BUTTON_HEIGHT = 26.0d;
+    private static final double NUMBER_OF_DEFAULT_BUTTON = 3.0d;
+    
+    // fixed value for the size and number of labels
+    private static final double LABEL_X = 1.0d;
+    private static final double LABEL_Y = 0.0d;
+    private static final double LABEL_WIDTH = 138.0d;
+    private static final double LABEL_HEIGHT = 13.0d;
+    private static final double NUMBER_OF_DEFAULT_LABEL = 2.0d;
+    
+    // fixed value for the size of pane
+    private static final double PANE_X = 1.0d;
+    private static final double PANE_Y = 0.0d;
+    private static final double PANE_WIDTH = 138.0d;
+    private double paneHeight;
+    
+    // fixed value for the string of labels and buttons
+    private static final String stringForLabelAllCategory = " Group by deadline";
+    private static final String stringForLabelOtherCategory = " Categories";
+    private static final String stringForButtonCurrentTask = "Current Task";
+    private static final String stringForButtonFloatingTask = "Floating Task";
+    private static final String stringForButtonOverDueTask = "Overdue Task";
+    
+    // lists to hold the value of tasks and categories to keep on track them
+    private List<ICategory> listOfCategories;
+    
+    // position to start displaying the categories made by user
+    private double positionToDisplayOthers = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON + 2;
+    
+    // ScrollPane to make the categories to be able to scroll
+    @FXML
+    ScrollPane paneContainer;
+    private static final double VERTICAL_SCROLL_AMOUNT = 0.2;
+
+    // Pane to hold the buttons and labels
+    Pane categoriesContainer = new Pane();
+    
+    void setUpView(List<ICategory> categories) {
+    	
+    	listOfCategories = categories;
+    	
+    	paneHeight = LABEL_HEIGHT * NUMBER_OF_DEFAULT_LABEL + BUTTON_HEIGHT * (NUMBER_OF_DEFAULT_BUTTON + categories.size());
+    	
+    	// set the style, layout and the size of the Pane
+    	categoriesContainer.setLayoutX(PANE_X);
+        categoriesContainer.setLayoutY(PANE_Y);
+        categoriesContainer.setPrefWidth(PANE_WIDTH);
+        categoriesContainer.setPrefHeight(paneHeight);
+        categoriesContainer.setStyle("-fx-background-color: #333333;");
+        
+        // create the default label to be displayed
+    	Label labelForAllCategory = createNewLabel(stringForLabelAllCategory, LABEL_X, LABEL_Y);
+    	Label labelForOtherCategory = createNewLabel(stringForLabelOtherCategory, LABEL_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * NUMBER_OF_DEFAULT_BUTTON + 2);
+    	
+    	// create the default button to be displayed
+    	Button buttonForCurrentTask = createNewButton(stringForButtonCurrentTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT);
+    	Button buttonForFloatingTask = createNewButton(stringForButtonFloatingTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 1);
+    	Button buttonForOverDueTask = createNewButton(stringForButtonOverDueTask, BUTTON_X, LABEL_Y + LABEL_HEIGHT+BUTTON_HEIGHT * 2);
+    
+    	// create onAction event handler for buttons
+        associateButtonWithViewMode(buttonForCurrentTask, "current");
+        associateButtonWithViewMode(buttonForFloatingTask, "floating");
+        associateButtonWithViewMode(buttonForOverDueTask, "overdue");
+    	
+        // add the labels and buttons into the Pane
+        categoriesContainer.getChildren().add(labelForAllCategory);
+        categoriesContainer.getChildren().add(labelForOtherCategory);
+        categoriesContainer.getChildren().add(buttonForCurrentTask);
+        categoriesContainer.getChildren().add(buttonForFloatingTask);
+        categoriesContainer.getChildren().add(buttonForOverDueTask);
+        
+        // display other categories on to the screen
+        displayOtherCategory();
+        
+        // set the Pane on the ScrollPane
+        paneContainer.setContent(categoriesContainer);
+        
+        //set ScrollPane key handler
+        paneContainer.setOnKeyPressed((event) -> {
+        	handleScrollPaneKeyPress(event);
+        });
+    }
+    
+    private Label createNewLabel(String title, double xPos, double yPos) {
+    	
+    	// set up the label according to the title, layout, and size
+    	Label label = new Label();
+    	label.setText(title);
+        label.setLayoutX(xPos);
+        label.setLayoutY(yPos);
+        label.setPrefWidth(LABEL_WIDTH);
+        label.setPrefHeight(LABEL_HEIGHT);
+        label.setFont(Font.font("Helvetica", 10.0d));
+        label.setStyle("-fx-background-color: white; -fx-opacity: 60%;");
+        label.setTextFill(Color.web("#000000"));
+        
+        // return the label created
+        return label;
+    }
+    
+    private Button createNewButton(String title, double xPos, double yPos) {
+    	
+    	// set up the button according to the title, layout, and size
+    	Button button = new Button();
+    	button.setText(title);
+        button.setLayoutX(xPos);
+        button.setLayoutY(yPos);
+        button.setPrefWidth(BUTTON_WIDTH);
+        button.setPrefHeight(BUTTON_HEIGHT);
+        button.setFont(Font.font("Helvetica", 14.0d));
+        button.setStyle("-fx-background-color: #333333; -fx-text-fill: #ffffff;");
+        
+        // return the button created
+        return button;
+    }
+    
+    void clearAll() {
+    	
+    	// clear all the content in the ScrollPane
+        categoriesContainer.getChildren().clear();;
+    	paneContainer.setContent(null);
+    }
+	
+	private void displayOtherCategory() {
+		
+		// keep on track the current position 
+		int currentPosition = 0;
+		
+		// check whether the category is already added
+		for(int i = 0; i < listOfCategories.size(); i++) {				
+				// set up the button according to the title, layout, and size
+				Button button = new Button();
+		        button.setText(listOfCategories.get(i).getName());
+		        button.setLayoutX(BUTTON_X);
+		        button.setLayoutY(positionToDisplayOthers + BUTTON_HEIGHT * currentPosition);
+		        button.setPrefHeight(BUTTON_HEIGHT);
+		        button.setPrefWidth(BUTTON_WIDTH);
+		        button.setFont(Font.font("Helvetica", 14.0d));
+		        button.setStyle("-fx-background-color: #333333;");
+		        String s = Integer.toHexString(listOfCategories.get(i).getColor().getRGB());
+		        button.setTextFill(Color.web("#" + s.substring(2, 8)));
+		        associateButtonWithViewMode(button, listOfCategories.get(i).getName());
+		        // add the button on the Pane
+		        categoriesContainer.getChildren().add(button);
+			
+		        currentPosition++;
+		}
+    }
+
+	void setParentController(RootWindowController rootController) {
+		this.rootController = rootController;
+	}
+	
+	private void handleScrollPaneKeyPress(KeyEvent event) {
+		double currentPosition = paneContainer.getVvalue();
+		double vmin = paneContainer.getVmin();
+		double vmax = paneContainer.getVmax();
+		if (event.getCode() == KeyCode.DOWN) {
+			paneContainer.setVvalue(Math.min(vmax, currentPosition + VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.UP) {
+			paneContainer.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
+		}
+		//do not consume event. must propagate to root
+	}
+	
+	private void associateButtonWithViewMode(Button button, String viewMode) {
+	    button.setOnAction(new ButtonActionHandler(viewMode));
+	}
+	
+	class ButtonActionHandler implements EventHandler<ActionEvent> {
+	    String viewMode;
+	    
+	    public ButtonActionHandler(String viewMode) {
+	        this.viewMode = viewMode;
+        }
+	    
+        @Override
+        public void handle(ActionEvent event) {
+            Controller.displayTasksBasedOnDisplayMode(viewMode);	                    
+            Controller.refreshUI();
+        }
+	    
+	}
+}
+	// End of segment: list\src\list\view\CategoriesController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CategoriesController.java
+	 */
+
+	// End of segment: list\src\list\view\CategoriesController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CongratulationsController.java
+	 */
+
+package list.view;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.util.Callback;
+import list.Controller;
+import list.model.ITask;
+
+public class CongratulationsController {
+
+    @FXML
+    private Pane pane;
+    @FXML
+    private ListView<String> listView;
+    @FXML
+    private Button buttonDone;
+    
+	private RootWindowController rootController;
+	
+	private static final String MESSAGE_MOVED_SUCCESS = "%d tasks moved to today midnight. Keep it up!";
+	private static final String MESSAGE_DONE_FOR_THE_DAY = "Congratulations! You are done for the day!";
+	private static final String FONT = "Helvetica Neue";	
+	
+	private static Glow glow = new Glow(0.5);
+	
+	private ObservableList<String> observableTaskTitles;
+	private List<String> selectedTitles = new ArrayList<String>();
+	private List<ITask> floatingTasks;
+	private HashMap<String, ITask> taskMap = new HashMap<String, ITask>();
+	
+	
+	void setUpView(List<ITask> floatingTasks) {
+	    this.floatingTasks = floatingTasks;
+	    populateListView();
+	}
+
+	void setParentController(RootWindowController rootController) {
+		this.rootController = rootController;
+	}
+	
+	private void populateListView() {
+		List<String> taskTitles = new ArrayList<String>();
+		for(int i = 0; i < floatingTasks.size(); i++) {
+		    ITask task = floatingTasks.get(i);
+		    String title = task.getTitle();
+			taskTitles.add(title);
+			taskMap.put(title, task);
+		}
+		observableTaskTitles = FXCollections.observableArrayList(taskTitles);
+		listView.setItems(observableTaskTitles);
+		listView.setCellFactory((callback) -> {
+		    return new CellFactory(selectedTitles);
+		}); 
+	}
+    
+    private void updateCellColor() {
+        populateListView();
+    }
+	
+	@FXML
+	private void initialize() {					
+		buttonDone.setOnAction((event) -> {
+			handleDoneAction();
+		});
+		listView.setOnKeyPressed((event) -> {
+            if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+                if (listView.getSelectionModel().getSelectedItem() == null) {
+                    listView.getSelectionModel().select(0);
+                } 
+                String selectedString = listView.getSelectionModel().getSelectedItem();
+                
+                if (selectedTitles.contains(selectedString)) {
+                    selectedTitles.remove(selectedString);
+                } else {
+                    selectedTitles.add(selectedString);
+                }
+                updateCellColor();                    
+            } else if (event.getCode() == KeyCode.TAB) {
+                DropShadow dropShadow = new DropShadow(20,Color.WHITE);
+                buttonDone.setEffect(dropShadow);
+                buttonDone.requestFocus();
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                exitWithoutMovingTask();
+            }
+		});
+		buttonDone.setOnKeyPressed((event) -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+                handleDoneAction();
+            } else if (event.getCode() == KeyCode.TAB) {
+                buttonDone.setEffect(null);
+                listView.requestFocus();
+            }
+		});
+		pane.setOnKeyPressed((event) -> {
+		    if (event.getCode() == KeyCode.ESCAPE) {
+		        exitWithoutMovingTask();
+		    }
+		    event.consume();
+		}); 
+		Platform.runLater(() -> {
+		    listView.requestFocus();
+		});
+	}
+	// End of segment: list\src\list\view\CongratulationsController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CongratulationsController.java
+	 */
+
+	private void handleDoneAction() {
+	    List<ITask> selectedTasks = new ArrayList<ITask>();
+		for(String title: selectedTitles) {
+			selectedTasks.add(taskMap.get(title));
+		}
+		Controller.moveTasksToTodayMidnight(selectedTasks);
+		if (selectedTasks.isEmpty()) {
+		    exitWithoutMovingTask();
+		} else {
+	        rootController.hideCongratulations();
+		    Controller.displayHome();
+		    Controller.refreshUI();
+		    rootController.displayMessageToUser(String.format(MESSAGE_MOVED_SUCCESS, selectedTasks.size()));		    
+		}
+	}
+	// End of segment: list\src\list\view\CongratulationsController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CongratulationsController.java
+	 */
+
+	private void exitWithoutMovingTask() {
+        rootController.hideCongratulations();
+        rootController.displayMessageToUser(MESSAGE_DONE_FOR_THE_DAY);
+	}
+	
+    private static class CellFactory extends ListCell<String> {
+        private List<String> selectedTitles;
+
+        public CellFactory(List<String> selectedTitles) {
+            this.selectedTitles = selectedTitles;
+        }
+        
+        @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            Label label = new Label(item);
+            if (item != null) {
+                if(selectedTitles.contains(item)){
+                    label.setEffect(glow);
+                    label.setTextFill(Color.ORANGE);
+                } else {
+                    label.setTextFill(Color.BLACK);
+                }
+                label.setFont(Font.font(FONT, 12.0d));
+                setGraphic(label);
+            }
+        }
+    }
+}
+	// End of segment: list\src\list\view\CongratulationsController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\CongratulationsController.java
+	 */
+
+	// End of segment: list\src\list\view\CongratulationsController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+package list.view;
+
+public class FxmlFiles {
+	
+	//Root Window.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import javafx.scene.text.*?>
+//	<?import javafx.geometry.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import javafx.scene.image.*?>
+//	<?import java.lang.*?>
+//	<?import javafx.scene.layout.*?>
+//	<?import javafx.scene.layout.Pane?>
+//
+//	<Pane fx:id="rootPane" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6d6969;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.RootWindowController">
+//	   <children>
+//	      <ToolBar prefHeight="40.0" prefWidth="600.0" style="-fx-background-color: #2E2E2E;">
+//	         <items>
+//	            <Button fx:id="buttonToCategory" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-border-style: none; -fx-background-color: #2E2E2E;">
+//	               <graphic>
+//	                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+//	                     <image>
+//	                        <Image url="@icon_menu.png" />
+//	                     </image>
+//	                  </ImageView>
+//	               </graphic>
+//	            </Button>
+//	            <Button fx:id="buttonToPrev" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-border-style: none; -fx-background-color: #2E2E2E;">
+//	               <graphic>
+//	                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+//	                     <image>
+//	                        <Image url="@icon_left.png" />
+//	                     </image>
+//	                  </ImageView>
+//	               </graphic>
+//	            </Button>
+//	            <Button fx:id="buttonToNext" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-border-style: none; -fx-background-color: #2E2E2E;">
+//	               <graphic>
+//	                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+//	                     <image>
+//	                        <Image url="@icon_right.png" />
+//	                     </image>
+//	                  </ImageView>
+//	               </graphic>
+//	            </Button>
+//	            <Button fx:id="buttonToHome" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-border-style: none; -fx-background-color: #2E2E2E;">
+//	               <graphic>
+//	                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+//	                     <image>
+//	                        <Image url="@icon_home.png" />
+//	                     </image>
+//	                  </ImageView>
+//	               </graphic>
+//	            </Button>
+//	            <Region maxWidth="435.0" minWidth="33.0" prefHeight="30.0" prefWidth="173.0" />
+//	            <Label fx:id="labelPageTitle" alignment="CENTER_RIGHT" maxWidth="286.0" minWidth="286.0" prefHeight="23.0" prefWidth="286.0" textFill="#eeeeeebf">
+//	               <font>
+//	                  <Font name="Helvetica Neue Light" size="18.0" />
+//	               </font>
+//	            </Label>
+//	         </items>
+//	      </ToolBar>
+//	      <TextField fx:id="console" layoutY="372.0" prefHeight="28.0" prefWidth="600.0" promptText="Enter command" style="-fx-background-color: #585858; -fx-text-fill: white;" />
+//	      
+//	   </children>
+//	</Pane>
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+	//Task Overview.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import javafx.geometry.*?>
+//	<?import java.lang.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import javafx.scene.layout.*?>
+//	<?import javafx.scene.text.*?>
+//	<?import javafx.scene.layout.Pane?>
+//
+//	<Pane fx:id="tasksContainer" prefHeight="332.0" prefWidth="600.0" style="-fx-background-color: #6d6969;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskOverviewController">
+//	   <children>
+//	      <Label fx:id="labelFeedback" layoutX="5.0" layoutY="300.0" prefHeight="30.0" prefWidth="590.0" style="-fx-background-radius: 3px; -fx-background-color: white; -fx-opacity: 0%;" text="Notification Centre">
+//	            <padding>
+//	            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+//	            </padding>
+//	         <font>
+//	            <Font size="14.0" />
+//	         </font>
+//	         </Label>
+//	   </children>
+//	</Pane>
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+	//Task Detail.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import javafx.scene.text.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import java.lang.*?>
+//	<?import javafx.scene.layout.*?>
+//	<?import javafx.scene.layout.AnchorPane?>
+//
+//	<Pane fx:id="pane" prefHeight="270.0" prefWidth="366.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.TaskDetailController">
+//	   <children>
+//	      <TextField fx:id="taskTitle" layoutX="14.0" layoutY="15.0" prefHeight="60.0" prefWidth="338.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Semester 1">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="28.0" />
+//	         </font>
+//	      </TextField>
+//	      <TextField fx:id="taskStartDate" layoutX="89.0" layoutY="72.0" prefHeight="20.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="3 / 8 / 2014">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </TextField>
+//	      <Label layoutX="15.0" layoutY="78.0" text="Start Date:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="20.0" layoutY="104.0" prefHeight="20.0" prefWidth="69.0" text="End Date:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="42.0" layoutY="207.0" text="Status:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="46.0" layoutY="156.0" text="Place:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="43.0" layoutY="182.0" text="Notes:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	      <TextField fx:id="taskEndDate" layoutX="89.0" layoutY="98.0" prefHeight="20.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="6 / 12 / 2014">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </TextField>
+//	      <TextField fx:id="taskCategory" layoutX="88.0" layoutY="124.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #FE9A2E;" text="School">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </TextField>
+//	      <TextField fx:id="taskPlace" layoutX="88.0" layoutY="150.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="NUS">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </TextField>
+//	      <TextField fx:id="taskNotes" layoutX="87.0" layoutY="176.0" prefHeight="32.0" prefWidth="272.0" style="-fx-background-color: #333333; -fx-text-fill: #ffffff;" text="Tired with lots of work...">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </TextField>
+//	      <CheckBox fx:id="taskStatus" layoutX="102.0" layoutY="209.0" mnemonicParsing="false" text="CheckBox" />
+//	      <Button fx:id="buttonDone" layoutX="285.0" layoutY="233.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+//	         <font>
+//	            <Font name="Helvetica Neue Bold" size="12.0" />
+//	         </font>
+//	      </Button>
+//	      <Label layoutX="21.0" layoutY="130.0" text="Category:" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="16.0" />
+//	         </font>
+//	      </Label>
+//	   </children>
+//	</Pane>
+	
+	//Categories.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import java.lang.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import javafx.scene.control.ScrollPane?>
+//
+//
+//	<ScrollPane fx:id="paneContainer" prefHeight="332.0" prefWidth="140.0" style="-fx-background-color: #333333; -fx-background: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.CategoriesController">
+//		<!-- TODO Add Nodes -->
+//	</ScrollPane>
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+	//Help.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import javafx.scene.text.*?>
+//	<?import javafx.scene.layout.*?>
+//	<?import javafx.scene.image.*?>
+//	<?import java.lang.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import javafx.scene.control.ScrollPane?>
+//
+//	<ScrollPane fx:id="scrollPane" prefHeight="333.0" prefWidth="500.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.HelpController">
+//	   <content>
+//	      <Pane prefHeight="1883.0" prefWidth="498.0">
+//	         <children>
+//	            <ImageView fx:id="imageHelp" cache="true" fitHeight="1903.0" fitWidth="498.0" pickOnBounds="true" preserveRatio="true">
+//	               <image>
+//	                  <Image url="@help_page_small.png" />
+//	               </image></ImageView>
+//	            <Button fx:id="buttonDone" layoutX="416.0" layoutY="1849.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+//	               <font>
+//	                  <Font name="Helvetica Neue Light" size="12.0" />
+//	               </font>
+//	            </Button>
+//	         </children>
+//	      </Pane>
+//	   </content>
+//	</ScrollPane>
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+	//Congratulations.fxml
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+//	<?xml version="1.0" encoding="UTF-8"?>
+//
+//	<?import javafx.scene.effect.*?>
+//	<?import javafx.scene.text.*?>
+//	<?import javafx.scene.control.*?>
+//	<?import javafx.scene.image.*?>
+//	<?import java.lang.*?>
+//	<?import javafx.scene.layout.*?>
+//	<?import javafx.scene.layout.AnchorPane?>
+//
+//	<Pane fx:id="pane" prefHeight="277.0" prefWidth="360.0" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="list.view.CongratulationsController">
+//	   <children>
+//	      <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="12.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+//	         <image>
+//	            <Image url="@congratulations.png" />
+//	         </image>
+//	      </ImageView>
+//	      <ListView fx:id="listView" layoutX="31.0" layoutY="92.0" prefHeight="147.0" prefWidth="298.0" />
+//	      <Label layoutX="96.0" layoutY="23.0" text="Congratulations!" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="24.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="89.0" layoutY="53.0" text="You've done everything today!" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="14.0" />
+//	         </font>
+//	      </Label>
+//	      <Label layoutX="92.0" layoutY="71.0" text="Want to do something more?" textFill="WHITE">
+//	         <font>
+//	            <Font name="Helvetica Neue Light" size="14.0" />
+//	         </font>
+//	      </Label>
+//	      <Button fx:id="buttonDone" layoutX="265.0" layoutY="244.0" maxWidth="95.0" minWidth="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="64.0" style="-fx-background-color: #585858;" text="Done">
+//	         <font>
+//	            <Font name="Helvetica Neue Bold" size="12.0" />
+//	         </font>
+//	      </Button>
+//	   </children>
+//	</Pane>
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+	/*
+	 * design of congratulations.png
+	 * 
+	 * design of help_page_small.png
+	 * 
+	 * design of help_page.png
+	 * 
+	 * design of icon_bar.png
+	 * 
+	 * design of icon_calender.png
+	 * 
+	 * design of icon_home.png
+	 * 
+	 * design of icon_left.png
+	 * 
+	 * design of icon_menu.png
+	 * 
+	 * design of icon_right.png
+	 * 
+	 * design of list_logo.png
+	 */
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\FxmlFiles.java
+	 */
+
+}
+
+	// End of segment: list\src\list\view\FxmlFiles.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\HelpController.java
+	 */
+
+package list.view;
+
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+
+
+public class HelpController {
+	
+	private static final double VERTICAL_SCROLL_AMOUNT = 0.025;
+
+	private RootWindowController rootContoller;
+	
+	@FXML
+	private ScrollPane scrollPane;
+	@FXML
+	private Button buttonDone;
+	@FXML
+	private ImageView imageHelp;
+	
+	void setParentController(RootWindowController rootController) {
+		this.rootContoller = rootController;
+	}
+	
+	
+	@FXML
+	private void initialize() {					
+		setupButtonDoneAction();
+		scrollPane.setOnKeyPressed((event) -> {
+			handleScrollPaneKeyPress(event);
+		}); 
+		
+		cacheImageViewForPerformance();
+	}
+
+	private void handleScrollPaneKeyPress(KeyEvent event) {
+		double currentPosition = scrollPane.getVvalue();
+		double vmin = scrollPane.getVmin();
+		double vmax = scrollPane.getVmax();
+		if (event.getCode() == KeyCode.DOWN) {
+			scrollPane.setVvalue(Math.min(vmax, currentPosition + VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.UP) {
+			scrollPane.setVvalue(Math.max(vmin, currentPosition - VERTICAL_SCROLL_AMOUNT));
+		} else if (event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.ENTER) {
+			handleDoneAction();
+		}
+		event.consume(); //to prevent further propagation
+	}
+
+	private void cacheImageViewForPerformance() {
+	    imageHelp.setCache(true);
+		imageHelp.setSmooth(true);
+    }
+
+	private void setupButtonDoneAction() {
+	    buttonDone.setOnAction((event) -> {
+			handleDoneAction();
+		});
+		
+		buttonDone.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.ENTER) {
+					System.out.println("Enter Pressed on button");
+					handleDoneAction();
+				} else if (event.getCode() == KeyCode.TAB){
+					buttonDone.setEffect(null);
+				} 
+			}
+		
+		});
+    }
+	
+	private void handleDoneAction() {		
+		rootContoller.hideHelp();
+	}	
+}
+	// End of segment: list\src\list\view\HelpController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\HelpController.java
+	 */
+
+	// End of segment: list\src\list\view\HelpController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\IUserInterface.java
+	 */
+
+    void displayCategories(List<ICategory> categories);
+    
+    void hideCategories();
+
+    void displayHelp();
+    
+    void hideHelp();
+
+    boolean back();
+    
+    boolean next();
+	// End of segment: list\src\list\view\IUserInterface.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\IUserInterface.java
+	 */
+
+	void hideTaskDetail();
+	
+	void highlightTask(ITask task);
+	
+	void refreshUI();
+	// End of segment: list\src\list\view\IUserInterface.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\IUserInterface.java
+	 */
+
+	void displayCongratulations(List<ITask> floatingTasks);
+	
+	void hideCongratulations();
+	// End of segment: list\src\list\view\IUserInterface.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\IUserInterface.java
+	 */
+
+	void clearConsole();
+
+}
+
+	// End of segment: list\src\list\view\IUserInterface.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	@FXML
+	private Button buttonToHome;
+	@FXML
+	private Button buttonToCategory;
+	@FXML
+	private Button buttonToNext;
+	@FXML
+	private Button buttonToPrev;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	@FXML
+	private Label labelPageTitle;
+	
+	private Pane taskDetail;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private ScrollPane help;
+	private ScrollPane paneForCategories;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private Pane taskOverview;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private Pane congratulations;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private boolean isShowingCategories = false;
+	private String pageTitle;
+   
+	private TaskOverviewController taskOverviewController;
+	private TaskDetailController taskDetailController;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private CategoriesController categoriesController;
+	private HelpController helpController;
+	private CongratulationsController congratulationsController;
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+	private CommandParser parser = new CommandParser();
+	
+	
+	
+    @Override
+    public void displayTaskDetail(ITask task) {
+    	int taskNumber = taskOverviewController.getTaskNumber(task);
+        showTaskDetailLayout();
+        taskDetailController.setParentController(this);
+        taskDetailController.displayTaskDetail(task, taskNumber);
+        
+    }
+    
+    @Override
+	public void hideTaskDetail() {
+		rootPane.getChildren().remove(taskDetail);
+		console.requestFocus();
+	}
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    @Override
+    public void setDisplayItems(String pageTitle, List<ITask> tasks) {
+        this.pageTitle = pageTitle;
+        taskOverviewController.setDisplayTasks(tasks);
+    }
+
+    @Override
+    public void displayMessageToUser(String message) {
+        taskOverviewController.displayMessageToUser(message);
+    }
+
+    @Override
+    public boolean back() {
+        return taskOverviewController.back();
+    }
+
+    @Override
+    public boolean next() {
+        return taskOverviewController.next();
+    }
+
+	@Override
+	public void highlightTask(ITask task) {
+		updatePageTitle();
+		taskOverviewController.highlightTask(task);
+	}
+
+	@Override
+    public void clearConsole() {
+        console.setText("");
+    }
+    
+	@Override
+	public void refreshUI() {
+        updatePageTitle();
+		taskOverviewController.refresh();
+	}
+	
+	@FXML
+    private void initialize() {
+        showTaskOverviewLayout();
+        setUpButtons();
+        console.setOnAction((event) -> {
+            handleEnterAction();
+        });
+        
+        setConsoleKeyPressHandler();
+        setWindowKeyPressHandler();
+        Platform.runLater(() -> {
+            console.requestFocus();
+        });
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void setUpButtons() {
+    	buttonToHome.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	Controller.displayHome();
+    	    	Controller.refreshUI();
+    	    }
+    	});
+    	buttonToCategory.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	if(!isShowingCategories){
+    	    		Controller.displayCategories();
+    	    	} else {
+    	    		hideCategories();
+    	    	}
+    	    }
+    	});
+    	buttonToNext.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	NextCommand cmd = new NextCommand();
+    	    	displayMessageToUser(cmd.execute());
+    	    }
+    	});
+    	buttonToPrev.setOnAction(new EventHandler<ActionEvent>() {
+    	    @Override public void handle(ActionEvent e) {
+    	    	PrevCommand cmd = new PrevCommand();
+    	    	displayMessageToUser(cmd.execute());
+    	    }
+    	});
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void setConsoleKeyPressHandler() {
+        EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.SPACE) || console.getText().isEmpty()) {
+                    showSyntaxSuggestion();   
+                } else if (event.getCode() == KeyCode.TAB) {
+                    console.requestFocus();
+                    event.consume();
+                }
+            }
+
+            private void showSyntaxSuggestion() {
+                try {
+                    parser.clear();
+                    parser.append(console.getText());
+                    String expected = parser.getExpectedInputs();
+                    displayMessageToUser(expected);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+        };
+        console.setOnKeyPressed(handler);
+    }
+    
+    private void setWindowKeyPressHandler() {
+        EventHandler<KeyEvent> handler = new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                if(!event.getText().isEmpty()) {
+                    console.requestFocus();
+                }
+            }
+            
+        };
+        rootPane.setOnKeyPressed(handler);
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void showCategoriesLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Categories.fxml"));
+
+            paneForCategories = (ScrollPane) loader.load();
+
+            categoriesController = loader.getController();
+
+            paneForCategories.setLayoutX(0);
+            paneForCategories.setLayoutY(42);
+            paneForCategories.setHbarPolicy(ScrollBarPolicy.NEVER);
+            paneForCategories.setVbarPolicy(ScrollBarPolicy.NEVER);
+            rootPane.getChildren().add(paneForCategories);
+            paneForCategories.requestFocus();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void showTaskDetailLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/TaskDetail.fxml"));
+            
+            taskDetail = (Pane) loader.load();
+            
+            taskDetailController = loader.getController();
+            taskDetail.setEffect(DROP_SHADOW);
+            taskDetail.setLayoutX(120);
+            taskDetail.setLayoutY(60);
+            rootPane.getChildren().add(taskDetail);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void showHelpLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Help.fxml"));
+            
+            help = (ScrollPane) loader.load();
+            
+            helpController = loader.getController();
+            help.setEffect(DROP_SHADOW);
+            help.setLayoutX(50);
+            help.setLayoutY(33);
+            help.setHbarPolicy(ScrollBarPolicy.NEVER);
+            help.setVbarPolicy(ScrollBarPolicy.NEVER);
+            rootPane.getChildren().add(help);
+            help.requestFocus();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    
+    private void showTaskOverviewLayout() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/TaskOverview.fxml"));
+            
+            taskOverview = (Pane) loader.load();
+            
+            taskOverviewController = loader.getController();
+            
+            taskOverview.setLayoutX(0);
+            taskOverview.setLayoutY(42);
+            taskOverview.setEffect(new DropShadow());
+            showCategoriesLayout();
+            rootPane.getChildren().add(taskOverview);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+    
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void showCongratulationsLayout() {
+    	try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Controller.class.getResource("view/Congratulations.fxml"));
+            
+            congratulations = (Pane) loader.load();
+            
+            congratulationsController = loader.getController();
+            congratulations.setEffect(DROP_SHADOW);
+            congratulations.setLayoutX(120);
+            congratulations.setLayoutY(60);
+            rootPane.getChildren().add(congratulations);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\view\RootWindowController.java
+	 */
+
+    private void animateCategoryAndTaskOverview(boolean willDisplay) {
+    	if (willDisplay) {
+    		TranslateTransition translateForTaskOverview;
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(DURATION_CATEGORY), taskOverview);
+    		translateForTaskOverview.setToX(140);
+    		translateForTaskOverview.setCycleCount(1);
+    		translateForTaskOverview.setAutoReverse(false);
+    		translateForTaskOverview.play();
+    		taskOverview.requestFocus();
+    	} else {
+    		TranslateTransition translateForTaskOverview;
+    		translateForTaskOverview = new TranslateTransition(Duration.seconds(DURATION_CATEGORY), taskOverview);
+    		translateForTaskOverview.setToX(0);
+    		translateForTaskOverview.setCycleCount(1);
+    		translateForTaskOverview.setAutoReverse(false);
+    		
+    		translateForTaskOverview.play();
+    		
+    	}
+    }
+
+    /**
+     * This method is called when user presses 'enter' on keyboard
+     * after writing a command in the console.
+     */
+    @FXML
+    private void handleEnterAction() {
+    	if (isShowingCategories) {
+    		hideCategories();
+    	}
+    	hideHelp();
+    	hideTaskDetail();
+        String userInput = console.getText();
+        Controller.processUserInput(userInput);
+    }
+
+    private void updatePageTitle() {
+        String title = pageTitle;
+	    if (title == null) {
+	        title = "";
+	    }
+	    labelPageTitle.setText(title);
+    }
+
+   
+}
+
+	// End of segment: list\src\list\view\RootWindowController.java
+
+
+
+
+

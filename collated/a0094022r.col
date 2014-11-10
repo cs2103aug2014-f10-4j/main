@@ -1,0 +1,1657 @@
+//@author: a0094022r
+
+
+
+	/**
+	 * origin: list\src\list\AddCommand.java
+	 */
+
+ */
+public class AddCommand implements ICommand {
+	private static final String MESSAGE_TASK_ADDED_SUCCESFULLY = "Task added succesfully";
+    private static final String MESSAGE_NO_TITLE = "Please specify title for the task.";
+    private TaskManager taskManager = TaskManager.getInstance();
+	private String title = null;
+	private Date startDate = null;
+	private Date endDate = null;
+	private RepeatFrequency repeatFrequency = RepeatFrequency.NONE;
+	private String place = null;
+	private ICategory category = null;
+	private String notes = null;
+	
+	private ITask task;
+	
+	public AddCommand() { };
+	
+	public AddCommand(String title, 
+	                  Date startDate, 
+	                  Date endDate,
+	                  RepeatFrequency repeatFrequency, 
+	                  String place,
+	                  ICategory category, 
+	                  String notes) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.repeatFrequency = repeatFrequency;
+        this.place = place;
+        this.category = category;
+        this.notes = notes;
+    }
+
+    public AddCommand setTitle(String title) {
+	    this.title = title;
+        return this;
+	}
+	
+	public AddCommand setStartDate(Date startDate) {
+	    this.startDate = startDate;
+        return this;
+	}
+	
+	public AddCommand setEndDate(Date endDate) {
+	    this.endDate = endDate;
+        return this;
+	}
+	
+	public AddCommand setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    this.repeatFrequency = repeatFrequency;
+        return this;
+	}
+	
+	public AddCommand setPlace(String place) {
+	    this.place = place;
+        return this;
+	}
+	
+	public AddCommand setCategory(ICategory category) {
+	    this.category = category;
+        return this;
+	}
+	
+	public AddCommand setNotes(String notes) {
+	    this.notes = notes;
+	    return this;
+	}
+	
+	/**
+	 * This method will create a new Task object, complete with its attributes
+	 * (e.g. title, startDate, endDate, etc.). A task object should always have title. 
+	 * Upon addition of the new task, it will give feedback through controller to UI 
+	 * accordingly.
+	 */
+	@Override
+	public String execute() throws CommandExecutionException, IOException {
+	    //enforce required conditions
+	    if (this.title == null) {
+	        throw new CommandExecutionException(MESSAGE_NO_TITLE);
+	    }
+	    
+		ITask task = new Task();
+		task.setTitle(this.title)
+			.setStartDate(this.startDate)
+			.setEndDate(this.endDate)
+			.setRepeatFrequency(this.repeatFrequency)
+			.setPlace(this.place)
+			.setCategory(this.category)
+			.setNotes(this.notes)
+			.setStatus(TaskStatus.PENDING);
+		
+		this.task = task;
+		
+		taskManager.addTask(task);
+		
+		if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+		
+		taskManager.saveData();
+		
+		return MESSAGE_TASK_ADDED_SUCCESFULLY;
+	}
+
+	/** 
+	// End of segment: list\src\list\AddCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\Converter.java
+	 */
+
+package list;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import list.CommandBuilder.RepeatFrequency;
+import list.model.Category;
+import list.model.Date;
+import list.model.Date.InvalidDateException;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.model.Task;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * This class is responsible to convert Java Objects (Task and Category) into
+ * JSON or vice versa. It will be used by ReaderWriter class during both the process
+ * of loading data from text files and saving data to text files.
+ * 
+ */
+public class Converter {
+	
+	@SuppressWarnings("serial")
+    class CorruptedJsonObjectException extends Exception { };
+	
+    // Messages used in logging
+    private static final String LOG_CORRUPTED_TASK_OBJECT = "There are a total of %d corrupted JSON Task Object during conversion";
+    private static final String LOG_CORRUPTED_CATEGORY_OBJECT = "There are a total of %d corrupted JSON Category Object during conversion";
+    private static final String LOG_CORRUPTED_TASK_PROPERTY = "There are a total of %d corrupted Task Properties due to %s";
+    private static final String LOG_UNEXPECTED_ERROR = "Unexpected error during conversion";
+    
+	// Keys used to identify attributes of a task in JSON	
+	private static final String KEY_TITLE = "title";
+	private static final String KEY_DETAILS = "details";
+	private static final String KEY_START_TIME = "start_time";
+	private static final String KEY_END_TIME = "end_time";
+	private static final String KEY_REPEAT_FREQUENCY = "repeat_frequency";
+	private static final String KEY_PLACE = "place";
+	private static final String KEY_CATEGORY = "category";
+	private static final String KEY_NOTES = "notes";
+	private static final String KEY_STATUS = "status";
+		
+	// Keys used to identify attributes of a category in JSON
+	private static final String KEY_CAT_NAME = "name";
+	private static final String KEY_CAT_COLOR = "color";
+	
+	private Logger logger = Logger.getLogger("ConverterLogger");
+	private int numOfCorruptedTaskProperties = 0;
+	private int numOfCorruptedJsonTaskObjects = 0;
+	private int numOfCorruptedJsonCategoryObjects = 0;
+	
+	/**
+	 * Converts an array of JSONObjects into a list of ITask objects.
+	 * 
+	 * @param jsonArray
+	 * @return list of tasks represented by jsonArray in JSON format
+	 */
+	List<ITask> convertJsonToTasksList(JSONArray jsonArray) {
+		resetCorruptedJSONTaskObjectCounter();
+		
+		List<ITask> listOfTasks = new ArrayList<ITask>();
+		for (int i = 0; i < jsonArray.length(); i++) {
+			try {
+				JSONObject taskInJson = jsonArray.getJSONObject(i);
+				ITask task = convertJsonToTask(taskInJson);
+				listOfTasks.add(task);
+			} catch (CorruptedJsonObjectException e) {
+				numOfCorruptedJsonTaskObjects++;
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_OBJECT, numOfCorruptedJsonTaskObjects));
+			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
+				assert (false): e.getMessage();
+			}
+		}
+		
+		return listOfTasks;
+	}
+	
+	/**
+	 * Converts the list of tasks specified into its JSON representation for storage.
+	 * 
+	 * @param tasks
+	 * @return the JSON representation of list of tasks (in JSONArray)
+	 */
+	JSONArray convertTasksListToJson(List<ITask> tasks) {
+		JSONArray tasksListInJson = new JSONArray();
+		
+		for (ITask task: tasks) {
+			try {
+				JSONObject taskInJson = convertTaskToJson(task);
+				tasksListInJson.put(taskInJson);
+			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
+				assert (false): e.getMessage();
+			}
+			
+		}
+		
+		return tasksListInJson;
+	}
+	
+	/**
+	 * Converts an array of JSONObjects into a HashMap with:
+	 * key - category name (in lower case), and
+	 * value - respective ICategory
+	 * 
+	 * @param jsonArray
+	 * @return HashMap of ICategory
+	 */
+	HashMap<String, ICategory> convertJsonToCategoryList(JSONArray jsonArray) {
+		
+		resetCorruptedJSONCategoryObjectCounter();
+		
+		HashMap<String, ICategory> categories = new HashMap<String, ICategory>();
+				
+		for (int i = 0; i < jsonArray.length(); i++) {
+			try {
+				JSONObject categoryInJson = jsonArray.getJSONObject(i);
+				
+				ICategory category = convertJsonToCategory(categoryInJson);
+				
+				if (category != null) {
+					categories.put(category.getName().trim().toLowerCase(), category);
+				}
+				
+			} catch (CorruptedJsonObjectException e) {
+				numOfCorruptedJsonCategoryObjects++;
+				logger.log(Level.INFO, LOG_CORRUPTED_CATEGORY_OBJECT);
+			} catch (JSONException e) {
+				logger.log(Level.WARNING, LOG_UNEXPECTED_ERROR);
+				assert (false): e.getMessage();
+			}
+		}
+		
+		return categories;
+	}
+	
+	/**
+	 * Converts the list of categories specified into its JSON representation for storage.
+	 * 
+	 * @param categories
+	 * @return the JSON representation of list of categories (in JSONArray)
+	 */
+	JSONArray convertCategoryListToJson(List<ICategory> categories) {
+		JSONArray categoryListInJson = new JSONArray();	
+		
+		for (ICategory category: categories) {
+			try {
+				JSONObject taskInJson = convertCategoryToJson(category);
+				categoryListInJson.put(taskInJson);
+			} catch (JSONException e) {
+				assert (false): e.getMessage();
+			}
+			
+		}
+		
+		return categoryListInJson;		
+	}
+	
+	/**
+	 * This method converts a JSONObject representing a Task into
+	 * Task object with its attributes
+	 * 
+	 * @param jsonObject
+	 * @return ITask
+	 * @throws CorruptedJsonObjectException if task in JSON format has no title
+	 * @throws JSONException 
+	 */
+	ITask convertJsonToTask(JSONObject jsonObject) 
+			throws CorruptedJsonObjectException, JSONException {
+		if (!jsonObject.has(KEY_TITLE)) {
+			throw new CorruptedJsonObjectException();
+		}
+		
+		ITask task = new Task();
+		
+		setTaskTitle(jsonObject, task);
+		
+		setTaskDetail(jsonObject, task);
+		
+		return task;	
+	}
+
+	/**
+	 * Returns the number of corrupted tasks attributes (in JSON format) during conversion.
+	 */
+	int getNumberOfCorruptedTaskProperties() {
+		return numOfCorruptedTaskProperties;
+	}
+	
+	/**
+	 * Returns the number of corrupted task objects (in JSON format) during conversion.
+	 */
+	int getNumberOfCorruptedJsonTaskObjects() {
+		return numOfCorruptedJsonTaskObjects;
+	}
+	
+	/**
+	 * Returns the number of corrupted category objects (in JSON format) during conversion.
+	 */
+	int getNumOfCorruptedJsonCategoryObjects() {
+		return numOfCorruptedJsonCategoryObjects;
+	}
+	
+	private void setTaskDetail(JSONObject jsonObject, ITask task)
+			throws JSONException {
+		if (hasTaskDetails(jsonObject)) {
+			JSONObject taskDetailInJson = jsonObject.getJSONObject(KEY_DETAILS);
+			extractTaskDetailFromJson(task, taskDetailInJson);
+		}
+	}
+
+	private void setTaskTitle(JSONObject jsonObject, ITask task) throws JSONException {
+		String title = jsonObject.getString(KEY_TITLE);		
+		task.setTitle(title);		
+	}
+	
+	private boolean hasTaskDetails(JSONObject jsonObject)
+			throws JSONException {
+		return jsonObject.has(KEY_DETAILS) && 
+			   jsonObject.getJSONObject(KEY_DETAILS).length() > 0;
+	}
+	
+	private JSONObject convertTaskToJson(ITask task) throws JSONException {
+		JSONObject taskInJson = new JSONObject();
+		JSONObject taskDetails = new JSONObject();
+		taskInJson.put(KEY_TITLE, task.getTitle());
+		taskInJson.put(KEY_DETAILS, taskDetails);
+		putAllJsonAttributesOfTask(taskDetails, task);
+		return taskInJson;
+	}
+	
+	private void putAllJsonAttributesOfTask(JSONObject taskDetail, ITask task) 
+			throws JSONException {
+		
+		if (task.getStartDate() != null) {
+			taskDetail.put(KEY_START_TIME, task.getStartDate().toString());
+		}
+		
+		if (task.getEndDate() != null) {
+			taskDetail.put(KEY_END_TIME, task.getEndDate().toString());
+		}
+		
+		if (task.getRepeatFrequency() != null) {
+			taskDetail.put(KEY_REPEAT_FREQUENCY, task.getRepeatFrequency().name());
+		}
+		
+		if (task.getStatus() != null) {
+		    taskDetail.put(KEY_STATUS, task.getStatus().name());
+		}
+		
+		if (task.getPlace() != null) {
+		    taskDetail.put(KEY_PLACE, task.getPlace());
+		}
+			
+		if (task.getCategory() != null) {
+			taskDetail.put(KEY_CATEGORY, task.getCategory().getName());
+		}
+		
+		if (task.getNotes() != null) {
+	        taskDetail.put(KEY_NOTES, task.getNotes());   
+		}
+	}
+	
+	private void extractTaskDetailFromJson(ITask task, JSONObject taskDetailInJson) 
+			throws JSONException {	
+		resetCorruptedTaskPropertiesCounter();
+	
+		if (taskDetailInJson.has(KEY_START_TIME)) {
+			String startDate = taskDetailInJson.getString(KEY_START_TIME);
+						
+			try {
+				if (startDate != "") {
+					task.setStartDate(new Date(startDate));
+				}
+			} catch (InvalidDateException e) {
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_PROPERTY, e.getMessage()));
+				numOfCorruptedTaskProperties++;
+			}
+			
+		}
+		
+		if (taskDetailInJson.has(KEY_END_TIME)) {
+			String endTime = taskDetailInJson.getString(KEY_END_TIME);
+			
+			try {
+				if (endTime != "") {
+					task.setEndDate(new Date(endTime));
+				}
+			} catch (InvalidDateException e) {
+				logger.log(Level.INFO, String.format(LOG_CORRUPTED_TASK_PROPERTY, e.getMessage()));
+				numOfCorruptedTaskProperties++;
+			}
+			
+		}
+		
+		if (taskDetailInJson.has(KEY_CATEGORY)) {
+			String categoryName = taskDetailInJson.getString(KEY_CATEGORY);
+			TaskManager taskManager = TaskManager.getInstance();
+			
+			if (categoryName != "") {
+			    ICategory category = taskManager.getCategory(categoryName);
+			    task.setCategory(category);
+			}
+		}
+			
+		if (taskDetailInJson.has(KEY_REPEAT_FREQUENCY)) {
+			String repeatFrequencyName = taskDetailInJson.getString(KEY_REPEAT_FREQUENCY);
+			
+			if (repeatFrequencyName != null &&
+				RepeatFrequency.isValidRepeatFrequencyType(repeatFrequencyName.trim().toUpperCase())) {
+				task.setRepeatFrequency(RepeatFrequency.valueOf(repeatFrequencyName.trim().toUpperCase()));
+			} else {
+				task.setRepeatFrequency(RepeatFrequency.NONE);
+			}
+		}
+		
+		if (taskDetailInJson.has(KEY_STATUS)) {
+		    String statusName = taskDetailInJson.getString(KEY_STATUS);
+		    TaskStatus taskStatus = null;
+		    if (statusName != null) {
+		        taskStatus = TaskStatus.valueOf(statusName);
+		    }
+		    
+		    if (taskStatus == null) {
+		        task.setStatus(TaskStatus.PENDING);
+		    } else {
+		        task.setStatus(taskStatus);
+		    }
+		}
+		
+		if (taskDetailInJson.has(KEY_PLACE)) {
+			String place = taskDetailInJson.getString(KEY_PLACE);
+			
+			if (place != "") {
+				task.setPlace(place);
+			}
+		}
+		
+		if (taskDetailInJson.has(KEY_NOTES)) {
+			String notes = taskDetailInJson.getString(KEY_NOTES);
+			
+			if (notes != null) {
+				task.setNotes(notes);
+			}
+		}
+	}
+	
+	private void resetCorruptedTaskPropertiesCounter() {
+		numOfCorruptedTaskProperties = 0;
+	}
+	
+	private void resetCorruptedJSONTaskObjectCounter() {
+		numOfCorruptedJsonTaskObjects = 0;
+	}
+	
+	private void resetCorruptedJSONCategoryObjectCounter() {
+		numOfCorruptedJsonCategoryObjects = 0;
+	}
+		
+	private JSONObject convertCategoryToJson(ICategory category) throws JSONException {
+		JSONObject categoryInJson = new JSONObject();
+		
+		if (category.getName() != null && !category.getName().equals("")) {
+			categoryInJson.put(KEY_CAT_NAME, category.getName());
+		} 
+		
+		if (category.getColor() != null) {
+			String colorInRGBA = Integer.toHexString(category.getColor().getRGB());
+			categoryInJson.put(KEY_CAT_COLOR, colorInRGBA.substring(2, colorInRGBA.length()));
+		}
+				
+		return categoryInJson;
+	}
+	
+	private ICategory convertJsonToCategory(JSONObject jsonObject) 
+			throws CorruptedJsonObjectException, JSONException {
+		if (hasNoCategoryName(jsonObject)) {
+			throw new CorruptedJsonObjectException();
+		}
+		
+		String categoryName = jsonObject.getString(KEY_CAT_NAME);
+		if (categoryName.equals(Category.getDefaultName())) {
+			return null;
+		}
+		
+		ICategory category = new Category();
+		category.setName(categoryName);
+			
+		Color categoryColor = extractCategoryColor(jsonObject);
+		category.setColor(categoryColor);
+		
+		return category;
+		
+	}
+	
+	private Color extractCategoryColor(JSONObject jsonObject) throws JSONException {
+		if (hasNoCategoryColor(jsonObject)) {
+			return Category.getDefaultColor();
+		} else {
+			String colorInHexString = jsonObject.getString(KEY_CAT_COLOR);
+			Color categoryColor;
+			try {
+				int colorInRGB = Integer.parseInt(colorInHexString, 16);
+				categoryColor = new Color(colorInRGB);
+			} catch (NumberFormatException e) {
+				categoryColor = Category.getDefaultColor();
+			}
+			
+			return categoryColor;
+		}
+	}
+
+	private boolean hasNoCategoryName(JSONObject jsonObject) {
+		return !jsonObject.has(KEY_CAT_NAME);
+	}
+	
+	private boolean hasNoCategoryColor(JSONObject jsonObject) {
+		return !jsonObject.has(KEY_CAT_COLOR);
+	}	
+}
+
+	// End of segment: list\src\list\Converter.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\DisplayCommand.java
+	 */
+
+package list;
+
+import list.model.ITask;
+
+public class DisplayCommand implements ICommand {
+    private static final String MESSAGE_DISPLAYING = "Displaying ...";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+    
+	private ITask task;
+
+	public DisplayCommand() { };
+	
+	public DisplayCommand(ITask task) {
+		this.task = task;
+	}
+    
+    public DisplayCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
+	
+	@Override
+	public String execute() throws CommandExecutionException {
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+        
+		ITask selectedTask = this.task;
+		
+		Controller.displayTaskDetail(selectedTask);
+		
+		return MESSAGE_DISPLAYING;
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; // cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\DisplayCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\IStorage.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
+import list.model.ICategory;
+import list.model.ITask;
+
+import org.json.JSONException;
+
+/**
+ * This class handles persistent storage of tasks (save and load).
+ * 
+ */
+interface IStorage {
+    
+    /**
+     * Loads a text file and creates a list of tasks.
+     * 
+     * @return List of tasks.
+     * @throws IOException 
+     * @throws JSONException 
+     */
+    List<ITask> loadTasksFromFile() throws IOException, JSONException;
+    
+    
+    /**
+     * Save tasks in the given list into a text file.
+     * 
+     * @param tasks list of tasks.
+     * @throws IOException 
+     */
+    void saveTasksToFile(List<ITask> tasks) throws IOException;
+    
+    /**
+     * Loads a text file and creates a list of categories
+     * 
+     * @return List of categories
+     * @throws IOException 
+     * @throws JSONException 
+     */
+    HashMap<String, ICategory> loadCategoriesFromFile() throws IOException, JSONException;
+    
+    /**
+     * Save categories in the given list into a text file
+     * 
+     * @param categories list of categories
+     * @throws IOException 
+     */
+    void saveCategoriesToFile(List<ICategory> categories) throws IOException;
+}
+
+	// End of segment: list\src\list\IStorage.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\TaskManager.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import list.model.Category;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+
+import org.json.JSONException;
+
+/**
+ * This is a Singleton class that keeps track of Tasks and Categories. Execution
+ * of commands is not handled by this class but by the individual command types.
+ * 
+ * This class modifies the user interface by the methods given in
+ * <code>IUserInterface</code>.
+ * 
+ */
+public class TaskManager {
+
+	private List<ITask> floatingTasks = new ArrayList<ITask>();
+	private List<ITask> currentTasks = new ArrayList<ITask>();
+	private List<ITask> overdueTasks = new ArrayList<ITask>();
+
+	private Map<String, ICategory> categories = new HashMap<String, ICategory>();
+	private List<ITask> tasks = new ArrayList<ITask>();
+	private Stack<ITask> deletedTasks = new Stack<ITask>();
+
+	private ReaderWriter readerWriter = new ReaderWriter();
+
+	private static TaskManager taskManagerInstance = null;
+
+	private TaskManager() {
+	}
+
+	static TaskManager getInstance() {
+		if (taskManagerInstance == null) {
+			taskManagerInstance = new TaskManager();
+		}
+
+		return taskManagerInstance;
+	}
+
+	// CATEGORY METHODS
+	/**
+	 * Creates a new category with the specified name in the input
+	 * 
+	 * @param categoryName
+	 * @return true if new category has successfully been added. false
+	 *         otherwise.
+	 */
+	private boolean addCategory(String categoryName) {
+		if (categoryName == null || categoryName.isEmpty()) {
+			return false;
+		}
+
+		ICategory category = new Category();
+		category.setName(categoryName);
+		categories.put(categoryName.trim().toLowerCase(), category);
+
+		return true;
+	}
+
+	boolean hasCategory(String categoryName) {
+        categoryName = categoryName.trim().toLowerCase();
+		return categories.containsKey(categoryName);
+	}
+
+	/**
+	 * Deletes the given category from the manager's category list.
+	 * 
+	 * @param category
+	 */
+	void deleteCategory(ICategory category) {
+		String categoryName = category.getName().trim().toLowerCase();
+		if (categories.containsKey(categoryName)) {
+			categories.remove(categoryName);
+		}
+	}
+	
+	void moveCategory(String oldName, String newName) {
+		if (categories.containsKey(oldName.trim().toLowerCase())) {
+			ICategory category = categories.get(oldName.trim().toLowerCase());
+			categories.remove(oldName.trim().toLowerCase());
+			categories.put(newName.trim().toLowerCase(), category);
+		}
+	}
+
+	/**
+	 * Accepts a string and returns a ICategory object with the same name as the
+	 * input. If the input is <code>null</code>, will return a default category
+	 * object.
+	 * 
+	 * @param categoryName
+	 * @return
+	 */
+	ICategory getCategory(String categoryName) {
+		// return a default category if undefined by user
+		if (categoryName == null || categoryName.isEmpty()) {
+			return Category.getDefaultCategory();
+		}
+
+		if (!categories.containsKey(categoryName.trim().toLowerCase())) {
+			addCategory(categoryName);
+		}
+
+		return categories.get(categoryName.trim().toLowerCase());
+	}
+
+	List<ICategory> getAllCategories() {
+		List<ICategory> categoryList = new ArrayList<ICategory>();
+		for (ICategory category : this.categories.values()) {
+			if (!category.getName().equals("")) {
+				categoryList.add(category);
+			}
+		}
+		Collections.sort(categoryList);
+		return categoryList;
+	}
+
+	void addToFloatingTasks(ITask task) {
+		floatingTasks.add(task);
+	}
+
+	void addToCurrentTasks(ITask task) {
+		currentTasks.add(task);
+	}
+
+	void addToOverdueTasks(ITask task) {
+		overdueTasks.add(task);
+	}
+
+	void removeFromFloatingTasks(ITask task) {
+		floatingTasks.remove(task);
+	}
+
+	void removeFromCurrentTasks(ITask task) {
+		floatingTasks.remove(task);
+	}
+
+	void removeFromOverdueTasks(ITask task) {
+		floatingTasks.remove(task);
+	}
+
+	// TASK GETTERS
+	/**
+	 * Gets all tasks in the TaskManager. The list of all tasks returned by
+	 * method will be used for storage purposes, and not displaying purposes,
+	 * hence, there is no need to keep the list of all tasks sorted
+	 * 
+	 * @return list of all tasks in TaskManager
+	 */
+	List<ITask> getAllTasks() {
+		int sizeAllTasks = floatingTasks.size() + currentTasks.size()
+				+ overdueTasks.size();
+
+		List<ITask> allTasks = new ArrayList<ITask>(sizeAllTasks);
+		for (ITask task : floatingTasks) {
+			allTasks.add(task);
+		}
+		for (ITask task : currentTasks) {
+			allTasks.add(task);
+		}
+		for (ITask task : overdueTasks) {
+			allTasks.add(task);
+		}
+
+		return allTasks;
+	}
+
+	List<ITask> getFloatingTasks() {
+		Collections.sort(this.floatingTasks);
+
+		return this.floatingTasks;
+	}
+
+	List<ITask> getCurrentTasks() {
+		Collections.sort(this.currentTasks);
+
+		return this.currentTasks;
+	}
+
+	List<ITask> getOverdueTasks() {
+		Collections.sort(this.overdueTasks);
+
+		return this.overdueTasks;
+	}
+	
+	void moveTasksToTodayMidnight(List<ITask> tasks) {
+	    for (ITask task: tasks) {
+	        task.getList().remove(task);
+	        task.setEndDate(Date.getTodayMidnight());
+	        addTask(task);
+	    }
+	}
+
+	// METHODS FOR COMMANDS EXECUTION
+	void addTask(ITask task) {
+		if (task.hasDeadline()) {
+			if (task.isOverdue()) {
+				overdueTasks.add(task);
+				task.setList(overdueTasks);
+				Collections.sort(overdueTasks);
+			} else {
+				currentTasks.add(task);
+				task.setList(currentTasks);
+				Collections.sort(currentTasks);
+			}
+		} else {
+			floatingTasks.add(task);
+			task.setList(floatingTasks);
+			Collections.sort(floatingTasks);
+		}
+	}
+
+	void markTaskAsDone(ITask task) {
+		task.setStatus(TaskStatus.DONE);
+	}
+
+	void unmarkTask(ITask task) {
+		task.setStatus(TaskStatus.PENDING);
+	}
+
+	@Deprecated
+	ITask getTask(Integer taskNumberShownOnScreen) {
+		return tasks.get(getTaskId(taskNumberShownOnScreen));
+	}
+
+	void deleteTask(ITask task) {
+		if (task.hasDeadline()) {
+			if (task.isOverdue()) {
+				overdueTasks.remove(task);
+			} else {
+				currentTasks.remove(task);
+			}
+		} else {
+			floatingTasks.remove(task);
+		}
+
+		if (hasCategory(task)) {
+			ICategory category = task.getCategory();
+			category.getList().remove(task);
+		}
+
+		deletedTasks.push(task);
+	}
+
+	void undeleteTask(ITask task) {
+		if (deletedTasks.contains(task)) {
+			addTask(task);
+			deletedTasks.remove(task);
+		}
+	}
+
+	/**
+	 * Clears all references to all tasks. Danger: not undo-able. Used for
+	 * testing.
+	 */
+	void clearTasks() {
+		floatingTasks.clear();
+		currentTasks.clear();
+		overdueTasks.clear();
+		deletedTasks.clear();
+		
+		for (ICategory category: this.categories.values()) {
+			category.getList().clear();
+		}
+	}
+
+	// SAVING AND LOADING
+	void loadData() throws IOException, JSONException {
+		loadCategories();
+		loadTasks();
+	}
+
+	void saveData() throws IOException {
+		saveCategories();
+		saveTasks();
+	}
+
+	private void loadCategories() throws IOException, JSONException {
+		HashMap<String, ICategory> categories = readerWriter
+				.loadCategoriesFromFile();
+		this.categories = categories;
+	}
+
+	private void saveCategories() throws IOException {
+		readerWriter.saveCategoriesToFile(getAllCategories());
+	}
+
+	private void loadTasks() throws IOException, JSONException {
+		List<ITask> tasks = readerWriter.loadTasksFromFile();
+		for (ITask task : tasks) {
+			this.addTask(task);
+		}
+	}
+
+	private void saveTasks() throws IOException {
+		readerWriter.saveTasksToFile(this.getAllTasks());
+	}
+
+	@Deprecated
+	int getNumberOfTasks() {
+		return tasks.size();
+	}
+
+	boolean hasTask(ITask task) {
+		return tasks.contains(task) || floatingTasks.contains(task);
+	}
+
+	private static boolean hasCategory(ITask task) {
+		return (task.getCategory() != null
+				&& task.getCategory().getName() != null && !task.getCategory()
+				.getName().isEmpty());
+	}
+
+	/**
+	 * Converts a 1-based id to 0-based id as represented in the array.
+	 * 
+	 * @param taskNumberShownOnScreen
+	 *            1-based index
+	 * @return 0-based index
+	 */
+	private static int getTaskId(Integer taskNumberShownOnScreen) {
+		return taskNumberShownOnScreen - 1;
+	}
+
+    public boolean hasPendingTodayTasks() {
+        Date today = Date.getTodayMidnight();
+        for (ITask task: this.currentTasks) {
+            if (task.getStatus() == TaskStatus.PENDING && task.getTimelineDate().equalsDateOnly(today)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+	// End of segment: list\src\list\TaskManager.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\AddCommandTest.java
+	 */
+
+
+public class AddCommandTest {
+
+	private TaskManager taskManager = TaskManager.getInstance();
+
+	@Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+	
+    @Before
+	public void initializeTest() throws Exception {
+		taskManager.clearTasks();
+	}
+	
+	@Test
+	public void shouldIncreaseNumberOfTasksByOne() throws Exception {
+		
+		AddCommand addCommand = new AddCommand();
+		addCommand.setTitle("Testing").setEndDate(Date.getTodayMidnight());
+		
+		addCommand.execute();
+		
+		assertEquals(1, taskManager.getCurrentTasks().size());
+	}
+
+	@Test
+	public void shouldAddTheCorrectTask() throws Exception {
+		int initialNumberOfTasks = taskManager.getNumberOfTasks();
+		
+		String title = "Should add the correct task.";
+		Date startDate = Date.tryParse("today 7am");
+		Date endDate = Date.getTodayMidnight();
+		RepeatFrequency repeatFrequency = RepeatFrequency.DAILY;
+		String place = "The school of computing";
+		ICategory category = new Category().setName("Software Engineering");
+		String notes = "A task must be added with complete set of properties.";
+		
+		AddCommand addCommand = new AddCommand();
+		addCommand.setTitle(title)
+		    .setStartDate(startDate)
+		    .setEndDate(endDate)
+		    .setRepeatFrequency(repeatFrequency)
+		    .setPlace(place)
+		    .setCategory(category)
+		    .setNotes(notes);
+		addCommand.execute();
+		
+		ITask newlyAddedTask = taskManager.getCurrentTasks().get(0);
+		
+		assertEquals(title, newlyAddedTask.getTitle());
+		assertEquals(startDate, newlyAddedTask.getStartDate());
+		assertEquals(endDate, newlyAddedTask.getEndDate());
+		assertEquals(repeatFrequency, newlyAddedTask.getRepeatFrequency());
+		assertEquals(place, newlyAddedTask.getPlace());
+		assertEquals(category, newlyAddedTask.getCategory());
+		assertEquals(notes, newlyAddedTask.getNotes());
+	}	
+	
+	@Test
+	public void shouldMaintainListOfTasksSortedAfterAddingTasks() throws Exception {
+	    Date firstDate = new Date(2, 1, 2014);
+        Date secondDate = new Date(1, 1, 2014);
+        Date thirdDate = new Date(3, 1, 2014);
+
+        AddCommand firstAddCommand = new AddCommand().setTitle("Task 1").setEndDate(firstDate);
+        AddCommand secondAddCommand = new AddCommand().setTitle("Task 2").setEndDate(secondDate);
+        AddCommand thirdAddCommand = new AddCommand().setTitle("Task 3").setEndDate(thirdDate);
+        firstAddCommand.execute();
+        secondAddCommand.execute();
+        thirdAddCommand.execute();
+
+        assertEquals(true, Utilities.isSorted(taskManager.getAllTasks()));
+	}
+}
+
+	// End of segment: list\test\list\AddCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\ConverterTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.assertEquals;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import list.CommandBuilder.RepeatFrequency;
+import list.Converter.CorruptedJsonObjectException;
+import list.model.Category;
+import list.model.Date;
+import list.model.Date.InvalidDateException;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.model.Task;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * This class is used to test the functionality of Converter Class
+ * 
+	// End of segment: list\test\list\ConverterTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\ConverterTest.java
+	 */
+
+ *
+ */
+public class ConverterTest {
+
+	// String used as a key in JSONObject for Task
+	private static final String KEY_TITLE = "title";
+	private static final String KEY_DETAILS = "details";
+	private static final String KEY_START_TIME = "start_time";
+	private static final String KEY_END_TIME = "end_time";
+	private static final String KEY_REPEAT_FREQUENCY = "repeat_frequency";
+	private static final String KEY_PLACE = "place";
+	private static final String KEY_CATEGORY = "category";
+	private static final String KEY_NOTES = "notes";
+	private static final String KEY_STATUS = "status";
+	private static final String KEY_NAME = "name";
+	private static final String KEY_COLOR = "color";
+	
+	// Tasks Details
+	private static final String TASK_1_NOTES = "This is task 1 under test";
+	private static final String TASK_1_TITLE = "Task 1";
+	private static final String TASK_2_CATEGORY = "school";
+	private static final String TASK_2_TITLE = "Task 2";
+	private static final String TASK_3_TITLE = "Task 3";	
+		
+	// Category Details
+	private static final String CATEGORY_1_NAME = "School";
+	private static final Color CATEGORY_1_COLOR = Color.BLUE;
+	private static final String CATEGORY_2_NAME = "Work";
+	
+	private Converter converter;
+	private List<ITask> tasks;
+	private ITask taskOne;
+	private ITask taskTwo;
+	private ITask taskThree;
+	private List<ICategory> categories;
+	private ICategory categoryOne;
+	private ICategory categoryTwo;
+	
+	@Before
+	public void initializeTest() throws Exception {
+		converter = new Converter();
+		tasks = new ArrayList<ITask>();
+		categories = new ArrayList<ICategory>();
+		prepareTask();
+		prepareCategory();
+	}
+	
+	@Test
+	public void shouldConvertListOfTasksToCorrectJsonObject() throws Exception {	
+		JSONArray tasksListInJson = converter.convertTasksListToJson(tasks);
+		
+		JSONObject firstTaskInJson = tasksListInJson.getJSONObject(0);
+		JSONObject firstTaskDetail = firstTaskInJson.getJSONObject(KEY_DETAILS);
+		
+		JSONObject secondTaskInJson = tasksListInJson.getJSONObject(1);
+		JSONObject secondTaskDetail = secondTaskInJson.getJSONObject(KEY_DETAILS);
+		
+		JSONObject thirdTaskInJson = tasksListInJson.getJSONObject(2);
+		JSONObject thirdTaskDetail = thirdTaskInJson.getJSONObject(KEY_DETAILS);
+		
+		// Checking the first task
+		assertEquals(TASK_1_TITLE, firstTaskInJson.get(KEY_TITLE));
+		assertEquals(new Date(1, 1, 2014).toString(), firstTaskDetail.get(KEY_END_TIME));
+		assertEquals(TASK_1_NOTES, firstTaskDetail.get(KEY_NOTES));
+		assertEquals("", firstTaskDetail.get(KEY_CATEGORY));
+		assertEquals("NONE", firstTaskDetail.get(KEY_REPEAT_FREQUENCY));
+		assertEquals("", firstTaskDetail.get(KEY_START_TIME));
+		assertEquals("", firstTaskDetail.get(KEY_PLACE));
+		assertEquals("PENDING", firstTaskDetail.get(KEY_STATUS));
+		
+		// Checking the second task
+		assertEquals(TASK_2_TITLE, secondTaskInJson.get(KEY_TITLE));
+		assertEquals(new Date(2, 1, 2014).toString(), secondTaskDetail.get(KEY_START_TIME));
+		assertEquals(TASK_2_CATEGORY, secondTaskDetail.get(KEY_CATEGORY));
+		assertEquals("DAILY", secondTaskDetail.get(KEY_REPEAT_FREQUENCY));
+		assertEquals("", secondTaskDetail.get(KEY_END_TIME));
+		assertEquals("", secondTaskDetail.get(KEY_NOTES));
+		assertEquals("", secondTaskDetail.get(KEY_PLACE));
+		assertEquals("PENDING", secondTaskDetail.get(KEY_STATUS));
+		
+		// Checking the third task
+		assertEquals(true, thirdTaskInJson.has(KEY_TITLE));
+		assertEquals(TASK_3_TITLE, thirdTaskInJson.get(KEY_TITLE));
+		assertEquals(true, thirdTaskInJson.has(KEY_DETAILS));
+		assertEquals("DONE", thirdTaskDetail.get(KEY_STATUS));
+	}
+	
+	@Test
+	public void shouldConvertJsonArrayToTaskLists() throws Exception {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject jsonTaskOne = new JSONObject();
+		JSONObject jsonTaskDetailOne = new JSONObject();
+		jsonTaskDetailOne.put(KEY_END_TIME, new Date(1, 1, 2014).toString());
+		jsonTaskDetailOne.put(KEY_NOTES, TASK_1_NOTES);
+		jsonTaskOne.put(KEY_TITLE, TASK_1_TITLE);
+		jsonTaskOne.put(KEY_DETAILS, jsonTaskDetailOne);
+		
+		JSONObject jsonTaskTwo = new JSONObject();
+		JSONObject jsonTaskDetailTwo = new JSONObject();
+		jsonTaskDetailTwo.put(KEY_CATEGORY, TASK_2_CATEGORY);
+		jsonTaskTwo.put(KEY_TITLE, TASK_2_TITLE);
+		jsonTaskTwo.put(KEY_DETAILS, jsonTaskDetailTwo);
+		
+		jsonArray.put(jsonTaskOne);
+		jsonArray.put(jsonTaskTwo);
+		
+		List<ITask> tasks = converter.convertJsonToTasksList(jsonArray);
+		
+		ITask expectedTaskOne = new Task();
+		expectedTaskOne.setTitle(TASK_1_TITLE);
+		expectedTaskOne.setEndDate(new Date(1, 1, 2014));
+		expectedTaskOne.setNotes(TASK_1_NOTES);
+		
+		ITask expectedTaskTwo = new Task();
+		expectedTaskTwo.setTitle(TASK_2_TITLE);
+		Category category = new Category();
+		category.setName(TASK_2_CATEGORY);
+		expectedTaskTwo.setCategory(category);
+
+		assertEquals(expectedTaskOne.getTitle(), tasks.get(0).getTitle());
+		assertEquals(expectedTaskOne.getStartDate(), tasks.get(0).getStartDate());
+		assertEquals(expectedTaskOne.getEndDate(), tasks.get(0).getEndDate());
+		assertEquals(expectedTaskOne.getRepeatFrequency(), tasks.get(0).getRepeatFrequency());
+		assertEquals(expectedTaskOne.getPlace(), tasks.get(0).getPlace());
+		assertEquals(expectedTaskOne.getCategory(), tasks.get(0).getCategory());
+		assertEquals(expectedTaskOne.getNotes(), tasks.get(0).getNotes());
+		
+		assertEquals(expectedTaskTwo.getTitle(), tasks.get(1).getTitle());
+		assertEquals(expectedTaskTwo.getStartDate(), tasks.get(1).getStartDate());
+		assertEquals(expectedTaskTwo.getEndDate(), tasks.get(1).getEndDate());
+		assertEquals(expectedTaskTwo.getRepeatFrequency(), tasks.get(1).getRepeatFrequency());
+		assertEquals(expectedTaskTwo.getPlace(), tasks.get(1).getPlace());
+		assertEquals(expectedTaskTwo.getCategory().getName(), tasks.get(1).getCategory().getName());
+		assertEquals(expectedTaskTwo.getNotes(), tasks.get(1).getNotes());
+	}
+	
+	@Test
+	public void shouldConvertJsonObjectToTask() throws Exception {
+		JSONObject originalTaskInJson = new JSONObject();
+		JSONObject originalTaskDetail = new JSONObject();
+		
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 1, 2014).toString());
+		originalTaskDetail.put(KEY_NOTES, TASK_1_NOTES);
+		originalTaskInJson.put(KEY_TITLE, TASK_1_TITLE);
+		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
+				
+		ITask taskFromJson = converter.convertJsonToTask(originalTaskInJson);
+				
+		assertEquals(taskOne.getTitle(), taskFromJson.getTitle());
+		assertEquals(taskOne.getStartDate(), taskFromJson.getStartDate());
+		assertEquals(taskOne.getEndDate(), taskFromJson.getEndDate());
+		assertEquals(taskOne.getRepeatFrequency(), taskFromJson.getRepeatFrequency());
+		assertEquals(taskOne.getPlace(), taskFromJson.getPlace());
+		assertEquals(taskOne.getCategory(), taskFromJson.getCategory());
+		assertEquals(taskOne.getNotes(), taskFromJson.getNotes());
+	}
+	
+	@Test(expected=CorruptedJsonObjectException.class)
+	public void shouldNotConvertJsonObjectWithoutTitleToTask() throws Exception {
+		
+		JSONObject originalTaskInJson = new JSONObject();
+		JSONObject originalTaskDetail = new JSONObject();
+		
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 1, 2014));
+		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
+		
+		converter.convertJsonToTask(originalTaskInJson);
+	}
+	
+	@Test(expected=InvalidDateException.class)
+	public void shouldNotConvertJsonObjectWithInvalidDate() throws Exception {
+		
+		JSONObject originalTaskInJson = new JSONObject();
+		JSONObject originalTaskDetail = new JSONObject();
+		
+		originalTaskDetail.put(KEY_END_TIME, new Date(1, 13, 2014));
+		originalTaskInJson.put(KEY_DETAILS, originalTaskDetail);
+		originalTaskInJson.put(KEY_TITLE, TASK_1_TITLE);
+		
+		converter.convertJsonToTask(originalTaskInJson);
+	}
+	
+	@Test
+	public void shouldConvertCategoryListToJSON() throws Exception {
+		JSONArray categoriesInJson = converter.convertCategoryListToJson(categories);
+		
+		JSONObject firstCategory = categoriesInJson.getJSONObject(0);
+		JSONObject secondCategory = categoriesInJson.getJSONObject(1);
+		
+		// Checking the first category
+		assertEquals(CATEGORY_1_NAME, firstCategory.get(KEY_NAME));
+		assertEquals(Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8), firstCategory.get(KEY_COLOR));
+		
+		// Checking the second category
+		assertEquals(CATEGORY_2_NAME, secondCategory.get(KEY_NAME));
+		assertEquals(Integer.toHexString(Color.WHITE.getRGB()).substring(2,8), secondCategory.get(KEY_COLOR));
+	}
+	
+	@Test
+	public void shouldConvertJSONArrayToCategoryList() throws Exception {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject firstCategoryInJson = new JSONObject();
+		firstCategoryInJson.put(KEY_NAME, CATEGORY_1_NAME);
+		firstCategoryInJson.put(KEY_COLOR, Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8));
+		
+		JSONObject secondCategoryInJson = new JSONObject();
+		secondCategoryInJson.put(KEY_NAME, CATEGORY_2_NAME);
+		
+		jsonArray.put(firstCategoryInJson);
+		jsonArray.put(secondCategoryInJson);
+		
+		ICategory expectedCategoryOne = new Category();
+		expectedCategoryOne.setName(CATEGORY_1_NAME).setColor(CATEGORY_1_COLOR);
+		ICategory expectedCategoryTwo = new Category();
+		expectedCategoryTwo.setName(CATEGORY_2_NAME);
+		
+		HashMap<String, ICategory> categories = converter.convertJsonToCategoryList(jsonArray);
+		
+		assertEquals(true, categories.containsKey(expectedCategoryOne.getName().toLowerCase()));
+		assertEquals(CATEGORY_1_NAME, categories.get(expectedCategoryOne.getName().toLowerCase()).getName());
+		assertEquals(CATEGORY_1_COLOR, categories.get(expectedCategoryOne.getName().toLowerCase()).getColor());
+		assertEquals(true, categories.containsKey(expectedCategoryTwo.getName().toLowerCase()));
+		assertEquals(CATEGORY_2_NAME, categories.get(expectedCategoryTwo.getName().toLowerCase()).getName());
+		assertEquals(Color.WHITE, categories.get(expectedCategoryTwo.getName().toLowerCase()).getColor());	
+	}
+	
+	@Test
+	public void shouldNotConvertJsonCategoryObjectWithoutName() throws Exception {
+		JSONArray jsonArray = new JSONArray();
+		
+		JSONObject firstCategoryInJson = new JSONObject();
+		firstCategoryInJson.put(KEY_COLOR, Integer.toHexString(CATEGORY_1_COLOR.getRGB()).substring(2,8));
+		
+		jsonArray.put(firstCategoryInJson);
+		
+		converter.convertJsonToCategoryList(jsonArray);
+		
+		assertEquals(1, converter.getNumOfCorruptedJsonCategoryObjects());	
+	}
+	
+	private void prepareTask() throws Exception {
+		taskOne = new Task();
+		taskOne.setTitle(TASK_1_TITLE)
+			.setEndDate(new Date(1, 1, 2014))
+			.setNotes(TASK_1_NOTES);
+		taskTwo = new Task();
+		taskTwo.setTitle(TASK_2_TITLE)
+			.setStartDate(new Date(2, 1, 2014))
+			.setCategory(new Category().setName(TASK_2_CATEGORY))
+			.setRepeatFrequency(RepeatFrequency.DAILY);	
+		taskThree = new Task();
+		taskThree.setTitle(TASK_3_TITLE);
+		taskThree.setStatus(TaskStatus.DONE);
+		
+		tasks.add(taskOne);
+		tasks.add(taskTwo);	
+		tasks.add(taskThree);
+	}
+	
+	private void prepareCategory() {
+		categoryOne = new Category();
+		categoryOne.setName(CATEGORY_1_NAME);
+		categoryOne.setColor(CATEGORY_1_COLOR);
+		
+		categoryTwo = new Category();
+		categoryTwo.setName(CATEGORY_2_NAME);
+		
+		categories.add(categoryOne);
+		categories.add(categoryTwo);
+	}
+	
+}
+
+
+	// End of segment: list\test\list\ConverterTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\DisplayCommandTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.assertEquals;
+import javafx.application.Application;
+import list.AddCommand;
+import list.DisplayCommand;
+import list.TaskManager;
+import list.model.Date;
+import list.model.ITask;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class DisplayCommandTest {
+	
+	private static final String TITLE = "Test Should Get Correct Task";
+    private TaskManager taskManager = TaskManager.getInstance();
+
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+	
+	@Before
+	public void initializeTest() throws Exception {
+		taskManager.clearTasks();
+
+		AddCommand addCommand = new AddCommand().setTitle(TITLE).setEndDate(new Date("19-10-2014"));
+		addCommand.execute();
+	}
+	
+	@Test
+	@Ignore
+	public void test() throws Exception {
+	    ITask task = taskManager.getAllTasks().get(0);
+	    DisplayCommand dc = new DisplayCommand(task);
+	    dc.execute();
+	    
+	    assertEquals(task, Controller.getLastDisplayedTaskDetail());
+	}
+	
+}
+
+	// End of segment: list\test\list\DisplayCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\EditCommandTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.assertEquals;
+import javafx.application.Application;
+import list.AddCommand;
+import list.EditCommand;
+import list.TaskManager;
+import list.CommandBuilder.RepeatFrequency;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.util.Utilities;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+/**
+ * This class is used to test EditCommand class
+ * 
+	// End of segment: list\test\list\EditCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\UnmarkCommandTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.*;
+import javafx.application.Application;
+import list.model.ITask;
+import list.model.Task;
+import list.model.ITask.TaskStatus;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class UnmarkCommandTest {
+
+	private TaskManager taskManager = TaskManager.getInstance();
+	
+	@Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+    
+	@Before
+	public void initializeTest() {
+		taskManager.clearTasks();
+		
+		ITask taskOne = new Task();
+		taskOne.setTitle("task 1");
+		taskOne.setStatus(TaskStatus.DONE);
+		
+		ITask taskTwo = new Task();
+		taskTwo.setTitle("task 2");
+		taskTwo.setStatus(TaskStatus.DONE);
+		
+		taskManager.addTask(taskOne);
+		taskManager.addTask(taskTwo);
+		
+		Controller.displayTasksBasedOnDisplayMode("floating");
+	}
+	
+	@Test
+	public void shouldChangeTaskStatusToPending() throws Exception {
+		int taskNumber = 1;
+		ITask taskToUnmark = Controller.getTaskWithNumber(taskNumber);
+		UnmarkCommand unmarkCommand = new UnmarkCommand(taskToUnmark);
+		
+		unmarkCommand.execute();
+				
+		assertEquals(TaskStatus.PENDING, taskToUnmark.getStatus());
+	}
+	
+	@Test
+	public void shouldReturnSuccessMessageUponSuccessfulOperation() 
+			throws Exception {
+		int taskNumber = 1;
+		UnmarkCommand unmarkCommand = new UnmarkCommand(Controller.getTaskWithNumber(taskNumber));
+		
+		String reply = unmarkCommand.execute();
+				
+		assertEquals("Task is unmarked successfully.", reply);
+	}
+	
+}
+
+	// End of segment: list\test\list\UnmarkCommandTest.java
+
+
+
+
+

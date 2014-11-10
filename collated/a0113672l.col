@@ -1,0 +1,3357 @@
+//@author: a0113672l
+
+
+
+	/**
+	 * origin: list\src\list\AddCategoryCommand.java
+	 */
+
+package list;
+
+import java.awt.Color;
+import java.io.IOException;
+
+import list.model.ICategory;
+
+public class AddCategoryCommand implements ICommand {
+    private static final String MESSAGE_SUCCESS = "Successfully created the category %s.";
+    private static final String ERROR_CATEGORY_ALREADY_EXISTS = "Category with title %s already exists.";
+    private static final String ERROR_CATEGORY_TITLE_MUST_NOT_BE_EMPTY = "Category title must not be empty.";
+    
+    private String categoryName;
+    private Color color;
+    private ICategory category;
+    
+    private TaskManager taskManager = TaskManager.getInstance();
+    
+    public AddCategoryCommand() {
+        
+    }
+    
+    public AddCategoryCommand(String categoryName, Color color) {
+        setCategoryName(categoryName);
+        setColor(color);
+    }
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        if (categoryName == null) {
+            throw new CommandExecutionException(ERROR_CATEGORY_TITLE_MUST_NOT_BE_EMPTY);
+        }
+        if (taskManager.hasCategory(categoryName)) {
+            throw new CommandExecutionException(String.format(ERROR_CATEGORY_ALREADY_EXISTS, categoryName));
+        }
+        category = taskManager.getCategory(categoryName);
+        category.setColor(color);
+        Controller.displayCategories();
+        taskManager.saveData();
+        return String.format(MESSAGE_SUCCESS, categoryName);
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        DeleteCategoryCommand invCommand = new DeleteCategoryCommand();
+        invCommand.setCategory(category);
+        return invCommand;
+    }
+    
+    public AddCategoryCommand setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+        return this;
+    }
+    
+    public AddCategoryCommand setColor(Color color) {
+        this.color = color;
+        return this;
+    }
+
+}
+
+	// End of segment: list\src\list\AddCategoryCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\AddCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.CommandBuilder.RepeatFrequency;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.model.Task;
+import list.util.Constants;
+
+/**
+ * This class handles the execution of 'add' command, which adds a new task into the
+ * application.
+ * 
+	// End of segment: list\src\list\AddCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\AddCommand.java
+	 */
+
+	 */
+    @Override
+    public ICommand getInverseCommand() {
+        assert(this.task != null);
+        DeleteCommand deleteCommand = new DeleteCommand(this.task);
+        return deleteCommand;
+    }
+}
+
+	// End of segment: list\src\list\AddCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\CloseCommand.java
+	 */
+
+package list;
+
+import javafx.application.Platform;
+
+public class CloseCommand implements ICommand {
+	private final String MESSAGE_EXIT = "Program is closing...";
+	
+	@Override
+	public String execute() {
+		Platform.exit();
+	    return MESSAGE_EXIT;
+	}
+	
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\CloseCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\CommandBuilder.java
+	 */
+
+package list;
+
+import java.awt.Color;
+
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+
+/**
+ * A builder class for generating various command objects
+ * which implements ICommand. This class should only be used by 
+ * Parser.
+ * 
+ */
+public class CommandBuilder {
+	private CommandType commandType = null;
+	private String title = null;
+	private Date startDate = null;
+	private Date endTime = null;
+	private RepeatFrequency repeatFrequency = null;
+	private String place = null;
+	private ICategory category = null;
+	private String notes = null;
+	private TaskStatus status = null;
+	private ITask task = null;
+	private Color color = null;
+	private String selectedCategoryName = null;
+    private String keyword;
+	
+	@SuppressWarnings("serial")
+    class CommandTypeNotSetException extends Exception { };
+			
+	public static enum RepeatFrequency {
+		DAILY, WEEKLY, MONTHLY, NONE;
+	
+		static boolean isValidRepeatFrequencyType(String repeatFrequency) {
+			try {
+				valueOf(repeatFrequency.trim().toUpperCase());
+				return true;
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
+		}
+	}
+	
+	static enum CommandType {
+		ADD, EDIT, DELETE, DISPLAY, MARK, CLOSE, UNMARK,
+		UNDO, REDO, PREV, NEXT, HELP, SEARCH, HOME,
+		CATEGORY_ADD, CATEGORY_EDIT, CATEGORY_DELETE, CATEGORY_DISPLAY,
+		TESTCONG
+	}
+	
+	CommandBuilder setCommandType(CommandType commandType) {
+		this.commandType = commandType;
+		return this;
+	}
+	
+	CommandBuilder setTitle(String title) {
+	    this.title = title;
+		return this;
+	}
+	
+	CommandBuilder setStartDate(Date startDate) {
+	    this.startDate = startDate;
+		return this;
+	}
+	
+	CommandBuilder setEndDate(Date endTime) {
+	    this.endTime = endTime;
+		return this;
+	}
+
+	CommandBuilder setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    this.repeatFrequency = repeatFrequency;
+		return this;
+	}
+
+	CommandBuilder setPlace(String place) {
+	    this.place = place;
+		return this;
+	}
+
+	CommandBuilder setCategory(ICategory category) {
+	    this.category = category;
+		return this;
+	}
+
+	CommandBuilder setNotes(String notes) {
+	    this.notes = notes;
+		return this;
+	}
+	
+	CommandBuilder setStatus(TaskStatus status) {
+		this.status = status;
+		return this;
+	}
+	
+	CommandBuilder setObjectNumber(Integer taskNumber) {
+	    if (taskNumber != null) {
+	        this.task = Controller.getTaskWithNumber(taskNumber);
+	    }
+	    return this;
+	}
+	
+	CommandBuilder setColor(Color color) {
+	    this.color = color;
+	    return this;
+	}
+
+	CommandBuilder setSelectedCategory(String selectedCategory) {
+	    this.selectedCategoryName = selectedCategory;
+	    return this;
+	}
+	
+	CommandBuilder setKeyword(String keyword) {
+	    this.keyword = keyword;
+	    return this;
+	}
+	
+	/**
+	 * This method uses the given information to construct
+	 * the corresponding command object.
+	 * 
+	 * @return a command object implementing ICommand.
+	 */
+	ICommand getCommandObject() throws CommandTypeNotSetException {
+		if (commandType == null) {
+			throw new CommandTypeNotSetException();
+		}
+		ICommand command;
+		switch (commandType) {
+			case ADD:
+			    command = new AddCommand(title, startDate, endTime,
+			            repeatFrequency, place, category, notes);
+			    break;
+			case EDIT:
+			    command = new EditCommand(task, title, startDate, endTime,
+			            repeatFrequency, place, category, notes, status);
+			    break;
+			case DISPLAY:
+				command = new DisplayCommand(task);
+				break;
+			case DELETE:
+				command = new DeleteCommand(task);
+				break;
+			case CLOSE:
+				command = new CloseCommand();
+				break;
+			case MARK:
+				command = new MarkCommand(task);
+				break;
+			case UNMARK:
+			    command = new UnmarkCommand(task);
+			    break;
+			case UNDO:
+			    command = new UndoCommand();
+			    break;
+			case REDO:
+			    command = new RedoCommand();
+			    break;
+			case PREV:
+			    command = new PrevCommand();
+			    break;
+			case NEXT:
+			    command = new NextCommand();
+		        break;
+			case HELP:
+			    command = new HelpCommand();
+			    break;
+			case SEARCH:
+			    command = new SearchCommand(keyword);
+			    break;
+			case HOME:
+			    command = new HomeCommand();
+			    break;
+			case CATEGORY_ADD:
+			    command = new AddCategoryCommand(title, color);
+                break;
+			case CATEGORY_EDIT:
+			    command = new EditCategoryCommand(selectedCategoryName, title, color);
+                break;
+			case CATEGORY_DELETE:
+			    command = new DeleteCategoryCommand(selectedCategoryName);
+			    break;
+			case CATEGORY_DISPLAY:
+                command = new DisplayCategoryCommand(selectedCategoryName);
+                break;
+			case TESTCONG:
+				command = new TestCongCommand();
+				break;
+            default:
+			    throw new CommandTypeNotSetException();    
+		}
+		return command;
+	}
+	
+}
+
+	// End of segment: list\src\list\CommandBuilder.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\CommandParser.java
+	 */
+
+package list;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.awt.Color;
+
+import list.CommandBuilder.CommandType;
+import list.CommandBuilder.CommandTypeNotSetException;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask.TaskStatus;
+import list.util.Suggestions;
+
+public class CommandParser implements IParser {
+    
+    private static final String MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY = "End time must be less than 24 hours after start time.";
+	private static final String MESSAGE_INVALID_TASK_NUMBER = "Please enter a valid task number.";
+	private static final String ERROR_END_DATE_BEFORE_START_DATE = "End date cannot be earlier than start date.";
+    private static final String ERROR_COMMAND_TYPE_NOT_SPECIFIED = "Error: invalid command type.";
+    private static final String ERROR_CANNOT_PARSE_START_DATE = "Error: unable to parse start date.";
+    private static final String ERROR_END_DATE_NOT_SPECIFIED = "Error: if start date is specified, end date must also be specified.";
+    private static final String ERROR_CANNOT_PARSE_END_DATE = "Error: unable to parse end date.";
+    private static final String ERROR_AMBIGUOUS_COMMAND_TYPE = "Error: ambiguous command type.";
+    private static final String ERROR_PARAMETER_CONFLICT = "The parameter %s is specified multiple times.";
+    
+    private static final String MARKER_COLOR = "-c";
+    //private static final String MARKER_REPEAT = "-r";
+    private static final String MARKER_CATEGORY = "-c";
+    private static final String MARKER_PLACE = "-p";
+    private static final String MARKER_NOTES = "-n";
+    private static final String MARKER_END_DATE = "-d";
+    private static final String MARKER_START_DATE = "-s";
+    private static final String MARKER_TITLE = "-t";
+    private static final String MARKER_STATUS = "-status";
+    
+    private static final String REGEX_SPLITTER = "\\s+";
+
+    private static enum ParseMode {
+        TASK, CATEGORY
+    }
+    private static final List<String> PARAMETER_MARKERS = Arrays.asList(
+        MARKER_COLOR, MARKER_CATEGORY, MARKER_PLACE, MARKER_NOTES,
+        MARKER_END_DATE, MARKER_START_DATE, MARKER_TITLE, MARKER_STATUS
+    );
+    //The list of expectations to be shown to user
+    private static final Map<String, String> EXPECTATIONS_TASK;
+    static {
+        EXPECTATIONS_TASK = new HashMap<String, String>();
+        EXPECTATIONS_TASK.put(MARKER_TITLE, "Title");
+        EXPECTATIONS_TASK.put(MARKER_CATEGORY, "Category");
+        EXPECTATIONS_TASK.put(MARKER_END_DATE, "Deadline");
+        EXPECTATIONS_TASK.put(MARKER_START_DATE, "Start time");
+        EXPECTATIONS_TASK.put(MARKER_PLACE, "Place");
+        EXPECTATIONS_TASK.put(MARKER_NOTES, "Notes");
+        //EXPECTATIONS_TASK.put(MARKER_REPEAT, "Repeat");
+        //EXPECTATIONS_TASK.put(MARKER_STATUS, "Status");
+    }
+    private static final Map<String, String> EXPECTATIONS_CATEGORY;
+    static {
+        EXPECTATIONS_CATEGORY = new HashMap<String, String>();
+        EXPECTATIONS_CATEGORY.put(MARKER_COLOR, "Color");
+        EXPECTATIONS_CATEGORY.put(MARKER_TITLE, "Title");
+    }
+    private static final List<String> KEYWORDS_CATEGORY = Arrays.asList(
+        "cat", "category"
+    );
+    private static final Map<String, String> EXPECTATIONS_ACTION;
+    static {
+        EXPECTATIONS_ACTION = new HashMap<String, String>();
+        EXPECTATIONS_ACTION.put("add", "Add a new task");
+        EXPECTATIONS_ACTION.put("edit", "Edit an existing task");
+        EXPECTATIONS_ACTION.put("delete", "Delete an existing task");
+        EXPECTATIONS_ACTION.put("display", "Display the details of an existing task.");
+        EXPECTATIONS_ACTION.put("display cat", "Show categories.");
+        EXPECTATIONS_ACTION.put("mark", "Mark a task as done");
+        EXPECTATIONS_ACTION.put("unmark", "Mark a task as not done.");
+        EXPECTATIONS_ACTION.put("undo", "Undo your last command (multiple undo supported)");
+        EXPECTATIONS_ACTION.put("redo", "Redo action");
+        EXPECTATIONS_ACTION.put("prev", "Go to previous page");
+        EXPECTATIONS_ACTION.put("next", "Go to next page");
+        EXPECTATIONS_ACTION.put("cat add", "Add a new category");
+        EXPECTATIONS_ACTION.put("cat edit", "Edit an existing category");
+        EXPECTATIONS_ACTION.put("cat delete", "Delete an existing category");
+        EXPECTATIONS_ACTION.put("close", "Exit the application");
+    }
+    private static final Map<String, String> EXPECTATIONS_NUMBER;
+    static {
+        EXPECTATIONS_NUMBER = new HashMap<String, String>();
+        EXPECTATIONS_NUMBER.put("Number", "The object number you want to select.");
+    }
+    private static final List<String> ALLOWED_ACTIONS = Arrays.asList(
+            "add", "edit", "delete", "display", 
+            "mark", "unmark", "close", "undo", "redo",
+            "prev", "next", "search", "help",
+            "home"
+    );
+    
+    //remember to reset these variables at clear()
+    private ParseMode parseMode;
+    private String currentMarker;
+    private StringBuilder currentParameterValue;
+    private Map<String, StringBuilder> parameters;
+    private Integer taskNumber;
+    private String action;
+    private Date startDate;
+    private Date endDate;
+    private StringBuilder generalArgument;
+    private CommandType commandType;
+    private List<String> suggestionKeywords;
+    
+    private TaskManager taskManager = TaskManager.getInstance();
+    
+    public CommandParser() {
+        this.clear();
+    }
+    
+    @Override
+    public ICommand parse(String input) throws ParseException {
+        this.clear();
+        this.append(input);
+        return this.finish();        
+    }
+    
+    public void append(String input) throws ParseException {
+        String[] words = input.split(REGEX_SPLITTER);
+        for (String word: words) {
+            processWord(word);
+        }
+    }
+    
+    public String getExpectedInputs() {
+        StringBuilder keywordBuilder = new StringBuilder();
+        for (String word: suggestionKeywords) {
+            keywordBuilder.append(word).append(' ');
+        }
+        String keyword = keywordBuilder.toString().trim().toLowerCase();
+        List<String> suggestionTokens = Suggestions.PARSER_SUGGESTIONS.get(keyword);
+        if (suggestionTokens == null) {
+            return "";
+        }
+        StringBuilder suggestion = new StringBuilder();
+        for (String token: suggestionTokens) {
+            if (token.equals("catargs()")) {
+                suggestion.append(unspecifiedCategoryParameters());
+            } else if (token.equals("taskargs()")) {
+                suggestion.append(unspecifiedTaskParameters());
+            } else {
+                suggestion.append(token);
+            }
+            suggestion.append(" | ");
+        }
+        return suggestion.toString();
+    }
+
+    private String unspecifiedCategoryParameters() {
+        HashMap<String, String> expectations = new HashMap<String, String>();
+        for(Entry<String, String> entry: EXPECTATIONS_CATEGORY.entrySet()) {
+            if (parameterNotSpecified(entry.getKey())) {
+                expectations.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return printMap(expectations);
+    }
+
+    private String printMap(Map<String, String> map) {
+        StringBuilder result = new StringBuilder();
+        for(Entry<String, String> entry: map.entrySet()) {
+            result.append(entry.getKey()).append(':').append(entry.getValue());
+            result.append(' ');
+        }
+        return result.toString();
+    }
+    
+    private boolean parameterNotSpecified(String parameterName) {
+        return !parameters.containsKey(parameterName);
+    }
+
+    private String unspecifiedTaskParameters() {
+        HashMap<String, String> expectations = new HashMap<String, String>();
+        for(Entry<String, String> entry: EXPECTATIONS_TASK.entrySet()) {
+            if (parameterNotSpecified(entry.getKey())) {
+                expectations.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return printMap(expectations);
+    }
+    
+    public void clear() {
+        this.parseMode = ParseMode.TASK;
+        parameters = new HashMap<String, StringBuilder>();
+        this.currentMarker = "";
+        this.currentParameterValue = null;
+        this.taskNumber = 0;
+        this.action = "";
+        this.startDate = null;
+        this.endDate = null;
+        this.generalArgument = new StringBuilder();
+        this.suggestionKeywords = new ArrayList<String>();
+    }
+ 
+    public ICommand finish() throws ParseException {
+        CommandBuilder commandBuilder = new CommandBuilder();
+        
+        throwErrorIfActionIsEmpty();
+        updateActionName();
+        setCommandType(commandBuilder);
+        setTaskNumber(commandBuilder);
+        setDetails(commandBuilder);
+        
+        ICommand result = getCommandObject(commandBuilder);
+        //if there is no exception until now, parsing is successful
+        this.clear(); //and we should clear the parser
+        
+        return result;
+    }
+
+    private void setDetails(CommandBuilder commandBuilder)
+            throws ParseException {
+        switch (this.parseMode) {
+        case TASK:
+            fillTaskParameters(commandBuilder);
+            break;
+        case CATEGORY:
+            fillCategoryParameters(commandBuilder);
+        }
+    }
+
+    private void setTaskNumber(CommandBuilder commandBuilder) throws ParseException {
+        if (this.taskNumber != 0) {
+            try {
+            	commandBuilder.setObjectNumber(this.taskNumber);
+            } catch (IndexOutOfBoundsException e) {
+            	throw new ParseException(MESSAGE_INVALID_TASK_NUMBER);
+            }
+        }
+    }
+
+    private void setCommandType(CommandBuilder commandBuilder) throws ParseException {
+        try {
+            commandType = CommandType.valueOf(this.action.toUpperCase());
+            commandBuilder.setCommandType(commandType);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(ERROR_AMBIGUOUS_COMMAND_TYPE);
+        }
+    }
+
+    private void updateActionName() {
+        if (this.parseMode == ParseMode.CATEGORY) {
+            this.action = "CATEGORY_" + this.action.trim();
+        }
+    }
+
+    private void throwErrorIfActionIsEmpty() throws ParseException {
+        if (this.action.isEmpty()) {
+            throw new ParseException("Error: action is not specified.");
+        }
+    }
+    
+    /**
+     * Get a command object from the given commandBuilder object.
+     * @param commandBuilder a command builder
+     * @return an instance of class implementing ICommand 
+     */
+    private ICommand getCommandObject(CommandBuilder commandBuilder) throws ParseException {
+        try {
+            ICommand command = commandBuilder.getCommandObject();
+            return command;
+        } catch (CommandTypeNotSetException e) {
+            throw new ParseException(ERROR_COMMAND_TYPE_NOT_SPECIFIED);
+        }
+    } 
+    
+    private void fillCategoryParameters(CommandBuilder commandBuilder) throws ParseException {
+        setSelectedCategory(commandBuilder);
+        setTitle(commandBuilder);
+        setColor(commandBuilder);
+    }
+
+    private void setSelectedCategory(CommandBuilder commandBuilder) {
+        if (this.generalArgument.length() > 0) {
+            commandBuilder.setSelectedCategory(generalArgument.toString());
+        }
+    }
+
+    private void setColor(CommandBuilder commandBuilder) throws ParseException {
+        if (parameters.containsKey(MARKER_COLOR)) {
+            String str = parameters.get(MARKER_COLOR).toString().trim();
+            if (str.indexOf('#') == 0) {
+                setColorFromHex(commandBuilder, str);
+            } else {
+                setColorFromName(commandBuilder, str);
+            }
+        }
+    }
+
+    private void setColorFromName(CommandBuilder commandBuilder, String str)
+            throws ParseException {
+        try {
+            final Field field = Color.class.getField(str.toUpperCase());
+            Color color = (Color) field.get(null);
+            commandBuilder.setColor(color);
+        } catch (Exception e) {
+            throw new ParseException("Error: invalid color name.");
+        }
+    }
+
+    private void setColorFromHex(CommandBuilder commandBuilder, String hexcode)
+            throws ParseException {
+        try {
+            Integer hex = Integer.parseInt(hexcode.substring(1), 16);
+            Color color = new Color(hex);
+            commandBuilder.setColor(color);
+        } catch (NumberFormatException e) {
+            throw new ParseException("Invalid hex color format");
+        }
+    }
+    
+    private void fillTaskParameters(CommandBuilder commandBuilder) throws ParseException {
+        setTitle(commandBuilder);
+        setStartDate(commandBuilder);
+        setEndDate(commandBuilder);
+        setNotes(commandBuilder);
+        setPlace(commandBuilder);
+        setCategory(commandBuilder);
+        //setRepeatFrequency(commandBuilder);
+        setGeneralArgumentAsTitle(commandBuilder);
+        setKeyword(commandBuilder);
+        setStatus(commandBuilder);
+       
+        ensureEndDateIsNotEarlierThanStartDate();
+        ensureTaskLengthLessThanOneDay();
+    }
+
+    private void setStatus(CommandBuilder commandBuilder) {
+    	if (commandType == CommandType.EDIT && parameters.containsKey(MARKER_STATUS)) {
+    		TaskStatus status = TaskStatus.valueOf(parameters.get(MARKER_STATUS).toString().trim().toUpperCase());
+    		commandBuilder.setStatus(status);
+    	}
+	}
+
+	private void setKeyword(CommandBuilder commandBuilder) {
+        if (commandType == CommandType.SEARCH) {
+            commandBuilder.setKeyword(generalArgument.toString());            
+        }
+    }
+
+    private void setGeneralArgumentAsTitle(CommandBuilder commandBuilder) {
+        if (parameters.get(MARKER_TITLE) == null && generalArgument.length() > 0 && commandType == CommandType.ADD) {
+            commandBuilder.setTitle(generalArgument.toString());
+        }
+
+    }
+
+    private void ensureEndDateIsNotEarlierThanStartDate() throws ParseException {
+        if (startDate == null || endDate == null || 
+            startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
+            return;
+        }
+        if (startDate.compareTo(endDate) > 0) {
+            throw new ParseException(ERROR_END_DATE_BEFORE_START_DATE);
+        }
+    }
+
+    private void ensureTaskLengthLessThanOneDay() throws ParseException {
+        if (startDate == null || endDate == null) {
+            return;
+        }
+        if (!endDate.withinOneDayFrom(startDate)) {
+            throw new ParseException(MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY);
+        }
+    }
+    
+    /*private void setRepeatFrequency(CommandBuilder commandBuilder)
+            throws ParseException {
+        //repeat frequency
+        if (parameters.containsKey(MARKER_REPEAT)) {
+            String str = parameters.get(MARKER_REPEAT).toString();
+            try {
+                RepeatFrequency repeatFrequency = RepeatFrequency.valueOf(str.toUpperCase());
+                commandBuilder.setRepeatFrequency(repeatFrequency);
+            } catch (IllegalArgumentException e) {
+                throw new ParseException("Error: invalid repeat frequency.");
+            }
+        }
+    }*/
+
+    private void setCategory(CommandBuilder commandBuilder) {
+        //category
+        if (parameters.containsKey(MARKER_CATEGORY)) {
+            String categoryName = parameters.get(MARKER_CATEGORY).toString();
+            ICategory category = taskManager.getCategory(categoryName);
+            commandBuilder.setCategory(category);
+        }
+    }
+
+    private void setPlace(CommandBuilder commandBuilder) {
+        //place
+        if (parameters.containsKey(MARKER_PLACE)) {
+            String place = parameters.get(MARKER_PLACE).toString();
+            commandBuilder.setPlace(place);
+        }
+    }
+
+    private void setNotes(CommandBuilder commandBuilder) {
+        //notes
+        if (parameters.containsKey(MARKER_NOTES)) {
+            String notes = parameters.get(MARKER_NOTES).toString();
+            commandBuilder.setNotes(notes);
+        }
+    }
+
+    private void setEndDate(CommandBuilder commandBuilder)
+            throws ParseException {
+        //end date
+        if (parameters.containsKey(MARKER_END_DATE)) {
+            String str = parameters.get(MARKER_END_DATE).toString();
+            Date endDate;
+            if (str.isEmpty()) {
+                endDate = Date.getFloatingDate();
+            } else {
+                endDate = Date.tryParse(str);
+            }
+            if (endDate == null) {
+                throw new ParseException(ERROR_CANNOT_PARSE_END_DATE);
+            } else {
+                commandBuilder.setEndDate(endDate);
+                this.endDate = endDate;
+            }
+        }
+    }
+
+    private void setStartDate(CommandBuilder commandBuilder)
+            throws ParseException {
+        //start date
+        if (parameters.containsKey(MARKER_START_DATE)) {
+            String str = parameters.get(MARKER_START_DATE).toString();
+            Date startDate;
+            if (str.isEmpty()) {
+                startDate = Date.getFloatingDate();
+            } else {
+                startDate = Date.tryParse(str);
+            }
+            if (startDate == null) {
+                throw new ParseException(ERROR_CANNOT_PARSE_START_DATE);
+            } else {
+                commandBuilder.setStartDate(startDate);
+                this.startDate = startDate;
+            }
+            //if there is start time, there must be end time
+            if (!parameters.containsKey(MARKER_END_DATE) && this.action.equalsIgnoreCase("ADD")) {
+                throw new ParseException(ERROR_END_DATE_NOT_SPECIFIED);
+            }
+        }
+    }
+
+    private void setTitle(CommandBuilder commandBuilder) {
+        //set title
+        if (parameters.containsKey(MARKER_TITLE)) {
+            String title = parameters.get(MARKER_TITLE).toString();
+            commandBuilder.setTitle(title);
+        }
+    }
+    
+    private void processWord(String word) throws ParseException {
+        if (isParameterMarker(word)) {
+            if (parameters.containsKey(word)) {
+                throw new ParseException(String.format(ERROR_PARAMETER_CONFLICT, word));
+            } else {
+                this.currentMarker = word;
+                this.currentParameterValue = new StringBuilder();
+                parameters.put(word, this.currentParameterValue);
+            }
+        } else {
+            if (this.currentMarker.isEmpty()) {
+                processNonParameterWord(word);
+            } else {
+                if (!(this.currentParameterValue.length() == 0)) {
+                    this.currentParameterValue.append(' ');
+                }
+                this.currentParameterValue.append(word);
+            }
+        }
+    }
+    
+    private boolean isParameterMarker(String word) {
+        return PARAMETER_MARKERS.contains(word);
+    }
+    
+    private void processNonParameterWord(String word) {
+        if (word.isEmpty()) {
+            return;
+        }
+        if (KEYWORDS_CATEGORY.contains(word)) {
+            this.parseMode = ParseMode.CATEGORY;
+            suggestionKeywords.add(word);
+        } else if (isInteger(word)) {
+            this.taskNumber = Integer.parseInt(word);
+            suggestionKeywords.add("num()");
+        } else if (isCommandType(word)) {
+            this.action = word;
+            suggestionKeywords.add(word);
+        } else {
+            if (generalArgument.length() > 0) {
+                generalArgument.append(' ');
+            } else {
+                suggestionKeywords.add("ga()");                
+            }
+            generalArgument.append(word);
+        }
+    }
+    
+    private boolean isCommandType(String word) {
+        return ALLOWED_ACTIONS.contains(word.trim().toLowerCase());
+    }
+
+    private boolean isInteger(String word) {
+        try {
+            Integer.parseInt(word);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+}
+
+	// End of segment: list\src\list\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\DeleteCategoryCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import list.model.Category;
+import list.model.ITask;
+import list.model.ICategory;
+
+public class DeleteCategoryCommand implements ICommand {
+    private static final String ERROR_CATEGORY_NOT_SPECIFIED = "Please specify which category to delete.";
+
+    private static final String MESSAGE_CATEGORY_DELETED = "Category %s is deleted. Its task(s) are moved to the default category.";
+    
+    ICategory category;
+    List<ITask> affectedTasks;
+    TaskManager taskManager = TaskManager.getInstance();
+    UndeleteCategoryCommand invCommand;
+    
+    public DeleteCategoryCommand() {
+    }
+    
+    public DeleteCategoryCommand(ICategory category) {
+        setCategory(category);
+    }
+    
+    public DeleteCategoryCommand(String categoryName) {
+        if (taskManager.hasCategory(categoryName)) {
+            category = taskManager.getCategory(categoryName);
+        }
+    }
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        if (category == null) {
+            throw new CommandExecutionException(ERROR_CATEGORY_NOT_SPECIFIED);
+        }
+        affectedTasks = new ArrayList<ITask>(category.getList());
+        makeInverseCommand(); //make inverse command for undo
+        for (ITask task: affectedTasks) {
+            task.setCategory(Category.getDefaultCategory());
+        }
+        taskManager.deleteCategory(category);
+        taskManager.saveData();
+        Controller.reportCategoryDelete(category);
+        Controller.displayCategories();
+        return String.format(MESSAGE_CATEGORY_DELETED, category.getName());
+    }
+    
+    public DeleteCategoryCommand setCategory(ICategory category) {
+        this.category = category;
+        return this;
+    }
+    
+    private void makeInverseCommand() {
+        if (invCommand != null) {
+            return;
+        }
+        invCommand = new UndeleteCategoryCommand();
+        invCommand.setCategory(category);
+        invCommand.setAffectedTasks(affectedTasks);
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return invCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\DeleteCategoryCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\DeleteCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.model.ITask;
+import list.util.Constants;
+
+public class DeleteCommand implements ICommand {
+    private static final String MESSAGE_SUCCESS = "Task is deleted successfully";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+	
+    private TaskManager taskManager = TaskManager.getInstance();
+	private ITask task;
+
+	public DeleteCommand() { };
+	
+	public DeleteCommand(ITask task) {
+		this.task = task;
+	}
+    
+    public DeleteCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
+	
+	@Override
+	public String execute() throws CommandExecutionException,  
+	                               IOException {
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+        
+        taskManager.deleteTask(this.task);
+        
+        if (!Controller.hasTask(task)) {
+        	if (!task.hasDeadline()) {
+    			Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+    		} else if (task.isOverdue()) {
+    			Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+    		} else {
+    			Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+    		}
+        } else {
+            Controller.getDisplayedTasks().remove(task);
+        }
+        
+        Controller.refreshUI();
+        
+		taskManager.saveData();
+		
+		return MESSAGE_SUCCESS;
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        UndeleteCommand undeleteCommand = new UndeleteCommand(this.task);
+        return undeleteCommand;
+    }
+	
+	
+
+}
+
+	// End of segment: list\src\list\DeleteCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\EditCategoryCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.awt.Color;
+
+import list.model.ICategory;
+
+public class EditCategoryCommand implements ICommand {
+    private static final String ERROR_CATEGORY_IS_NOT_SPECIFIED = "Error: Category is not specified.";
+    private static final String MESSAGE_SUCCESS = "Category successfully edited.";
+    Color color;
+    String categoryName;
+    ICategory category;
+    EditCategoryCommand invCommand;
+    private TaskManager taskManager = TaskManager.getInstance();
+    
+    public EditCategoryCommand() {
+        
+    }
+    
+    public EditCategoryCommand(String selectedCategoryName, String categoryName, Color color) {
+        if (taskManager.hasCategory(selectedCategoryName)) {
+            category = taskManager.getCategory(selectedCategoryName);
+        }
+        setCategoryName(categoryName);
+        setColor(color);
+    }
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        if (category == null) {
+            throw new CommandExecutionException(ERROR_CATEGORY_IS_NOT_SPECIFIED);
+        }
+        makeInverseCommand();
+        if (categoryName != null && !categoryName.isEmpty()) {
+            taskManager.moveCategory(category.getName(), categoryName);
+            category.setName(categoryName);
+        }
+        if (color != null) {
+            category.setColor(color);            
+        }
+        taskManager.saveData();
+        Controller.displayTasksBasedOnDisplayMode(category.getName());
+        Controller.refreshUI();
+        return MESSAGE_SUCCESS;
+    }
+
+    public EditCategoryCommand setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+        return this;
+    }
+    
+    public EditCategoryCommand setColor(Color color) {
+        this.color = color;
+        return this;
+    }
+    
+    public EditCategoryCommand setCategory(ICategory category) {
+        this.category = category;
+        return this;
+    }
+    
+    private void makeInverseCommand() {
+        if (invCommand != null) {
+            return;
+        }
+        invCommand = new EditCategoryCommand();
+        invCommand.setCategory(category);
+        invCommand.setCategoryName(category.getName());
+        invCommand.setColor(category.getColor());
+    }
+    
+    @Override
+    public ICommand getInverseCommand() {
+        return invCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\EditCategoryCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\EditCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.CommandBuilder.RepeatFrequency;
+import list.IParser.ParseException;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+import list.model.ITask.TaskStatus;
+import list.util.Constants;
+
+public class EditCommand implements ICommand {
+		
+    private static final String MESSAGE_SUCCESS = "Task is successfully edited";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+    private static final String MESSAGE_ERROR_NO_END_TIME = "Unable to edit into task with " + 
+    												  		"start date but no end date";
+    private static final String MESSAGE_ERROR_INVALID_START_DATE = "Unable to edit because end date " + 
+    												  		       "cannot be later than start date";
+    private static final String MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY = "End time must be less than 24 hours after start time.";
+    
+    private TaskManager taskManager = TaskManager.getInstance(); 
+    private ITask task;
+	private String title;
+	private Date startDate;
+	private Date endDate;
+	private RepeatFrequency repeatFrequency;
+	private String place;
+	private ICategory category;
+	private String notes;
+	private TaskStatus status;
+	
+	private ICommand inverseCommand;
+	private boolean isExecuted = false;
+
+    public EditCommand() { };
+    
+	public EditCommand(ITask task,
+					   String title,
+			           Date startDate,
+			           Date endDate,
+			           RepeatFrequency repeatFrequency,
+			           String place,
+			           ICategory category,
+			           String notes,
+			           TaskStatus status) {
+		this.task = task;
+		this.title = title;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.repeatFrequency = repeatFrequency;
+		this.place = place;
+		this.category = category;
+		this.notes = notes;
+		this.status = status;
+	}
+	
+	public EditCommand setTask(ITask task) {
+	    this.task = task;
+	    return this;
+	}
+	public EditCommand setTitle(String title) {
+	    this.title = title;
+	    return this;
+	}
+
+	public EditCommand setStartDate(Date startDate) {
+	    this.startDate = startDate;
+	    return this;
+	}
+
+	public EditCommand setEndDate(Date endDate) {
+	    this.endDate = endDate;
+	    return this;
+	}
+
+	public EditCommand setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    this.repeatFrequency = repeatFrequency;
+	    return this;
+	}
+
+	public EditCommand setPlace(String place) {
+	    this.place = place;
+	    return this;
+	}
+
+	public EditCommand setCategory(ICategory category) {
+	    this.category = category;
+	    return this;
+	}
+
+	public EditCommand setNotes(String notes) {
+	    this.notes = notes;
+	    return this;
+	}
+	
+	public EditCommand setStatus(TaskStatus status) {
+		this.status = status;
+		return this;
+	}
+
+	@Override
+	public String execute() throws CommandExecutionException, IOException {
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        } 
+	    ensureStartDateIsAccompaniedByEndDate(); 
+	    ensureEndDateIsNotEarlierThanStartDate();
+	    ensureTaskLengthLessThanOneDay();
+	    
+	    if (isExecuted) {
+	        assert(false);
+	    }
+	    
+	    this.inverseCommand = createInverseCommand();
+        
+	    ITask taskToEdit = this.task;
+	    
+		if (this.title != null) {
+			taskToEdit.setTitle(title);	
+		}
+		
+		if (this.startDate != null) {
+			taskToEdit.setStartDate(startDate);
+		}
+		
+		if (this.endDate != null) {
+			taskToEdit.setEndDate(endDate);
+		}
+		
+		if (this.repeatFrequency != null) {
+			taskToEdit.setRepeatFrequency(repeatFrequency);
+		}
+		
+		if (this.place != null) {
+			taskToEdit.setPlace(place);
+		}
+		
+		if (this.category != null) {
+			taskToEdit.setCategory(category);
+		}
+		
+		if (this.notes != null) {
+			taskToEdit.setNotes(notes);
+		}
+		
+		if (this.status != null) {
+			taskToEdit.setStatus(status);
+		}
+		
+        taskToEdit.getList().remove(taskToEdit);        
+		taskManager.addTask(taskToEdit);
+				
+		if (Controller.hasTask(taskToEdit)) {
+			Controller.highlightTask(taskToEdit);
+		} else {
+			if (!taskToEdit.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (taskToEdit.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(taskToEdit);
+		}
+		
+		taskManager.saveData();
+		
+		return MESSAGE_SUCCESS;
+	}
+
+	private void ensureStartDateIsAccompaniedByEndDate()
+            throws CommandExecutionException {
+		Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (!startDate.equals(Date.getFloatingDate()) &&
+		    endDate.equals(Date.getFloatingDate())) {
+        	throw new CommandExecutionException(MESSAGE_ERROR_NO_END_TIME);
+        }
+    }
+	
+	private void ensureEndDateIsNotEarlierThanStartDate() throws CommandExecutionException {
+        Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
+            return;
+        }
+        if (startDate.compareTo(endDate) > 0) {
+            throw new CommandExecutionException(MESSAGE_ERROR_INVALID_START_DATE);
+        }
+    }
+
+    private void ensureTaskLengthLessThanOneDay() throws CommandExecutionException {
+    	Date startDate = this.startDate;
+        Date endDate = this.endDate;
+        if (startDate == null) {
+        	startDate = this.task.getStartDate();
+        }
+        if (endDate == null) {
+        	endDate = this.task.getEndDate();
+        }
+		if (startDate.equals(Date.getFloatingDate()) || endDate.equals(Date.getFloatingDate())) {
+            return;
+        }
+        if (!endDate.withinOneDayFrom(startDate)) {
+            throw new CommandExecutionException(MESSAGE_TASK_LENGTH_MORE_THAN_ONE_DAY);
+        }
+    }
+	public String getTitle() {
+	    return this.title;
+	}
+	
+	public Date getStartDate() {
+	    return this.startDate;
+	}
+	
+	public Date getEndDate() {
+	    return this.endDate;
+	}
+	
+	public RepeatFrequency getRepeatFrequency() {
+	    return this.repeatFrequency;
+	}
+	
+	public String getPlace() {
+	    return this.place;
+	}
+	
+	public ICategory getCategory() {
+	    return this.category;
+	}
+	
+	public String getNotes() {
+	    return this.notes;
+	}
+	
+	public TaskStatus getStatus() {
+		return this.status;
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        if (this.inverseCommand == null) {
+            this.inverseCommand = createInverseCommand();
+        }
+        return this.inverseCommand;
+    }
+    
+    private ICommand createInverseCommand() {
+        EditCommand inverseCommand = new EditCommand();
+        inverseCommand.setTask(this.task);
+        
+        if (this.title != null) {
+            inverseCommand.setTitle(this.task.getTitle());
+        }
+        if (this.category != null) {
+            inverseCommand.setCategory(this.task.getCategory());
+        }
+        if (this.startDate != null) {
+            inverseCommand.setStartDate(this.task.getStartDate());
+        }
+        if (this.endDate != null) {
+            inverseCommand.setEndDate(this.task.getEndDate());
+        }
+        if (this.notes != null) {
+            inverseCommand.setNotes(this.task.getNotes());
+        }
+        if (this.place != null) {
+            inverseCommand.setPlace(this.task.getPlace());
+        }
+        if (this.repeatFrequency != null) {
+            inverseCommand.setRepeatFrequency(this.task.getRepeatFrequency());
+        }
+        if (this.status != null) {
+        	inverseCommand.setStatus(this.task.getStatus());
+        }
+        
+        return inverseCommand;
+    }
+}
+
+	// End of segment: list\src\list\EditCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\HelpCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+public class HelpCommand implements ICommand {
+
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+    	Controller.displayHelp();
+        return null;
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null;
+    }
+
+}
+
+	// End of segment: list\src\list\HelpCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\HomeCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+public class HomeCommand implements ICommand {
+
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        Controller.displayHome();
+        Controller.refreshUI();
+        return "Displaying Home";
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\HomeCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\ICommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+interface ICommand {	
+	@SuppressWarnings("serial")
+    class CommandExecutionException extends Exception {
+	    public CommandExecutionException(String message) {
+	        super(message);
+	    }
+	};
+	
+	/**
+	 * Executes this command.
+	 * 
+	 * @return the response to be shown in the console.
+	 * @throws CommandExecutionException  
+	 * @throws IOException  
+	 */
+	String execute() throws CommandExecutionException, IOException;
+	
+	
+	/**
+	 * Returns the ICommand object necessary to undo the operation.
+	 * @return ICommand
+	 */
+	ICommand getInverseCommand();
+	
+}
+
+	// End of segment: list\src\list\ICommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\IParser.java
+	 */
+
+package list;
+
+public interface IParser {
+	@SuppressWarnings("serial")
+    class ParseException extends Exception {
+        public ParseException(String string) {
+            super(string);
+        }
+        public ParseException() {
+            super();
+        }
+    };
+	
+	/**
+	 * Processes a given input into a corresponding command object
+	 * 
+	 * @param input the user input read from console
+	 * @return command object implementing <code>ICommand</code>
+	 * @throws ParseException if input string is invalid.
+	 */
+	ICommand parse(String input) throws ParseException;
+	
+}
+
+	// End of segment: list\src\list\IParser.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\MarkCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.model.ITask;
+import list.util.Constants;
+
+public class MarkCommand implements ICommand {
+
+	private static final String MESSAGE_SUCCESS = "Task is marked as done successfully.";
+    private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+	
+	private TaskManager taskManager = TaskManager.getInstance();	
+	private ITask task;
+	
+	MarkCommand(ITask task) {
+		this.task = task;
+	}
+    
+    public MarkCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
+
+	@Override
+	public String execute() throws CommandExecutionException, IOException {
+		
+	    if (this.task == null) {
+            throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+        }
+        
+		ITask taskToMark = this.task;
+		taskManager.markTaskAsDone(taskToMark);
+		
+		if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+		
+		taskManager.saveData();
+		
+		return MESSAGE_SUCCESS;
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        ICommand inverseCommand = new UnmarkCommand(this.task);
+        return inverseCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\MarkCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\model\Category.java
+	 */
+
+package list.model;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Category implements ICategory {
+	private static final String DEFAULT_NAME = "";
+    private static final Color DEFAULT_COLOR = Color.WHITE;
+    private static ICategory defaultCategory = null;
+    
+    private String name = null;
+	private Color color = null;
+	private List<ITask> list;
+	
+	/**
+	 * Using Category constructor can cause the application to create
+	 * multiple Category objects for the same category name.
+	 * Use <code>TaskManager.getCategory(categoryName)</code> to prevent this 
+	 * potentially incorrect behavior.
+	 */
+	public Category() {
+	    this.name = DEFAULT_NAME;
+	    this.color = DEFAULT_COLOR;
+	    list = new ArrayList<ITask>();
+	}
+	
+	@Override
+	public Color getColor() {
+        return this.color;
+	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public ICategory setColor(Color color) {
+		if (color == null) {
+			color = DEFAULT_COLOR;
+		}
+		this.color = color;
+		return this;
+	}
+
+	@Override
+	public ICategory setName(String name) {
+		this.name = name;
+		return this;
+	}
+	
+	public static Color getDefaultColor() {
+		return DEFAULT_COLOR;
+	}
+	
+	public static String getDefaultName() {
+		return DEFAULT_NAME;
+	}
+	
+	public static ICategory getDefaultCategory() {
+	    if (defaultCategory == null) {
+	        defaultCategory = new Category().setName(DEFAULT_NAME).setColor(DEFAULT_COLOR);
+	    }
+	    return defaultCategory;
+	}
+
+	@Override
+	public List<ITask> getList() {
+		return list;
+	}
+
+	@Override
+	public void setList(List<ITask> list) {
+		this.list = list;
+	}
+
+    @Override
+    public int compareTo(ICategory o) {
+        return name.compareToIgnoreCase(o.getName());
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (this == o) return true;
+        if (!(o instanceof ICategory)) return false;
+        ICategory other = (ICategory) o;
+        return name.equalsIgnoreCase(other.getName());
+    }
+
+}
+
+	// End of segment: list\src\list\model\Category.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\model\Date.java
+	 */
+
+package list.model;
+
+import java.util.Calendar;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.IllegalFieldValueException;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
+import com.mdimension.jchronic.Chronic;
+import com.mdimension.jchronic.utils.Span;
+
+public class Date implements Comparable<Date> {
+    private static final String DAY_FLOATING_PRETTY = "";
+    private static final String DAY_FLOATING = "";
+    
+    private static final int MINUTE_VALUE = 00;
+    private static final int HOUR_VALUE = 12;
+    private static final String FORMAT_STRING_PRETTY = "EEE, MMM d y hh:mma";
+    private static final String FORMAT_STRING_DAY_NAME = "EEEE";
+    private static final String FORMAT_STRING_MONTH_NAME = "MMM";
+    private static final String FORMAT_STRING_TIME = "hh:mma";
+    private static final String FORMAT_STRING_DATE_ONLY = "dd-MM-yyyy";
+    
+    private static final DateTimeFormatter FORMATTER_PRETTY = DateTimeFormat.forPattern(FORMAT_STRING_PRETTY);
+    private static final DateTimeFormatter FORMATTER_DAY_NAME = DateTimeFormat.forPattern(FORMAT_STRING_DAY_NAME);
+    private static final DateTimeFormatter FORMATTER_MONTH_NAME = DateTimeFormat.forPattern(FORMAT_STRING_MONTH_NAME);
+    private static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern(FORMAT_STRING_TIME);
+    private static final DateTimeFormatter FORMATTER_STANDARD = ISODateTimeFormat.dateTime();
+    private static final DateTimeFormatter FORMATTER_DATE_ONLY = DateTimeFormat.forPattern(FORMAT_STRING_DATE_ONLY);
+    
+    private static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
+    private static final DateTimeComparator TIME_COMPARATOR = DateTimeComparator.getInstance(DateTimeFieldType.minuteOfDay());
+    
+    private static Date DATE_FLOATING = null;
+    
+    private DateTime dateTime;
+    private boolean isFloating = false;
+    
+    @SuppressWarnings("serial")
+    public class InvalidDateException extends Exception { };
+    
+    /**
+     * Returns today's date
+     */
+    public Date() {
+        this.dateTime = new DateTime();
+    }
+    
+    public Date(int day, int month, int year) throws InvalidDateException {
+        try {
+            this.dateTime = new DateTime(year, month, day, HOUR_VALUE, MINUTE_VALUE);
+        } catch (IllegalFieldValueException e) {
+            e.printStackTrace();
+            throw new InvalidDateException();
+        }
+    }
+    
+    public Date(String dateString) throws InvalidDateException {
+        try {
+            if (dateString.equals(DAY_FLOATING)) {
+                this.isFloating = true;
+                this.dateTime = new DateTime();
+            } else {
+            	trySetDateUsingStandardFormat(dateString);
+                if (this.dateTime == null) {
+                	this.dateTime = FORMATTER_DATE_ONLY.parseDateTime(dateString);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new InvalidDateException();
+        }
+    }
+    
+    private Date(Calendar calendar) {
+        this.dateTime = new DateTime(calendar);
+    }
+    
+    private Date(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+    
+    /**
+     * This method tries to parse the given string into a date.
+     * If the given string is invalid, it will return null but
+     * will not throw an exception.
+     * @param userInput
+     * @return a Date object
+     */
+    public static Date tryParse(String userInput) {
+        try {
+            Date result;
+            result = tryParsePrettyFormat(userInput);
+            if (result != null) {
+                return result;
+            } else {
+                Span time = Chronic.parse(userInput);
+                return new Date(time.getEndCalendar());                
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private static Date tryParsePrettyFormat(String prettyDateString) {
+        try {
+            DateTime dateTime = FORMATTER_PRETTY.parseDateTime(prettyDateString);
+            return new Date(dateTime);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+    
+    private void trySetDateUsingStandardFormat(String dateString) {
+        try {
+            this.dateTime = FORMATTER_STANDARD.parseDateTime(dateString);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+    }
+    
+    public static Date getFloatingDate() {
+        if (DATE_FLOATING == null) {
+            DATE_FLOATING = new Date();
+            DATE_FLOATING.isFloating = true;
+        }
+        return DATE_FLOATING;
+    }
+    
+    public static Date getTodayMidnight() {
+        Date today = new Date();
+        today.dateTime = today.dateTime.withTime(23, 59, 59, 999);
+        return today;
+    }
+    
+    public int getDay() {
+        return this.dateTime.getDayOfMonth();
+    }
+    
+    public int getMonth() {
+        return this.dateTime.getMonthOfYear();
+    }
+    
+    public int getYear() {
+        return this.dateTime.getYear();
+    }
+    
+    public String getDayName() {
+        return FORMATTER_DAY_NAME.print(this.dateTime);
+    }
+    
+    public String getMonthName() {
+        return FORMATTER_MONTH_NAME.print(this.dateTime);
+    }
+
+    /**
+     * Returns a String representation that is adjusted for displaying
+     * in the user interface. Pretty-printed for user satisfaction.
+     * @return
+     */
+    public String getPrettyFormat() {
+        if (this.isFloating) {
+            return DAY_FLOATING_PRETTY;
+        }
+        return FORMATTER_PRETTY.print(this.dateTime); 
+    }
+    
+    public String getTime() {
+        return FORMATTER_TIME.print(this.dateTime);
+    }
+    
+    public int compareToDateOnly(Date o) {
+        if (this.isFloating && !o.isFloating) {
+            return 1;
+        } else if (!this.isFloating && o.isFloating) {
+            return -1;
+        }
+        return DATE_ONLY_COMPARATOR.compare(this.dateTime, o.dateTime);
+    }
+    
+    public boolean equalsDateOnly(Date o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof Date)) return false;
+        Date other = (Date) o;
+        return this.compareToDateOnly(other) == 0; 
+    }
+    
+    @Override
+    public int compareTo(Date o) {
+        if (this.isFloating && !o.isFloating) {
+            return 1;
+        } else if (!this.isFloating && o.isFloating) {
+            return -1;
+        }
+        return TIME_COMPARATOR.compare(dateTime, o.dateTime);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof Date)) return false;
+        Date other = (Date) o;
+        return this.compareTo(other) == 0; 
+    }
+    
+    /**
+     * Returns the date in standard format.
+     * The returned String is guaranteed to be accepted by the constructor
+     * of this Date class. Suitable for saving to text file format, e.g. JSON.
+     */
+    @Override
+    public String toString() {
+        if (this.isFloating) {
+            return DAY_FLOATING;
+        }
+        return FORMATTER_STANDARD.print(dateTime);
+    }
+
+	public boolean withinOneDayFrom(Date startDate) {
+		if (this.isFloating || startDate.isFloating) {
+			return true;
+		} else {
+			DateTime endTime = startDate.dateTime.plusHours(24);
+			return this.dateTime.isBefore(endTime);
+		}
+    }
+}
+
+	// End of segment: list\src\list\model\Date.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\model\ICategory.java
+	 */
+
+package list.model;
+
+import java.awt.Color;
+import java.util.List;
+
+public interface ICategory extends Comparable<ICategory> {
+    
+    public Color getColor();
+    
+    public String getName();
+    
+    public List<ITask> getList();
+    
+    public ICategory setColor(Color color);
+    
+    public ICategory setName(String name);
+    
+    public void setList(List<ITask> list);    
+}
+
+	// End of segment: list\src\list\model\ICategory.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\model\ITask.java
+	 */
+
+package list.model;
+
+import java.util.List;
+
+import list.CommandBuilder.RepeatFrequency;
+
+public interface ITask extends Comparable<ITask> {
+	
+	public static enum TaskStatus {
+		DONE, PENDING
+	}
+	
+	public String getTitle();
+
+	public ITask setTitle(String title);
+
+	public Date getStartDate();
+
+	public ITask setStartDate(Date startDate);
+
+	public Date getEndDate();
+
+	public ITask setEndDate(Date endTime);
+	
+	public Date getTimelineDate();
+
+	public RepeatFrequency getRepeatFrequency();
+
+	public ITask setRepeatFrequency(RepeatFrequency repeatFrequency);
+
+	public String getPlace();
+
+	public ITask setPlace(String place);
+
+	public ICategory getCategory();
+
+	public ITask setCategory(ICategory category);
+
+	public String getNotes();
+
+	public ITask setNotes(String notes);
+	
+	public TaskStatus getStatus();
+
+	public void setStatus(TaskStatus status);
+	
+	public List<ITask> getList();
+	
+	public void setList(List<ITask> list);
+	
+	public boolean hasDeadline();
+	
+	public boolean isOverdue();
+}
+
+	// End of segment: list\src\list\model\ITask.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\model\Task.java
+	 */
+
+package list.model;
+
+import java.util.Collections;
+import java.util.List;
+
+import list.CommandBuilder.RepeatFrequency;
+
+public class Task implements ITask {
+    private String title;
+	private Date startDate;
+	private Date endDate;
+	private RepeatFrequency repeatFrequency;
+	private String place;
+	private ICategory category;
+	private String notes;
+	private TaskStatus status;
+	private List<ITask> list;
+	
+	public Task() {
+	    title = "";
+	    startDate = Date.getFloatingDate();
+	    endDate = Date.getFloatingDate();
+	    repeatFrequency = RepeatFrequency.NONE;
+	    place = "";
+	    category = Category.getDefaultCategory();
+	    notes = "";
+	    status = TaskStatus.PENDING;
+	}
+	
+	@Override
+	public int compareTo(ITask o) {
+		if (this.getTimelineDate().compareTo(o.getTimelineDate()) == 0) {
+			return this.getTitle().compareToIgnoreCase(o.getTitle());
+		} else {
+			return this.getTimelineDate().compareTo(o.getTimelineDate());
+		}
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public Task setTitle(String title) {
+		if (title != null) {
+		    this.title = title;
+		}
+		return this;
+	}
+
+	@Override
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	@Override
+	public Task setStartDate(Date startDate) {
+	    if (startDate != null) {
+	        this.startDate = startDate;
+	    }
+		return this;
+	}
+
+	@Override
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	@Override
+	public Task setEndDate(Date endDate) {
+	    if (endDate != null) {
+	        this.endDate = endDate;
+	    }
+		return this;
+	}
+
+	/**
+	 * Returns the Date to be displayed in the user interface
+	 * 
+	 * floating: --> floatingDate
+	 * overdue: if endDate < today --> endDate
+	 * current: if endDate >= today --> today
+	 * 			if startDate > today --> startDate
+	 * 
+	 */
+	@Override
+	public Date getTimelineDate() {
+		Date today = new Date();
+		
+		if (this.hasDeadline()) {
+			if (this.isOverdue()) {
+				return this.endDate;
+			} else {
+				if (this.startDate.equals(Date.getFloatingDate())) {
+					return this.endDate;
+				} else if (today.compareTo(this.startDate) > 0) {
+					return today;
+				} else {
+					return this.startDate;
+				}
+			}
+		} else {
+			return Date.getFloatingDate();
+		}
+	}
+	
+	@Override
+	public RepeatFrequency getRepeatFrequency() {
+		return repeatFrequency;
+	}
+
+	@Override
+	public Task setRepeatFrequency(RepeatFrequency repeatFrequency) {
+	    if (repeatFrequency != null) {
+	        this.repeatFrequency = repeatFrequency;
+	    }
+		return this;
+	}
+
+	@Override
+	public String getPlace() {
+		return place;
+	}
+
+	@Override
+	public Task setPlace(String place) {
+	    if (place != null) {
+	        this.place = place;
+	    }
+		return this;
+	}
+
+	@Override
+	public ICategory getCategory() {
+		return category;
+	}
+
+	@Override
+	public Task setCategory(ICategory category) {
+	    if (category != null) {
+	    	this.category.getList().remove(this);
+	        category.getList().add(this);
+	        Collections.sort(category.getList());
+	    	this.category = category;
+	    }
+	    
+		return this;
+	}
+	
+	@Override
+	public String getNotes() {
+		return notes;
+	}
+
+	@Override
+	public Task setNotes(String notes) {
+	    if (notes != null) {
+	        this.notes = notes;
+	    }
+		return this;
+	}
+
+	@Override
+	public TaskStatus getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(TaskStatus status) {
+	    if (status != null) {
+	        this.status = status;
+	    }
+	}
+
+	@Override
+	public List<ITask> getList() {
+		return this.list;
+	}
+	
+	@Override
+	public void setList(List<ITask> list) {
+		this.list = list;
+	}
+	
+	@Override
+	public boolean hasDeadline() {
+		return !this.getEndDate().equals(Date.getFloatingDate());
+	}
+
+	@Override
+	public boolean isOverdue() {
+		Date today = new Date();
+    	return (this.getEndDate().compareTo(today) < 0);    
+	}
+	
+}
+
+	// End of segment: list\src\list\model\Task.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\NextCommand.java
+	 */
+
+package list;
+
+public class NextCommand implements ICommand {
+    
+	private static final String MESSAGE_SUCCESS = "Next page displayed";
+	private static final String MESSAGE_ERROR = "End of list";
+	
+    @Override
+    public String execute() {
+        boolean success = Controller.next();
+        if (success) {
+        	return MESSAGE_SUCCESS;
+        } else {
+        	return MESSAGE_ERROR;
+        }
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; // cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\NextCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\PrevCommand.java
+	 */
+
+package list;
+
+public class PrevCommand implements ICommand {
+	
+	private static final String MESSAGE_SUCCESS = "Previous page displayed";
+	private static final String MESSAGE_ERROR = "End of list";
+    
+	@Override
+    public String execute() {
+        boolean success = Controller.back();
+        if (success) {
+        	return MESSAGE_SUCCESS;
+        } else {
+        	return MESSAGE_ERROR;
+        }
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\PrevCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\ReaderWriter.java
+	 */
+
+package list;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import list.model.ICategory;
+import list.model.ITask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+/**
+ * This class is responsible for saving and loading of both categories and tasks 
+ * that are stored persistently in the form of text files (in JSON format). 
+ * In order to convert from JSON format to Java Object, Converter class is used.
+ *
+ */
+public class ReaderWriter implements IStorage {
+	
+	@SuppressWarnings("serial")
+    class CorruptedFileException extends Exception { };
+	
+	private static final String MESSAGE_IO_ERROR = "IO Error!";
+	private static final String TEXTFILE_NAME_TASKS = "list_tasks.json";
+	private static final String TEXTFILE_NAME_CATEGORIES = "list_categories.json";
+	private static final int INDENTATION_FACTOR = 4;	
+	
+	private Converter jsonConverter = null;
+	private BufferedWriter taskWriter = null;
+	private BufferedReader taskReader = null;
+	private BufferedWriter categoryWriter = null;
+	private BufferedReader categoryReader = null;
+	
+	ReaderWriter() {
+		jsonConverter = new Converter();		
+	}
+		
+	/**
+	 * Closing the BufferedWriter, preventing any further writing process.
+	 * This method should only be executed when the application is about to exit. 
+	 * 
+	 * @throws IOException 
+	 */
+	void closeWriter() throws IOException {
+		taskWriter.close();
+	}
+	
+	/**
+	 * Loads data of categories from a text file into TaskManager
+	 */
+	@Override
+	public HashMap<String,ICategory> loadCategoriesFromFile() throws IOException, JSONException {
+		File categoryStorageInTextFile = new File(TEXTFILE_NAME_CATEGORIES);
+		
+		if (categoryStorageInTextFile.exists()) {
+			setUpCategoryBufferedReader();
+			
+			StringBuilder sb = new StringBuilder();
+			
+			while (categoryReader.ready()) {
+				sb.append(new Character((char) categoryReader.read()).toString());
+			}
+			
+			JSONArray jsonArray = new JSONArray(sb.toString());
+
+			HashMap<String, ICategory> categories = jsonConverter.convertJsonToCategoryList(jsonArray);
+			
+			return categories;
+			
+		} else {
+			return new HashMap<String, ICategory>();
+		}
+	}
+
+	/**
+	 * Saves data of categories from TaskManager to a text file.
+	 */
+	@Override
+	public void saveCategoriesToFile(List<ICategory> categories) throws IOException {
+		JSONArray categoryListInJson = jsonConverter.convertCategoryListToJson(categories);
+		setUpCategoryBufferedWriter();
+		
+		try {
+			categoryWriter.write(categoryListInJson.toString(INDENTATION_FACTOR));
+			categoryWriter.flush();
+		} catch (JSONException e) {
+			// JSONException is thrown when indentFactor is not valid,
+			// but INDENTATION_FACTOR is indeed a valid number, so this
+			// should be impossible
+			assert (false): e.getMessage();
+		}
+		
+	}
+	
+	/**
+	 * Loads data of tasks from a text file into TaskManager
+	 */
+	@Override
+	public List<ITask> loadTasksFromFile() throws IOException, JSONException {
+		
+		File taskStorageInTextFile = new File(TEXTFILE_NAME_TASKS);
+		
+		if (taskStorageInTextFile.exists()) {
+			setUpTaskBufferedReader();
+			
+			StringBuilder sb = new StringBuilder();
+			
+			while (taskReader.ready()) {
+				sb.append(new Character((char) taskReader.read()).toString());
+			}
+			
+			JSONArray jsonArray = new JSONArray(sb.toString());
+
+			List<ITask> tasksList = jsonConverter.convertJsonToTasksList(jsonArray);
+			
+			return tasksList;
+			
+		} else {
+			Controller.displayHelp();
+			return new ArrayList<ITask>();
+		}
+	}
+
+	/**
+	 * Saves data of tasks from TaskManager to a text file.
+	 */
+	@Override
+	public void saveTasksToFile(List<ITask> tasks) throws IOException {
+		JSONArray tasksListInJson = jsonConverter.convertTasksListToJson(tasks);
+		setUpTaskBufferedWriter();
+		
+		try {
+			taskWriter.write(tasksListInJson.toString(INDENTATION_FACTOR));
+			taskWriter.flush();
+
+		} catch (JSONException e) { 
+			// JSONException is thrown when indentFactor is not valid,
+			// but INDENTATION_FACTOR is indeed a valid number, so this
+			// should be impossible
+			assert (false): e.getMessage();
+		}
+				
+	}
+	
+	private void setUpTaskBufferedWriter() {
+		try {
+			taskWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_TASKS));
+		} catch (IOException e) {
+			System.out.println(MESSAGE_IO_ERROR);
+		}
+	}
+	
+	private void setUpCategoryBufferedWriter() throws IOException {
+		categoryWriter = new BufferedWriter(new FileWriter(TEXTFILE_NAME_CATEGORIES));
+	}
+	
+	private void setUpTaskBufferedReader() throws IOException {
+		taskReader = new BufferedReader(new FileReader(TEXTFILE_NAME_TASKS));
+	}
+
+	private void setUpCategoryBufferedReader() {
+		try {
+			categoryReader = new BufferedReader(new FileReader(TEXTFILE_NAME_CATEGORIES));
+		} catch (IOException e) {
+			System.out.println(MESSAGE_IO_ERROR);
+		}
+	}
+	
+}
+
+	// End of segment: list\src\list\ReaderWriter.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\RedoCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.Stack;
+
+public class RedoCommand implements ICommand {
+
+    private static final String MESSAGE_NOTHING_TO_REDO = "There is nothing to redo.";
+
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        Stack<ICommand> undoStack = Controller.getUndoStack();
+        Stack<ICommand> redoStack = Controller.getRedoStack();
+        
+        if (redoStack.empty()) {
+            return MESSAGE_NOTHING_TO_REDO;
+        }
+        ICommand undoneCommand = redoStack.pop();
+        String reply = undoneCommand.execute();
+        undoStack.push(undoneCommand.getInverseCommand());
+        return reply;
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\RedoCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\SearchCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import list.model.ITask;
+
+public class SearchCommand implements ICommand {
+    private static final String MESSAGE_DISPLAYING_SEARCH_RESULTS = "Displaying search results for \"%s\"";
+    private String keyword;
+    TaskManager taskManager = TaskManager.getInstance();
+    List<ITask> allTasks;
+    
+    public SearchCommand() {
+
+    }
+    
+    public SearchCommand(String keyword) {
+        this.keyword = keyword;
+    }
+    
+    public SearchCommand setKeyword(String keyword) {
+        this.keyword = keyword;
+        return this;
+    }
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        allTasks = taskManager.getAllTasks();
+        ArrayList<ITask> results = new ArrayList<ITask>();
+        for (ITask task: allTasks) {
+            if (matchKeyword(task.getTitle()) ||
+                matchKeyword(task.getPlace()) ||
+                matchKeyword(task.getNotes()) ||
+                matchKeyword(task.getCategory().getName()) ||
+                matchKeyword(task.getStatus().toString())) {
+                results.add(task);
+            }
+        }
+        Collections.sort(results);
+        
+        Controller.displayTasks(keyword.toLowerCase(), results);
+        Controller.refreshUI();
+        return String.format(MESSAGE_DISPLAYING_SEARCH_RESULTS, keyword.toLowerCase());
+    }
+    
+    private boolean matchKeyword(String str) {
+        if (str == null) {
+            return false;
+        } else {
+            return str.toLowerCase().contains(keyword.toLowerCase());
+        }
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\SearchCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\TestCongCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+public class TestCongCommand implements ICommand {
+
+	@Override
+	public String execute() throws CommandExecutionException, IOException {
+		Controller.displayCongratulations();
+		return null;
+	}
+
+	@Override
+	public ICommand getInverseCommand() {
+		return null;
+	}
+
+}
+
+	// End of segment: list\src\list\TestCongCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\UndeleteCategoryCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.List;
+
+import list.model.ICategory;
+import list.model.ITask;
+
+public class UndeleteCategoryCommand implements ICommand {
+    private static final String ERROR_INCOMPLETE_INFORMATION = "Incomplete information to undo delete category.";
+    private static final String MESSAGE_SUCCESS = "Undo delete category success.";
+    List<ITask> tasks;
+    ICategory category;
+    TaskManager taskManager = TaskManager.getInstance();
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        if (tasks == null || category == null) {
+            throw new CommandExecutionException(ERROR_INCOMPLETE_INFORMATION);
+        }
+        ICategory newCategory = taskManager.getCategory(this.category.getName()); //do not reuse the old category
+        for (ITask task: tasks) {
+            task.setCategory(newCategory);
+        }
+
+        taskManager.saveData();
+        Controller.displayCategories();
+        return MESSAGE_SUCCESS;
+    }
+    
+    public UndeleteCategoryCommand setAffectedTasks(List<ITask> tasks) {
+        this.tasks = tasks;
+        return this;
+    }
+    
+    public UndeleteCategoryCommand setCategory(ICategory category) {
+        this.category = category;
+        return this;
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        DeleteCategoryCommand invCommand = new DeleteCategoryCommand();
+        invCommand.setCategory(category);
+        return invCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\UndeleteCategoryCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\UndeleteCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.model.ITask;
+import list.util.Constants;
+
+public class UndeleteCommand implements ICommand {
+
+    private String MESSAGE_SUCCESS = "Task successfully undeleted.";
+    
+    private ITask task;
+    
+    public UndeleteCommand() {
+        
+    }
+    
+    public UndeleteCommand(ITask task) {
+        this.task = task;
+    }
+    
+    public UndeleteCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        TaskManager taskManager = TaskManager.getInstance();
+        taskManager.undeleteTask(this.task);
+        
+        if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+        
+        taskManager.saveData();
+        
+        return MESSAGE_SUCCESS;
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        DeleteCommand deleteCommand = new DeleteCommand();
+        deleteCommand.setTask(this.task);
+        return deleteCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\UndeleteCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\UndoCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+import java.util.Stack;
+
+
+public class UndoCommand implements ICommand {
+    private static final String MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo.";
+    
+    @Override
+    public String execute() throws CommandExecutionException, IOException {
+        Stack<ICommand> undoStack = Controller.getUndoStack();
+        Stack<ICommand> redoStack = Controller.getRedoStack();
+        if (undoStack.empty()) {
+            return MESSAGE_NOTHING_TO_UNDO;
+        }
+        ICommand invCommand = undoStack.pop();
+        String reply = invCommand.execute();
+        redoStack.push(invCommand.getInverseCommand());
+        return reply;
+    }
+
+    @Override
+    public ICommand getInverseCommand() {
+        return null; //cannot be undone
+    }
+
+}
+
+	// End of segment: list\src\list\UndoCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\UnmarkCommand.java
+	 */
+
+package list;
+
+import java.io.IOException;
+
+import list.model.ITask;
+import list.util.Constants;
+
+public class UnmarkCommand implements ICommand {
+	
+	private static final String MESSAGE_SUCCESS = "Task is unmarked successfully.";
+	private static final String MESSAGE_TASK_UNSPECIFIED = "Please specify a valid task.";
+	
+	private TaskManager taskManager = TaskManager.getInstance();
+	private ITask task;
+	
+	public UnmarkCommand(ITask task) {
+		this.task = task;
+	}
+    
+    public UnmarkCommand setTask(ITask task) {
+        this.task = task;
+        return this;
+    }
+	
+	@Override
+	public String execute() throws CommandExecutionException, IOException {
+		
+		if (this.task == null) {
+			throw new CommandExecutionException(MESSAGE_TASK_UNSPECIFIED);
+		}
+		
+		ITask taskToUnmark = this.task;
+		taskManager.unmarkTask(taskToUnmark);
+		
+		if (Controller.hasTask(task)) {
+			Controller.highlightTask(task);
+		} else {
+			if (!task.hasDeadline()) {
+				Controller.displayTasks(Constants.FLOATING_TASKS, taskManager.getFloatingTasks());
+			} else if (task.isOverdue()) {
+				Controller.displayTasks(Constants.OVERDUE_TASKS, taskManager.getOverdueTasks());
+			} else {
+				Controller.displayTasks(Constants.CURRENT_TASKS, taskManager.getCurrentTasks());
+			}
+			
+			Controller.highlightTask(task);
+		}
+		
+		taskManager.saveData();
+		
+		return MESSAGE_SUCCESS;
+	}
+
+    @Override
+    public ICommand getInverseCommand() {
+        ICommand inverseCommand = new MarkCommand(this.task);
+        return inverseCommand;
+    }
+
+}
+
+	// End of segment: list\src\list\UnmarkCommand.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\util\Suggestions.java
+	 */
+
+package list.util;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+public class Suggestions {
+    public static final HashMap<String, List<String>> PARSER_SUGGESTIONS;
+    static {
+        PARSER_SUGGESTIONS = new HashMap<String, List<String>>();
+        
+        PARSER_SUGGESTIONS.put("", Arrays.asList("help", "cat", "add, edit, display, delete, search, mark, unmark, close"));
+        
+        PARSER_SUGGESTIONS.put("cat", Arrays.asList("add", "edit", "display", "delete"));
+        PARSER_SUGGESTIONS.put("cat add", Arrays.asList("catargs()"));
+        PARSER_SUGGESTIONS.put("cat edit", Arrays.asList("category name"));
+        PARSER_SUGGESTIONS.put("cat display", Arrays.asList("category name"));
+        PARSER_SUGGESTIONS.put("cat delete", Arrays.asList("category name"));
+        PARSER_SUGGESTIONS.put("cat edit ga()", Arrays.asList("catargs()"));
+        
+        PARSER_SUGGESTIONS.put("search", Arrays.asList("keyword"));
+        
+        PARSER_SUGGESTIONS.put("mark", Arrays.asList("task number"));
+        PARSER_SUGGESTIONS.put("unmark", Arrays.asList("task number"));
+        
+        PARSER_SUGGESTIONS.put("delete", Arrays.asList("task number", "cat"));
+        PARSER_SUGGESTIONS.put("delete cat", Arrays.asList("category name"));
+        
+        PARSER_SUGGESTIONS.put("display", Arrays.asList("task number", "cat"));
+        PARSER_SUGGESTIONS.put("display cat", Arrays.asList("category name"));
+        
+        PARSER_SUGGESTIONS.put("add", Arrays.asList("cat", "taskargs()"));
+        PARSER_SUGGESTIONS.put("add cat", Arrays.asList("catargs()"));
+        PARSER_SUGGESTIONS.put("add ga()", Arrays.asList("taskargs()"));
+        
+        PARSER_SUGGESTIONS.put("edit", Arrays.asList("task number", "cat"));
+        PARSER_SUGGESTIONS.put("edit num()", Arrays.asList("taskargs()"));
+        PARSER_SUGGESTIONS.put("edit cat", Arrays.asList("category name"));
+        PARSER_SUGGESTIONS.put("edit cat ga()", Arrays.asList("catargs()"));
+         
+        
+    }
+    
+}
+
+	// End of segment: list\src\list\util\Suggestions.java
+
+
+
+
+
+	/**
+	 * origin: list\src\list\util\Utilities.java
+	 */
+
+package list.util;
+
+import java.util.Iterator;
+
+public class Utilities {
+    
+    /**
+     * Checks whether a particular collection of item is sorted.
+     * @param iterable
+     * @return true if the collection is sorted. Otherwise, returns false.
+     */
+    public static <T extends Comparable<? super T>>
+    boolean isSorted(Iterable<T> iterable) {
+        Iterator<T> iter = iterable.iterator();
+        if (!iter.hasNext()) {
+            return true;
+        }
+        T t = iter.next();
+        while (iter.hasNext()) {
+            T t2 = iter.next();
+            if (t.compareTo(t2) > 0) {
+                return false;
+            }
+            t = t2;
+        }
+        return true;
+    }
+    
+}
+
+	// End of segment: list\src\list\util\Utilities.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\CommandParserTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.*;
+
+import java.util.Map;
+import java.util.Scanner;
+
+import list.IParser.ParseException;
+import list.model.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class CommandParserTest {
+    String COMMAND_ADD = "add -t the original title -n a random note.";
+    
+    CommandParser parser = new CommandParser();
+    
+    @Before
+    public void setup() throws Exception{
+        parser.clear();
+    }
+    
+    @Test
+    public void expectingCommandTypes() throws Exception {
+        String actions = parser.getExpectedInputs();
+        assertNotNull(actions);        
+        
+        parser.append("add");
+        
+        String parameters = parser.getExpectedInputs();
+        assertNotNull(parameters);
+        
+        parser.append("-d on saturday 8pm");
+        parser.finish();
+        
+        parser.clear();
+        
+        parser.append("cat edit");
+        assertTrue(parser.getExpectedInputs().contains("category name"));
+
+        parser.append("student exchange");
+        assertTrue(parser.getExpectedInputs().contains("-c"));
+        assertTrue(parser.getExpectedInputs().contains("-t"));
+    }
+    
+    @Test(expected = ParseException.class)
+    public void shouldRejectTaskSpanningMoreThanOneDay() throws Exception {
+    	String commandString = "add -t long task -s Nov 12 4pm -d Nov 13 4pm";
+    	parser.parse(commandString);
+    }
+    
+    @Test
+    public void testAddCommand() throws Exception {
+        ICommand command = parser.parse(COMMAND_ADD);
+        assertTrue(command instanceof AddCommand);
+    }
+
+}
+
+	// End of segment: list\test\list\CommandParserTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\DateTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Method;
+
+import list.model.Date;
+import list.model.Date.InvalidDateException;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+/**
+ * JUnit Test Case for list.Date class.
+	// End of segment: list\test\list\DateTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\DeleteCommandTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import javafx.application.Application;
+import list.AddCommand;
+import list.DeleteCommand;
+import list.TaskManager;
+import list.CommandBuilder.RepeatFrequency;
+import list.model.Date;
+import list.model.ICategory;
+import list.model.ITask;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class DeleteCommandTest {
+
+	private TaskManager taskManager = TaskManager.getInstance();
+	private final String TITLE = "test";
+	private final Date START_TIME = null;
+	private Date END_TIME = null;
+	private final RepeatFrequency REPEAT_FREQUENCY = RepeatFrequency.DAILY;
+	private final String PLACE = null;
+	private final ICategory CATEGORY = null;
+	private final String NOTES = null;
+
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @BeforeClass
+    public static void setup() throws Exception {
+        Thread thread = new Thread("JavaFX Init Thread") {
+            public void run() {
+                Application.launch(Controller.class, new String[0]);
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        }
+    }
+     
+	@Before
+	public void initializeTest() throws Exception {
+		taskManager.clearTasks();
+		END_TIME = new Date(1,1,1);
+		
+		AddCommand addCommand = new AddCommand(TITLE, START_TIME, END_TIME, 
+											   REPEAT_FREQUENCY, PLACE, 
+											   CATEGORY, NOTES);
+		addCommand.execute();		
+	}
+	
+	@Test
+	public void shouldDecreaseNumberOfTasksByOne() throws Exception {
+	    List<ITask> tasks = taskManager.getAllTasks();
+		int initialNumberOfTasks = tasks.size();
+		
+		DeleteCommand deleteCommand = new DeleteCommand(tasks.get(0));
+		deleteCommand.execute();
+
+		assertEquals(initialNumberOfTasks - 1, taskManager.getAllTasks().size());
+	}
+	
+	@Test
+	public void deletedTaskShouldNotExistAnymore() throws Exception {
+		int taskNumber = 1;
+		ITask task = Controller.getTaskWithNumber(taskNumber);
+		
+		DeleteCommand deleteCommand = new DeleteCommand(task);
+		deleteCommand.execute();
+		
+		assertEquals(false, taskManager.hasTask(task));
+	}
+
+}
+
+	// End of segment: list\test\list\DeleteCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\JodaTimeTest.java
+	 */
+
+
+package list;
+
+import static org.junit.Assert.*;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
+import org.joda.time.IllegalFieldValueException;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.Test;
+
+/**
+ * Learning the behavior of JodaTime library.
+ * 
+	// End of segment: list\test\list\JodaTimeTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\MarkCommandTest.java
+	 */
+
+package list;
+
+import static org.junit.Assert.*;
+import javafx.application.Application;
+import list.model.ITask;
+import list.model.Task;
+import list.model.ITask.TaskStatus;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class MarkCommandTest {
+	
+	private TaskManager taskManager = TaskManager.getInstance();
+    
+	@Rule
+	public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+	
+	@BeforeClass
+	public static void setup() throws Exception {
+	    Thread thread = new Thread("JavaFX Init Thread") {
+	        public void run() {
+	            Application.launch(Controller.class, new String[0]);
+	        }
+	    };
+	    thread.setDaemon(true);
+	    thread.start();
+
+	    try {
+	        Thread.sleep(2000);
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        e.printStackTrace();
+	    }
+	}
+	 
+	@Before
+	public void initializeTest() {
+		taskManager.clearTasks();
+		
+		ITask taskOne = new Task();
+		taskOne.setTitle("task 1");
+		taskOne.setStatus(TaskStatus.PENDING);
+		
+		ITask taskTwo = new Task();
+		taskTwo.setTitle("task 2");
+		taskTwo.setStatus(TaskStatus.PENDING);
+		
+		taskManager.addTask(taskOne);
+		taskManager.addTask(taskTwo);
+		Controller.displayTasksBasedOnDisplayMode("floating");
+	}
+	
+	@Test
+	public void shouldChangeTaskStatusToDone() throws Exception {
+		int taskNumber = 1;
+		ITask taskToMarkAsDone = Controller.getTaskWithNumber(taskNumber);
+		MarkCommand markCommand = new MarkCommand(taskToMarkAsDone);
+		
+		markCommand.execute();
+				
+		assertEquals(TaskStatus.DONE, taskToMarkAsDone.getStatus());
+	}
+	
+	@Test
+	public void shouldReturnSuccessMessageUponSuccessfulOperation() 
+			throws Exception {
+		int taskNumber = 1;
+		MarkCommand markCommand = new MarkCommand(Controller.getTaskWithNumber(taskNumber));
+		
+		String reply = markCommand.execute();
+				
+		assertEquals("Task is marked as done successfully.", reply);
+	}
+
+}
+
+	// End of segment: list\test\list\MarkCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: list\test\list\TaskTest.java
+	 */
+
+package list;
+
+import list.model.Task;
+
+import org.junit.Test;
+
+public class TaskTest {
+    
+    /**
+     * null notes field is an valid condition and should not raise an exception.
+	// End of segment: list\test\list\TaskTest.java
+
+
+
+
+
