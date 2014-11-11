@@ -135,13 +135,44 @@ public class CommandParser implements IParser {
     }
     
     public String getExpectedInputs() {
-        StringBuilder keywordBuilder = new StringBuilder();
-        for (String word: suggestionKeywords) {
-            keywordBuilder.append(word).append(' ');
-        }
-        String keyword = keywordBuilder.toString().trim().toLowerCase();
+        String keyword = getSuggestionKeyBasedOnCurrentState();
         List<String> suggestionTokens = Suggestions.PARSER_SUGGESTIONS.get(keyword);
-        if (suggestionTokens == null) {
+        String result = processSuggestionTokens(suggestionTokens);;
+        return result;
+    }
+
+	public ICommand finish() throws ParseException {
+	    CommandBuilder commandBuilder = new CommandBuilder();
+	    
+	    throwErrorIfActionIsEmpty();
+	    updateActionName();
+	    setCommandType(commandBuilder);
+	    setTaskNumber(commandBuilder);
+	    setDetails(commandBuilder);
+	    
+	    ICommand result = getCommandObject(commandBuilder);
+
+	    //if there is no exception until now, parsing is successful and we should clear the parser
+	    this.clear();
+	    
+	    return result;
+	}
+
+	public void clear() {
+	    this.parseMode = ParseMode.TASK;
+	    parameters = new HashMap<String, StringBuilder>();
+	    this.currentMarker = "";
+	    this.currentParameterValue = null;
+	    this.taskNumber = 0;
+	    this.action = "";
+	    this.startDate = null;
+	    this.endDate = null;
+	    this.generalArgument = new StringBuilder();
+	    this.suggestionKeywords = new ArrayList<String>();
+	}
+
+	private String processSuggestionTokens(List<String> suggestionTokens) {
+	    if (suggestionTokens == null) {
             return "";
         }
         StringBuilder suggestion = new StringBuilder();
@@ -155,7 +186,16 @@ public class CommandParser implements IParser {
             }
             suggestion.append(" | ");
         }
-        return suggestion.toString();
+	    return suggestion.toString();
+    }
+
+	private String getSuggestionKeyBasedOnCurrentState() {
+	    StringBuilder keywordBuilder = new StringBuilder();
+        for (String word: suggestionKeywords) {
+            keywordBuilder.append(word).append(' ');
+        }
+        String keyword = keywordBuilder.toString().trim().toLowerCase();
+	    return keyword;
     }
 
     private String unspecifiedCategoryParameters() {
@@ -191,35 +231,6 @@ public class CommandParser implements IParser {
         return printMap(expectations);
     }
     
-    public void clear() {
-        this.parseMode = ParseMode.TASK;
-        parameters = new HashMap<String, StringBuilder>();
-        this.currentMarker = "";
-        this.currentParameterValue = null;
-        this.taskNumber = 0;
-        this.action = "";
-        this.startDate = null;
-        this.endDate = null;
-        this.generalArgument = new StringBuilder();
-        this.suggestionKeywords = new ArrayList<String>();
-    }
- 
-    public ICommand finish() throws ParseException {
-        CommandBuilder commandBuilder = new CommandBuilder();
-        
-        throwErrorIfActionIsEmpty();
-        updateActionName();
-        setCommandType(commandBuilder);
-        setTaskNumber(commandBuilder);
-        setDetails(commandBuilder);
-        
-        ICommand result = getCommandObject(commandBuilder);
-        //if there is no exception until now, parsing is successful
-        this.clear(); //and we should clear the parser
-        
-        return result;
-    }
-
     private void setDetails(CommandBuilder commandBuilder)
             throws ParseException {
         switch (this.parseMode) {

@@ -21,4 +21,12 @@ public interface IParser {
 	 */
 	ICommand parse(String input) throws ParseException;
 	
+	void append(String input) throws ParseException;
+	
+	String getExpectedInputs();
+	
+	ICommand finish() throws ParseException;
+	
+	void clear();
+	
 }

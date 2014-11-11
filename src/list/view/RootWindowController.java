@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import list.CommandParser;
 import list.Controller;
+import list.IParser;
 import list.NextCommand;
 import list.PrevCommand;
 import list.IParser.ParseException;
@@ -71,7 +72,7 @@ public class RootWindowController implements IUserInterface {
 	private HelpController helpController;
 	private CongratulationsController congratulationsController;
 	//@author A0126722L
-	private CommandParser parser = new CommandParser();
+	private IParser parser = new CommandParser();
 	
 	
 	
@@ -89,7 +90,7 @@ public class RootWindowController implements IUserInterface {
 		rootPane.getChildren().remove(taskDetail);
 		console.requestFocus();
 	}
-    //@author A012//@author A0126722L6722L
+    //@author A0126722L
     @Override
     public void displayCategories(List<ICategory> categories) {
         categoriesController.clearAll();
