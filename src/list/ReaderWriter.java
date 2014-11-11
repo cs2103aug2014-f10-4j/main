@@ -1,4 +1,4 @@
-//@author A0113672L
+//@author A0094022R
 package list;
 
 import java.io.BufferedReader;
